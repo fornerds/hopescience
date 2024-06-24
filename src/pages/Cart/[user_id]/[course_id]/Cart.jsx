@@ -2,7 +2,7 @@ import "./Cart.css";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { loadPaymentWidget, ANONYMOUS } from "@tosspayments/payment-widget-sdk";
+import { loadPaymentWidget } from "@tosspayments/payment-widget-sdk";
 import { Header, Footer, Button } from "../../../../components";
 import { Modal } from "../../../../modules/Modal";
 import { payment, user, service } from "../../../../store";

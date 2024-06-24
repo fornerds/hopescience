@@ -10,7 +10,7 @@ export const VideoModal = ({ isOpen, videoSrc, onClose }) => {
         <span className="video-modal-close" onClick={onClose}>
           &times;
         </span>
-        <iframe src={videoSrc} className="video-modal-video" allow="autoplay; fullscreen" allowFullScreen></iframe>
+        <iframe title="Video Content" src={videoSrc} className="video-modal-video" allow="autoplay; fullscreen" allowFullScreen></iframe>
         {/* <video controls autoPlay className="video-modal-video">
           <source src={videoSrc} type="video/mp4" />
           Your browser does not support the video tag.
