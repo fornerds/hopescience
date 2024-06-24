@@ -139,6 +139,16 @@ const faqData = [
 ];
 
 export const Home = () => {
+  const mainImage = "/images/main.png";
+  const coursesImage = "/images/courses.png";
+  const certificationImage = "/images/certification.jpg";
+  const articleImage01 = "/images/article01.png";
+  const articleImage02 = "/images/article02.png";
+  const locationPinIcon = "/icons/location-pin.svg";
+  const phoneIcon = "/icons/phone.svg";
+  const mailIcon = "/icons/mail.svg";
+  const contactImage = "/images/contact.png";
+  
   return (
     <>
       <Header />
@@ -160,7 +170,7 @@ export const Home = () => {
         </figure>
         <img
           className="main-section-image"
-          src="./images/main.png"
+          src={mainImage}
           alt="니케를 설명하는 이미지"
         />
       </section>
@@ -179,7 +189,7 @@ export const Home = () => {
         <Link buttonStyle="default" color="white" to="/courses" label="더 알아보기" fontSize="16px" />
         <img
           className="home-about-image"
-          src="./images/courses.png"
+          src={coursesImage}
           alt="더 알아보기 이미지"
         />
       </section>
@@ -195,7 +205,7 @@ export const Home = () => {
             <h4>성범죄 예방 심리교육</h4>
             <img
                 className="home-certificate-image"
-                src="./images/certification.jpg"
+                src={certificationImage}
                 alt="이수증서 예시 이미지"
               />
           </figure>
@@ -203,7 +213,7 @@ export const Home = () => {
             <h4>음주폐혜 예방 심리교육&#40;준비중&#41;</h4>
             <img
                 className="home-certificate-image"
-                src="./images/certification.jpg"
+                src={certificationImage}
                 alt="이수증서 예시 이미지"
               />
           </figure>
@@ -211,7 +221,7 @@ export const Home = () => {
             <h4>중독범죄 예방 심리교육&#40;준비중&#41;</h4>
             <img
                 className="home-certificate-image"
-                src="./images/certification.jpg"
+                src={certificationImage}
                 alt="이수증서 예시 이미지"
               />
           </figure>
@@ -249,14 +259,14 @@ export const Home = () => {
               패스할 때까지 저희가 함께해드립니다.
             </div>
           </div>
-          <img className="home-feature-section-article-image01" alt="무제한 수강이 가능합니다." src="./images/article01.png" />
+          <img className="home-feature-section-article-image01" alt="무제한 수강이 가능합니다." src={articleImage01} />
         </div>
         <div className="home-feature-section-article-black">
           <div className="home-feature-section-article">
             <img
               className="home-feature-section-article-image02"
               alt="수료증 보관이 영구적으로 가능합니다"
-              src="./images/article02.png"
+              src={articleImage02}
             />
             <div className="home-feature-section-article-text">
               <div className="home-feature-section-article-title">
@@ -304,19 +314,19 @@ export const Home = () => {
             <tbody>
               <tr>
                 <td>
-                  <img alt="Location pin" src="./icons/location-pin.svg" />
+                  <img alt="Location pin" src={locationPinIcon} />
                 </td>
                 <td>서울특별시 성동구 상원6길 8, 비 1층 이72호&#40;성수동1가&#41;</td>
               </tr>
               <tr>
                 <td>
-                  <img alt="Phone" src="./icons/phone.svg" />
+                  <img alt="Phone" src={phoneIcon} />
                 </td>
                 <td>&#40;+82&#41; 010-2952-1960</td>
               </tr>
               <tr>
                 <td>
-                  <img alt="Mail" src="./icons/mail.svg" />
+                  <img alt="Mail" src={mailIcon} />
                 </td>
                 <td>hopescience0110@naver.com</td>
               </tr>
@@ -325,7 +335,7 @@ export const Home = () => {
           <img
             className="home-contact-info-image"
             alt="희망과학심리상담센터 문의 상담 이미지"
-            src="./images/contact.png"
+            src={contactImage}
           />
         </div>
         <div className="home-contact-form">

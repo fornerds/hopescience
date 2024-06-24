@@ -9,6 +9,8 @@ export const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const MainLogo = "/images/main-logo.png";
+  const Avatar = "/icons/avatar.svg";
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -42,7 +44,7 @@ export const Header = () => {
         <img
           className="img"
           alt="희망과학심리상담센터 메인로고"
-          src="./images/main-logo.png"
+          src={MainLogo}
           width="60px"
           height="60px"
         />
@@ -72,7 +74,7 @@ export const Header = () => {
           <div className="header-user-section">
             <img
               className="user-profile-image"
-              src="/icons/avatar.svg"
+              src={Avatar}
               alt="사용자 프로필 이미지"
             />
             <span className="header-user-name" onClick={toggleDropdown}>

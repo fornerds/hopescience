@@ -70,6 +70,8 @@ export const Accordion = ({ section }) => {
 
 export const FaqAccordion = ({ faqs }) => {
   const [activeIndex, setActiveIndex] = useState(null);
+  const arrowUpIcon = "/icons/chevron-up-large.svg";
+  const arrowDownIcon = "/icons/chevron-down-large.svg";
 
   const handleToggle = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
@@ -86,13 +88,13 @@ export const FaqAccordion = ({ faqs }) => {
                 <img
                   className="img-9"
                   alt="Chevron up large"
-                  src="/icons/chevron-up-large.svg"
+                  src={arrowUpIcon}
                 />
               ) : (
                 <img
                   className="img-9"
                   alt="Chevron down large"
-                  src="/icons/chevron-down-large.svg"
+                  src={arrowDownIcon}
                 />
               )}
             </button>

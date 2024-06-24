@@ -22,6 +22,9 @@ export const SignIn = () => {
   const naverLoginRef = useRef();
   const navigate = useNavigate();
   const [rememberEmail, setRememberEmail] = useState(false);
+  const LineLeft = "/icons/line-left.svg";
+  const LineRight = "/icons/line-right.svg";
+  const naverImage = "/images/naver.png";
   const {
     handleSubmit,
     control,
@@ -183,9 +186,9 @@ export const SignIn = () => {
               />
             </div>
             <div className="hr">
-              <img className="line-2" alt="Line" src="/icons/line-left.svg" />
+              <img className="line-2" alt="Line" src={LineLeft} />
               <div className="OR">OR</div>
-              <img className="line-3" alt="Line" src="/icons/line-right.svg" />
+              <img className="line-3" alt="Line" src={LineRight} />
             </div>
             <div id="naverIdLogin" ref={naverLoginRef} />
             <Button
@@ -197,7 +200,7 @@ export const SignIn = () => {
               <img
                 className="line-2"
                 alt="Line"
-                src="/images/naver.png"
+                src={naverImage}
                 style={{ width: "44px" }}
               />
             </Button>

@@ -1,25 +1,30 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Carousel.css";
 
-const Card = ({ name, rating, date, review }) => (
-  <div className="card">
-    <div className="card-header">
-      <img src="/icons/avatar.svg" alt={name} className="user-image" />
-      <div className="card-user-info-wrap">
-        <div className="card-user-info">
-          <div className="card-user-name">{name}</div>
-          <img
-            src="/icons/rating.svg"
-            alt="별점 5점"
-            className="card-user-rating"
-          />
+const Card = ({ name, rating, date, review }) => {
+  const avatarIcon = "/icons/avatar.svg";
+  const ratingIcon = "/icons/rating.svg";
+
+  return(
+    <div className="card">
+      <div className="card-header">
+        <img src={avatarIcon} alt={name} className="user-image" />
+        <div className="card-user-info-wrap">
+          <div className="card-user-info">
+            <div className="card-user-name">{name}</div>
+            <img
+              src={ratingIcon}
+              alt="별점 5점"
+              className="card-user-rating"
+            />
+          </div>
+          <div className="card-user-date">{date}</div>
         </div>
-        <div className="card-user-date">{date}</div>
       </div>
+      <div className="review-card-body">{review}</div>
     </div>
-    <div className="review-card-body">{review}</div>
-  </div>
-);
+  );
+};
 
 export const Carousel = ({ items }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
