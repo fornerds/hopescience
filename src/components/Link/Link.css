@@ -1,0 +1,40 @@
+.link {
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .link:hover {
+    text-decoration: underline;
+  }
+  
+  .link-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    vertical-align: middle;
+    text-align: center;
+    width: 165px;
+    height: 44px;
+  }
+  
+  .link-button-default {
+    background-color: #bd9a31;
+  }
+  
+  .link-button-primary {
+    background-color: #0083ff;
+  }
+  
+  .link-button-transparent {
+    background-color: transparent;
+  }
+  
+  .link-icon {
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  

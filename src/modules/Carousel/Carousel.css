@@ -1,0 +1,96 @@
+.carousel {
+    max-width: 1014px;
+    width: 90%;
+    margin-top: 60px;
+  }
+  
+  .cards {
+    display: flex;
+    overflow: hidden;
+    overflow-x: scroll;
+  }
+  
+  .card {
+    width: 338px;
+    height: 260px;
+    margin-right: 24px;
+    background-color: white;
+    border-radius: 24px;
+    padding: 24px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+  }
+  
+  .indicators {
+    display: flex;
+    justify-content: center;
+    bottom: 10px;
+  }
+  
+  .indicators button {
+    border: none;
+    background-color: #dee1e6;
+    margin: 46px 12px;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+  }
+  
+  .indicators button.active {
+    background-color: #bd9a31;
+  }
+  
+  .user-image {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+  }
+  
+  .card-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
+  
+  .card-user-info-wrap {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .card-user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: start;
+    margin-left: 14px;
+  }
+  
+  .card-user-name {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  
+  .card-user-date {
+    color: #9095a1;
+    font-size: 12px;
+  }
+  
+  .review-card-body {
+    margin-top: 24px;
+    text-align: start;
+    align-self: start;
+    word-break: keep-all;
+    color: #171a1f;
+    line-height: 22px;
+    font-size: 14px;
+  }
+  
+  @media screen and (max-width: 1000px){
+    .card-user-date{
+      display: none;
+    }
+  }

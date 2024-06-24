@@ -1,0 +1,115 @@
+.footer {
+    background-color: #1e2128;
+    height: fit-content;
+    width: 100vw;
+    display: flex;
+    padding: 24px 120px 80px;
+    color: #dee1e6;
+    font-family: "Lexend", Helvetica;
+  }
+  
+  .footer-address-section {
+    width: 435px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .footer-logo {
+    margin-top: 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .footer-logo-text {
+    font-size: 32px;
+    font-weight: 600;
+  }
+  
+  .footer-address {
+    flex-wrap: wrap;
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    font-family: "Manrope", Helvetica;
+    font-weight: 400;
+    font-size: 14px;
+    justify-content: center;
+  }
+  
+  .footer-link {
+    color: #dee1e6;
+  }
+  
+  .footer-link:hover {
+    text-decoration: underline;
+  }
+  
+  .footer-links-section {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .footer-link-group {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    flex-wrap: wrap;
+    column-gap: 80px;
+  }
+  
+  .footer-link-group-title {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  .footer-link-group-list {
+    font-family: "Manrope", Helvetica;
+    font-weight: 400;
+    font-size: 14px;
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  
+  @media screen and (min-width: 801px) and (max-width: 1300px) {
+    .footer {
+      flex-direction: column;
+      gap: 30px;
+    }
+  
+    .footer-address-section {
+      width: fit-content;
+    }
+  
+    .footer-links-section {
+      justify-content: start;
+    }
+  }
+  
+  @media screen and (max-width: 800px) {
+    .footer {
+      padding: 24px 10% 80px;
+      flex-direction: column;
+      gap: 30px;
+    }
+  
+    .footer-address-section {
+      width: fit-content;
+    }
+  
+    .footer-links-section {
+      justify-content: start;
+    }
+  
+    .footer-link-group {
+      flex-direction: column;
+      gap: 40px;
+    }
+  }

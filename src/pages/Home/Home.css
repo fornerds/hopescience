@@ -1,1 +1,533 @@
-
+.main-section {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    font-family: "Manrope", Helvetica;
+  }
+  
+  .main-section-figure {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 62px;
+  }
+  
+  .main-title {
+    font-family: "Lexend", Helvetica;
+    font-size: 80px;
+    font-weight: 700;
+    line-height: 104px;
+  }
+  
+  .sub-title {
+    font-size: 25px;
+    line-height: 28px;
+  }
+  
+  .main-section-image {
+    display: block;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    background-size: 100% 100%;
+    background-color: #171a1fd9;
+    background-position: center center;
+    background-size: contain;
+    object-fit: cover;
+    z-index: 1;
+    height: auto;
+    width: 100%;
+    min-height: 400px;
+  }
+  
+  .home-rigiter-section {
+    background-color: #171a1f;
+    width: 100%;
+    height: 470px;
+    text-align: center;
+  }
+  
+  .home-section-title {
+    padding-top: 50px;
+    font-family: "Lexend", Helvetica;
+    color: #f3c63f;
+    font-weight: 700;
+    font-size: 35px;
+  }
+  
+  .home-section-title-p {
+    margin-top: 18px;
+    font-size: 18px;
+    color: #dee1e6;
+    line-height: 28px;
+  }
+  
+  .home-rigiter-card-list {
+    margin-top: 52px;
+    display: flex;
+    justify-content: center;
+    gap: 35px;
+  }
+  
+  .home-rigiter-card {
+    background-color: #1e2128;
+    width: 169px;
+    height: 193px;
+    border-radius: 4px;
+    display: flex;
+    padding-top: 27px;
+    flex-direction: column;
+    align-items: center;
+    font-family: "Lexend", Helvetica;
+    font-weight: 700;
+    color: #dee1e6;
+  }
+  
+  .home-rigiter-card-title {
+    margin-top: 17px;
+    font-size: 20px;
+  }
+  
+  .home-rigiter-card-desc {
+    margin: 12px 25px 0;
+    font-size: 15px;
+    line-height: 24px;
+    word-break: keep-all;
+  }
+  
+  .home-about-section {
+    width: 100%;
+    height: fit-content;
+    background-color: #0d0e11;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .home-section-title-large {
+    margin-top: 30px;
+    color: #dee1e6;
+    font-family: "Lexend", Helvetica;
+    font-size: 45px;
+    font-weight: 700;
+    line-height: 48px;
+  }
+  
+  .home-section-desc {
+    margin: 30px auto 45px;
+    font-size: 25px;
+    color: #9c9c9c;
+    line-height: 28px;
+  }
+  
+  .home-about-image {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    display: block;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-position: center center;
+    background-size: contain;
+    object-fit: cover;
+    z-index: 1;
+    height: auto;
+    width: 100%;
+    max-width: 945px;
+    min-height: 400px;
+  }
+  
+  .home-certificate-section {
+    width: 100%;
+    height: fit-content;
+    background-color: #171a1f;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .home-certificate-table {
+    margin-top: 40px;
+    margin-bottom: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .home-certificate-table-figure {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .home-certificate-table h4 {
+    color: #dee1e6;
+    font-family: "Lexend", Helvetica;
+    font-size: 25px;
+    font-weight: 700;
+    padding-top: 20px;
+  }
+  
+  .home-certificate-table tbody tr td {
+    padding: 20px;
+  }
+  
+  .home-certificate-image {
+    max-width: 370px;
+    width: 90%;
+    height: auto;
+    align-self: center;
+  }
+  
+  .home-feature-section {
+    width: 100%;
+    height: fit-content;
+    background-color: #1e2128;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .home-feature-section-article {
+    height: fit-content;
+    width: 100%;
+    max-width: 1230px;
+    flex-wrap: wrap;
+    text-align: left;
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    padding-top: 78px;
+    padding-bottom: 51px;
+  }
+  
+  .home-feature-section-article-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 405px;
+    margin-top: 20px;
+    margin-left: 40px;
+  }
+  
+  .home-feature-section-article-title {
+    font-family: "Lexend", Helvetica;
+    color: #bd9a31;
+    font-size: 32px;
+    line-height: 48px;
+  }
+  
+  .home-feature-section-article-title-large {
+    font-family: "Lexend", Helvetica;
+    color: #dee1e6;
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 68px;
+  }
+  
+  .home-feature-section-article-desc {
+    color: #dee1e6;
+    font-size: 16px;
+    line-height: 26px;
+  }
+  
+  .home-feature-section-article-image01 {
+    display: block;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-position: center center;
+    background-size: contain;
+    object-fit: cover;
+    z-index: 1;
+    height: auto;
+    width: 90%;
+    max-width: 605px;
+  }
+  
+  .home-feature-section-article-image02 {
+    display: block;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-position: center center;
+    background-size: contain;
+    object-fit: cover;
+    z-index: 1;
+    height: auto;
+    width: 90%;
+    max-width: 674px;
+  }
+  
+  .home-feature-section-article-image03 {
+    display: block;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    background-size: 100% 100%;
+    background-color: transparent;
+    background-position: center center;
+    background-size: contain;
+    object-fit: cover;
+    z-index: 1;
+    height: auto;
+    width: 90%;
+    max-width: 528px;
+  }
+  
+  .home-feature-section-article-black {
+    display: flex;
+    justify-content: center;
+    background-color: #171a1f;
+    width: 100%;
+  }
+  
+  .home-review-section {
+    width: 100%;
+    height: 739px;
+    background-color: #171a1f;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .home-review-section-title,
+  .home-FAQ-section-title {
+    margin-top: 24px;
+    color: #bd9a31;
+    font-weight: 700;
+    font-size: 20px;
+  }
+  
+  .home-review-section-title-large {
+    margin: 35px auto;
+    color: #dee1e6;
+    font-family: "Lexend", Helvetica;
+    font-size: 32px;
+    line-height: 48px;
+  }
+  
+  .home-FAQ-section {
+    width: 100%;
+    height: fit-content;
+    background-color: #0f1114;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 10% 70px;
+  }
+  
+  .home-contact-section {
+    width: 100%;
+    height: fit-content;
+    background-color: #171a1f;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    align-self: center;
+    align-items: center;
+    padding-block: 140px;
+  }
+  
+  .home-contact-info {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    align-items: start;
+    padding: 0 auto;
+    width: 456px;
+  }
+  
+  .home-contact-info-title {
+    font-family: "Lexend", Helvetica;
+    color: #dee1e6;
+    font-size: 62px;
+  }
+  
+  .home-contact-info-table {
+    color: #dee1e6;
+    font-size: 16px;
+    text-align: start;
+    margin-top: 20px;
+  }
+  
+  .home-contact-info-table tbody tr td {
+    padding-top: 16px;
+  }
+  
+  .home-contact-info-table tbody tr td:nth-child(2) {
+    padding-left: 12px;
+  }
+  
+  .home-contact-info-image {
+    margin-top: 42px;
+    max-width: 456px;
+    width: 100%;
+    height: auto;
+  }
+  
+  .home-contact-form {
+    align-self: center;
+    padding: 0 auto;
+    display: flex;
+    flex-direction: column;
+    width: 456px;
+  }
+  
+  #contact-content {
+    max-width: 456px;
+    width: 100%;
+    height: 138px;
+    background-color: transparent;
+    border: 1px solid #9095a1;
+    color: #bdc1ca;
+    padding: 16px;
+    margin-top: 26px;
+  }
+  
+  #contact-content::placeholder {
+    color: #bdc1ca;
+  }
+  
+  @media screen and (min-width: 1801px) {
+    .home-certificate-table {
+      flex-direction: row;
+    }
+  }
+  @media screen and (min-width: 1401px) and (max-width: 1800px) {
+    .home-certificate-table {
+      flex-direction: row;
+    }
+  
+    .main-title{
+      font-size: 48px;
+      line-height: 60px;
+    }
+  
+  }
+  
+  @media screen and (min-width: 801px) and (max-width: 1400px) {
+    .main-title{
+      font-size: 32px;
+      line-height: 48px;
+    }
+  
+    .home-feature-section-article-title-large {
+      font-size: 40px;
+      line-height: 60px;
+    }
+  
+    .sub-title {
+      font-size: 18px;
+      line-height: 20px;
+    }
+  
+    .home-section-title-large {
+      font-size: 36px;
+      line-height: 42px;
+    }
+  
+    .home-section-desc {
+      font-size: 20px;
+      line-height: 28px;
+    }
+  
+    .home-review-section-title-large {
+      font-size: 22px;
+      line-height: 24px;
+    }
+  
+    .home-contact-section {
+      flex-direction: column;
+    }
+  
+    .home-contact-info-title {
+      font-size: 32px;
+    }
+  
+    .home-contact-info, .home-contact-form {
+      width: 90%;
+      max-width: 456px;
+      align-items: start;
+    }
+  
+  }
+  
+  @media screen and (max-width: 800px) {
+    .main-title, .home-feature-section-article-title-large {
+      font-size: 24px;
+      line-height: 30px;
+    }
+  
+    .sub-title {
+      font-size: 14px;
+      line-height: 18px;
+    }
+  
+    .home-section-title-large {
+      font-size: 18px;
+      line-height: 22px;
+    }
+  
+    .home-section-desc {
+      font-size: 16px;
+      line-height: 20px;
+    }
+  
+    .home-certificate-table h4 {
+      font-size: 18px;
+      line-height: 22px;
+    }
+  
+    .home-feature-section-article-text {
+      height: 280px;
+    }
+  
+    .home-review-section-title-large {
+      font-size: 18px;
+      line-height: 22px;
+    }
+  
+    .home-section-title-p {
+      font-size: 14px;
+      line-height: 18px;
+    }
+  
+    .home-contact-section {
+      flex-direction: column;
+    }
+  
+    .home-contact-info-title {
+      font-size: 24px;
+    }
+  
+    .home-contact-info, .home-contact-form {
+      width: 90%;
+      max-width: 456px;
+      align-items: start;
+    }
+  }
