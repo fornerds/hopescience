@@ -1,0 +1,142 @@
+.pagination-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  max-width: 1150px;
+  min-width: fit-content;
+  width: 100%;
+}
+
+.post-list {
+  width: 100%;
+}
+
+.post-list-header {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr 4fr 1.5fr 1.5fr 1fr;
+  padding: 20px 16px 16px;
+  font-family: "Lexend", Helvetica;
+  font-size: 14px;
+  font-weight: 600;
+  color: #dee1e6;
+}
+
+.post-item {
+  font-family: '"Manrope", Helvetica';
+  font-size: 14px;
+  font-weight: 400;
+  display: grid;
+  grid-template-columns: 1fr 4fr 1.5fr 1.5fr 1fr;
+  color: #dee1e6;
+  padding: 20px 16px 16px;
+  border-top: 1px solid #dee1e6;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.post-item-link {
+  color: #dee1e6;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.post-item-link:hover {
+  color: #ffffff;
+}
+
+.pagination-buttons {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.pagination-button {
+  background-color: transparent;
+  border: none;
+  width: 36px;
+  height: 36px;
+}
+
+.pagination-button:hover {
+  cursor: pointer;
+}
+
+.pagination-button.disabled:hover {
+  cursor: not-allowed;
+}
+
+.ellipsis {
+  margin: 0 8px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.pagination-page-button {
+  background-color: #ffffff;
+  color: #9095a1;
+  width: 33px;
+  height: 36px;
+  border-radius: 4px;
+  border: 0;
+}
+
+.pagination-page-button:hover {
+  background-color: #bd9a31;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.pagination-button-wrap {
+  display: flex;
+  gap: 4px;
+}
+
+.pagination-page-button.active {
+  background-color: #bd9a31;
+  color: #ffffff;
+}
+
+.post-item-create-button {
+  display: flex;
+  justify-content: end;
+  margin-top: 28px;
+}
+
+@media (min-width: 1301px) {
+  .accordion-header {
+    width: 600px;
+  }
+  .post-list, .post-item, .post-list-header {
+    width: 1150px;
+  }
+}
+
+@media (min-width: 801px) and (max-width: 1300px) {
+  .accordion-header {
+    width: 400px;
+  }
+  .post-list, .post-item, .post-list-header {
+    width: 600px;
+  }
+}
+
+/* 작은 크기의 디바이스 (모바일) */
+@media (max-width: 600px) {
+  .post-list, .post-item, .post-list-header {
+    max-width: 100%; /* 모바일에서는 너비를 화면에 맞춤 */
+  }
+
+  .post-list-header, .post-item {
+    grid-template-columns: 1fr 4fr 1.5fr 0fr 0fr; /* '작성일자'와 '조회수' 컬럼을 0fr로 설정하여 숨김 */
+  }
+
+  /* '작성일자'와 '조회수'에 해당하는 컬럼 숨기기 */
+  .post-list-header > div:nth-child(4), .post-list-header > div:nth-child(5),
+  .post-item > div:nth-child(4), .post-item > div:nth-child(5) {
+    display: none;
+  }
+}

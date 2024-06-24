@@ -1,0 +1,123 @@
+.course-background {
+  width: 100vw;
+  min-height: 1055px;
+  background-color: #171a1f;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 90px 30px 50px;
+}
+
+.course-section {
+  max-width: 1180px;
+  width: 100%;
+  min-height: 1055px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: "Lexend", Helvetica;
+  color: #dee1e6;
+}
+
+.course-title {
+  font-size: 24px;
+  font-weight: bold;
+  font-family: "Lexend", Helvetica;
+}
+
+.course-desc {
+  margin-top: 16px;
+  border-top: 3px solid #323743;
+  padding-top: 36px;
+  padding-bottom: 52px;
+  display: flex;
+  gap: 54px;
+}
+
+.course-image-wrap {
+  max-width: 425px;
+  width: 100%;
+  max-height: 288px;
+  overflow: hidden;
+  margin-bottom: 23px;
+}
+
+.course-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.course-index-text {
+  font-weight: bold;
+  font-size: 20px;
+  font-family: "Lexend", Helvetica;
+}
+
+.course-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.course-info-flex {
+  display: flex;
+  row-gap: 12px;
+  column-gap: 36px;
+  margin-top: 28px;
+}
+
+.course-info-price {
+  margin-bottom: 20px;
+}
+
+.course-info-service-period {
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.course-duration,
+.course-price {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.course-service-period {
+  font-size: 14px;
+}
+
+.course-price {
+  display: flex;
+  gap: 19px;
+}
+
+.course-price del {
+  color: #9095a1;
+  font-size: 18px;
+}
+
+.course-detail,
+.course-lecture-list,
+.course-QnA {
+  border-top: 1px solid #323743;
+  padding-top: 39px;
+  padding-bottom: 62px;
+  display: flex;
+  gap: 4px;
+  align-items: start;
+  font-family: '"Manrope", Helvetica';
+  font-size: 15px;
+  line-height: 24px;
+  font-weight: 400;
+}
+
+.course-detail-desc {
+  margin-top: 28px;
+}
+
+
+@media screen and (max-width: 900px) {
+  .course-desc {
+    flex-direction: column;
+  }
+}

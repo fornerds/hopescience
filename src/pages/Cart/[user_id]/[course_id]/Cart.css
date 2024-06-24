@@ -1,0 +1,201 @@
+.cart-background {
+  width: 100vw;
+  min-height: calc(100vh - 286px);
+  background-color: #171a1f;
+  display: flex;
+  padding: 90px 30px 90px;
+  font-family: "Manrope", Helvetica;
+  color: #dee1e6;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cart-info-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  width: 100%;
+  max-width: 774px;
+}
+
+.cart-info-course {
+  background-color: #1e2128;
+  border-radius: 4px;
+  padding: 25px 23px;
+  max-width: 774px;
+  width: 100%;
+}
+
+.cart-info-course-content-wrap {
+  display: flex;
+  margin-top: 18px;
+  gap: 26px;
+  flex-wrap: wrap;
+}
+
+.cart-course-image-wrap {
+  max-width: 235px;
+  width: 100%;
+  height: 142px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.cart-course-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cart-label {
+  font-weight: 700;
+  font-size: 25px;
+}
+
+.cart-info-user {
+  background-color: #1e2128;
+  border-radius: 4px;
+  padding: 25px 23px;
+}
+
+.cart-receipt-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  max-width: 537px;
+  width: 100%;
+}
+
+.cart-receipt {
+  background-color: #1e2128;
+  border-radius: 4px;
+  padding: 25px 23px;
+  height: fit-content;
+}
+
+.cart-info-course-content,
+.cart-info-user-content {
+  font-size: 14px;
+  font-weight: 700;
+  width: 100%;
+}
+
+.cart-info-course-content {
+  max-width: 467px;
+  width: 100%;
+}
+
+.cart-info-payment-number-wrap {
+  display: flex;
+  gap: 15px;
+}
+
+.cart-info-course-label,
+.cart-info-user-label {
+  margin-top: 20px;
+}
+
+.cart-info-course-wrap,
+.cart-info-user-wrap {
+  display: flex;
+  margin-top: 5px;
+  justify-content: space-between;
+  font-size: 20px;
+}
+
+.cart-info-label-wrap {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cart-info-user-tel {
+  margin-top: 18px;
+  margin-bottom: 2px;
+}
+
+.cart-info-user-tel,
+.cart-info-user-email {
+  color: #9095a1;
+}
+
+.cart-receipt-price,
+.cart-receipt-discount,
+.cart-receipt-total-price {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 700;
+  color: #9095a1;
+  padding-top: 8px;
+}
+
+.cart-receipt-price {
+  margin-top: 10px;
+}
+
+.cart-receipt-discount {
+  padding-bottom: 11px;
+}
+.cart-receipt-total-price {
+  border-top: 1px solid #bdc1ca;
+}
+
+.cart-receipt-total-price p:nth-child(1) {
+  color: #dee1e6;
+}
+
+.cart-receipt-total-price p:nth-child(2) {
+  color: #379ae6;
+}
+
+.course-image-skeleton {
+  max-width: 235px;
+  height: 142px;
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(90deg, #1e2128 25%, #2c303a 50%, #1e2128 75%);
+  background-size: 200% 100%;
+  animation: loading 2s infinite ease-in-out;
+  border-radius: 8px;
+}
+
+.course-order-id-skeleton, .course-title-skeleton, .course-price-skeleton, .course-user-name-skeleton, .course-user-tel-skeleton, .course-user-email-skeleton, .course-cost-skeleton, .course-discount-skeleton, .course-total-price-skeleton {
+  width: 102px;
+  height: 14px;
+  background: linear-gradient(90deg, #1e2128 25%, #2c303a 50%, #1e2128 75%);
+  background-size: 200% 100%;
+  animation: loading 2s infinite ease-in-out;
+  border-radius: 8px;
+}
+
+.course-title-skeleton, .course-user-name-skeleton {
+  width: 150px;
+  height: 20px;
+}
+
+.course-price-skeleton {
+  width: 90px;
+  height: 20px;
+}
+
+.course-user-tel-skeleton {
+  width: 90px;
+  height: 16px;
+  margin-top: 18px;
+  margin-bottom: 2px;
+}
+
+.course-user-email-skeleton {
+  width: 90px;
+  height: 16px;
+}
+
+@keyframes loading {
+  0% {
+      background-position: 200% 0;
+  }
+  100% {
+      background-position: -200% 0;
+  }
+}

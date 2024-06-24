@@ -4,7 +4,11 @@ import "./FAQAccordion.css";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import arrowUpIcon from "../../icons/chevron-up-large.svg";
+import arrowUpBigIcon from "../../icons/chevron-up-large02.svg";
 import arrowDownIcon from "../../icons/chevron-down-large.svg";
+import arrowDownBigIcon from "../../icons/chevron-down-large02.svg";
+import videoIcon from "../../icons/video.svg";
+import lockIcon from "../../icons/lock.svg";
 
 export const Accordion = ({ section }) => {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -33,13 +37,13 @@ export const Accordion = ({ section }) => {
             {activeIndex === section.id ? (
               <img
                 alt="강의 목록 간략히"
-                src="/img/chevron-up-large-8.svg"
+                src={arrowUpBigIcon}
                 className="accodion-icon"
               />
             ) : (
               <img
                 alt="강의 목록 더보기"
-                src="/img/chevron-down-large-8.svg"
+                src={arrowDownBigIcon}
                 className="accodion-icon"
               />
             )}
@@ -56,12 +60,12 @@ export const Accordion = ({ section }) => {
                 <img
                   className="play-media"
                   alt="Play media"
-                  src="/img/play-media.svg"
+                  src={videoIcon}
                 />{" "}
                 {section.order}-{lecture.order}. {lecture.title} &#40;
                 {lecture.video_duration}&#41;
               </div>
-              <img className="lock" alt="Lock" src="/img/lock-1.svg" />
+              <img className="lock" alt="Lock" src={lockIcon} />
             </Link>
           ))}
         </div>

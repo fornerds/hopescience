@@ -1,0 +1,1 @@
+export { LectureInquiryEdit } from "./LectureInquiryEdit";

@@ -1,0 +1,33 @@
+.result-wrapper {
+    background-color: #1e2129;
+    padding: 60px;
+    border-radius: 20px;
+}
+
+.box_section{
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+}
+
+.box_section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.cart-success-title {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.cart-success-label-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.cart-success-label {
+    font-size: 16px;
+    font-weight: 500;
+}

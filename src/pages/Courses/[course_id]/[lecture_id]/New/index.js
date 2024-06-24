@@ -1,0 +1,1 @@
+export { NewLectureInquiry } from "./New";

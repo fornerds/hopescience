@@ -1,0 +1,66 @@
+.image-wrap {
+  max-width: 376px;
+  width: 100%;
+  height: 227px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.course-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.course-card {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.course-title {
+  color: #dee1e6;
+  font-size: 18px;
+  font-family: "Lexend", Helvetica;
+  font-weight: bold;
+}
+
+.course-price-wrap {
+  display: flex;
+  gap: 10px;
+}
+
+.course-original-price {
+  color: #bdc1ca;
+  font-size: 18px;
+  font-family: "Lexend", Helvetica;
+  font-weight: bold;
+  text-decoration: line-through;
+}
+
+.course-sale-price {
+  color: #dee1e6;
+  font-size: 18px;
+  font-family: "Lexend", Helvetica;
+  font-weight: bold;
+}
+
+.course-tags {
+  display: flex;
+  gap: 4px;
+}
+
+.tag {
+  background-color: #fff3f0;
+  color: #f9623e;
+  font-size: 12px;
+  font-weight: 400;
+  font-family: "Manrope", Helvetica;
+  padding: 4px 8px;
+  border-radius: 14px;
+}
+
+.tag.sale {
+  background-color: #f0f9ff;
+  color: #15abff;
+}

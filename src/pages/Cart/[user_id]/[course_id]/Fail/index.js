@@ -1,0 +1,1 @@
+export { FailPage } from "./Fail";
