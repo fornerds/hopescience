@@ -3,6 +3,8 @@ import "./Accordion.css";
 import "./FAQAccordion.css";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import arrowUpIcon from "../../icons/chevron-up-large.svg";
+import arrowDownIcon from "../../icons/chevron-down-large.svg";
 
 export const Accordion = ({ section }) => {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -70,8 +72,6 @@ export const Accordion = ({ section }) => {
 
 export const FaqAccordion = ({ faqs }) => {
   const [activeIndex, setActiveIndex] = useState(null);
-  const arrowUpIcon = "/icons/chevron-up-large.svg";
-  const arrowDownIcon = "/icons/chevron-down-large.svg";
 
   const handleToggle = (index) => {
     setActiveIndex(activeIndex === index ? null : index);

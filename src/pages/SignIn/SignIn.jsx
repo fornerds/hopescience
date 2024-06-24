@@ -6,6 +6,9 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Header, Footer, Input, Link, Button } from "../../components";
+import LineLeft from "../../icons/line-left.svg";
+import LineRight from "../../icons/line-right.svg";
+import naverImage from "../../images/naver.png";
 
 const schema = yup
   .object({
@@ -22,9 +25,6 @@ export const SignIn = () => {
   const naverLoginRef = useRef();
   const navigate = useNavigate();
   const [rememberEmail, setRememberEmail] = useState(false);
-  const LineLeft = "/icons/line-left.svg";
-  const LineRight = "/icons/line-right.svg";
-  const naverImage = "/images/naver.png";
   const {
     handleSubmit,
     control,

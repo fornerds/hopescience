@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Carousel.css";
+import avatarIcon from "../../icons/avatar.svg";
+import ratingIcon from "../../icons/rating.svg";
 
 const Card = ({ name, rating, date, review }) => {
-  const avatarIcon = "/icons/avatar.svg";
-  const ratingIcon = "/icons/rating.svg";
 
   return(
     <div className="card">

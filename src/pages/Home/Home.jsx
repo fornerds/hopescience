@@ -2,6 +2,15 @@ import React from "react";
 import "./Home.css";
 import { Header, Footer, Link, Input, Button } from "../../components";
 import { Carousel, FaqAccordion } from "../../modules";
+import mainImage from "../../images/main.png";
+import coursesImage from "../../images/courses.png";
+import certificationImage from "../../images/certification.jpg";
+import articleImage01 from "../../images/article01.png";
+import articleImage02 from "../../images/article02.png";
+import locationPinIcon from "../../icons/location-pin.svg";
+import phoneIcon from "../../icons/phone.svg";
+import mailIcon from "../../icons/mail.svg";
+import contactImage from "../../images/contact.png";
 
 
 const reviews = [
@@ -139,16 +148,7 @@ const faqData = [
 ];
 
 export const Home = () => {
-  const mainImage = "/images/main.png";
-  const coursesImage = "/images/courses.png";
-  const certificationImage = "/images/certification.jpg";
-  const articleImage01 = "/images/article01.png";
-  const articleImage02 = "/images/article02.png";
-  const locationPinIcon = "/icons/location-pin.svg";
-  const phoneIcon = "/icons/phone.svg";
-  const mailIcon = "/icons/mail.svg";
-  const contactImage = "/images/contact.png";
-  
+
   return (
     <>
       <Header />

@@ -3,14 +3,14 @@ import "./Header.css";
 import { Link } from "../Link";
 import { auth } from "../../store";
 import { useNavigate } from "react-router-dom";
+import MainLogo from "../../images/main-logo.png";
+import Avatar from "../../icons/avatar.svg";
 
 export const Header = () => {
   const { user, logout } = auth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const MainLogo = "/images/main-logo.png";
-  const Avatar = "/icons/avatar.svg";
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
