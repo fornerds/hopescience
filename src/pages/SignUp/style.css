@@ -1,0 +1,107 @@
+.signup-background {
+  width: 100vw;
+  min-height: calc(100vh - 286px);
+  background-color: #171a1f;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.signup-box {
+  max-width: 531px;
+  background-color: white;
+  border-radius: 6px;
+  padding: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Lexend", Helvetica;
+  justify-content: space-around;
+  margin-top: 80px;
+  margin-bottom: 80px;
+}
+
+.signup-title {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.signup-form {
+  width: 100%;
+  font-family: "Manrope", Helvetica;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.signup-input-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-direction: column;
+}
+
+.signup-input-label {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.signup-input {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.signup-check-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.signup-check {
+  display: flex;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.signup-signup {
+  margin-top: 16px;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+}
+
+.hr {
+  margin-top: 35px;
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.OR {
+  color: #565d6d;
+  font-family: "Lexend", Helvetica;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+@media (max-width: 600px) {
+  .signup-box{
+    width: 90%;
+  }
+
+  .signup-title {
+    font-size: 24px;
+  }
+
+  .line-2, .line-3 {
+    width: 40%;
+  }
+
+}

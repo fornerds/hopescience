@@ -1,0 +1,281 @@
+.pdf-generator {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.certificate {
+  width: 210mm;
+  height: 297mm;
+  background: url("../../images/certification-paper.png") no-repeat;
+  background-size: contain;
+  padding: 40mm;
+  color: black;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Nanum Myeongjo", serif;
+  align-self: center;
+}
+
+.certificate-pdf-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: fit-content;
+}
+
+.certificate-pdf-id {
+  align-self: self-start;
+}
+
+.certificate-pdf-title {
+  margin-top: 40px;
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.certificate-pdf-title-eng {
+  margin-top: 20px;
+  font-size: 15px;
+  font-weight: 100;
+  margin-bottom: 50px;
+}
+
+.certificate-pdf-desc {
+  margin-top: 70px;
+  font-size: 26px;
+  font-weight: 300;
+  line-height: 50px;
+  word-break: keep-all;
+  width: 100%;
+  text-align: justify;
+}
+
+.certificate-pdf-data {
+  align-self: self-start;
+  display: flex;
+  font-size: 18px;
+}
+
+.certificate-pdf-data-index {
+  width: 120px;
+  text-align: justify;
+  padding-right: 10px;
+}
+
+.certificate-pdf-data-index::after {
+  content: "";
+  display: inline-block;
+  width: 100%;
+}
+
+.certificate-pdf-completeddate {
+  align-self: self-start;
+  margin-top: 24px;
+  font-size: 20px;
+  font-weight: 300;
+}
+
+.certificate-pdf-company {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.certificate-pdf-company-name {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* receiptPdfGenerator style */
+
+.order-title-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-self: center;
+  margin-top: 24px;
+  padding-bottom: 46px;
+  border-bottom: 1px solid #f3f4f6;
+  font-weight: bold;
+  font-size: 32px;
+}
+
+.order-buttons,
+.admin-order-buttons {
+  display: flex;
+  justify-content: end;
+  gap: 24px;
+  align-self: center;
+}
+
+.order-receipt-wrap {
+  padding: 41px 35px;
+}
+
+.order-receipt,
+.admin-order-receipt {
+  background-color: #1e2128;
+  width: 100%;
+  min-height: 702px;
+  border-radius: 4px;
+  padding: 42px;
+}
+
+.order-receipt-index-wrap,
+.admin-order-receipt-index-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.order-receipt-index,
+.admin-order-receipt-index {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.order-receipt-info-table,
+.admin-order-receipt-info-table {
+  display: flex;
+  gap: 140px;
+  font-family: '"Manrope", Helvetica';
+  font-size: 16px;
+  margin-bottom: 43px;
+}
+
+.order-receipt-info-table > tbody > tr > td,
+.admin-order-receipt-info-table > tbody > tr > td {
+  padding-top: 16px;
+}
+
+.order-receipt-info-table > tbody > tr > td:nth-child(1),
+.admin-order-receipt-info-table > tbody > tr > td:nth-child(1) {
+  color: #9095a1;
+}
+
+.order-receipt-info-table > tbody > tr > td:nth-child(2),
+.admin-order-receipt-info-table > tbody > tr > td:nth-child(2) {
+  padding-left: 108px;
+}
+
+.order-receipt-info-value-strong,
+.admin-order-receipt-info-value-strong {
+  font-weight: 700;
+}
+
+.order-receipt-pay-by-table,
+.admin-order-receipt-pay-by-table {
+  display: flex;
+  gap: 140px;
+  font-family: '"Manrope", Helvetica';
+  font-size: 16px;
+  margin-bottom: 43px;
+}
+
+.order-receipt-pay-by-table > tbody > tr > td,
+.admin-order-receipt-pay-by-table > tbody > tr > td {
+  padding-top: 16px;
+}
+
+.order-receipt-pay-by-table > tbody > tr > td:nth-child(2),
+.admin-order-receipt-pay-by-table > tbody > tr > td:nth-child(2) {
+  padding-left: 26px;
+}
+
+.admin-order-title-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-self: center;
+  padding-bottom: 46px;
+  margin: 24px 34px 0px;
+  border-bottom: 1px solid #f3f4f6;
+  font-weight: bold;
+  font-size: 32px;
+}
+
+.admin-order-title {
+  color: #bd9a31;
+}
+
+.admin-order-receipt-wrap {
+  padding: 41px 34px;
+}
+
+.admin-order-receipt {
+  color: #dee1e6;
+}
+
+.admin-order-price-state {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.admin-order-item-state {
+  width: fit-content;
+  font-size: 14px;
+  padding: 7px 15px;
+  border-radius: 12px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.admin-order-item-state.cancel {
+  background-color: #cd7a7d;
+}
+
+.admin-order-item-state.paying {
+  background-color: #edd39e;
+  color: #5d4108;
+}
+
+.admin-order-item-state.paid {
+  background-color: #eefdf3;
+  color: #117b34;
+}
+
+@media (max-width: 862px){
+  .order-receipt-wrap {
+    padding: 41px 0;
+  }
+
+  .order-receipt-info-table {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+@media (max-width: 550px){
+  .order-title-wrap{
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .order-buttons{
+    justify-content: start;
+    width: 100%;
+  }
+
+  .order-receipt-info-table > tbody > tr > td:nth-child(2){
+    padding-left: 40px;
+  }
+}
+
+@media (max-width: 400px){
+  .order-buttons{
+    flex-direction: column;
+  }
+
+  .order-receipt-info-table > tbody > tr > td:nth-child(2){
+    padding-left: 20px;
+  }
+
+  .order-receipt {
+    padding: 25px;
+  }
+}

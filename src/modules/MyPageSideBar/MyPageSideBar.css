@@ -1,0 +1,45 @@
+.sidebar-section {
+  width: 256px;
+  background-color: #1e2128;
+  height: 326px;
+  padding: 24px 24px 64px 24px;
+}
+
+.sidebar-link-list {
+  width: 208px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.sidebar-link {
+  color: #dee1e6;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  height: 40px;
+  padding-left: 16px;
+  border-radius: 4px;
+  font-family: '"Manrope", Helvetica';
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.sidebar-link > svg > path {
+  stroke: #dee1e6;
+}
+
+.sidebar-link.active,
+.sidebar-link:hover {
+  color: #bd9a31;
+  background-color: #171a1f;
+}
+.sidebar-link.active > svg > path,
+.sidebar-link:hover > svg > path {
+  stroke: #bd9a31;
+}
+
+.sidebar-link.active > .certificate-icon > path,
+.sidebar-link:hover > .certificate-icon > path {
+  fill: #bd9a31;
+}

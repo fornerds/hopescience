@@ -1,0 +1,80 @@
+.mypage-background {
+  width: 100vw;
+  min-height: calc(100vh - 286px);
+  background-color: #171a1f;
+  padding: 90px 10px 110px;
+  display: flex;
+  justify-content: center;
+}
+
+.mypage-section-wrap {
+  display: flex;
+  width: 1418px;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.mypage-section {
+  margin-left: 30px;
+  width: 1117px;
+  width: 100%;
+  font-family: "Lexend", Helvetica;
+  color: #dee1e6;
+}
+
+.mypage-title {
+  margin-top: 24px;
+  margin-bottom: 6px;
+  font-weight: bold;
+  font-size: 32px;
+}
+
+@media screen and (max-width: 1439px) {
+  .mypage-section-wrap {
+    flex-direction: column;
+    width: 100%;
+    justify-content: unset;
+  }
+
+  .mypage-section-wrap .sidebar-section {
+    width: 100%;
+    height: 80px;
+  }
+
+  .mypage-section-wrap .sidebar-link-list {
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .mypage-section-wrap .sidebar-link-list .sidebar-link {
+    padding-right: 20px;
+  }
+
+  .mypage-section, .mypage-section-wrap{
+    margin: 0 10px;
+  }
+  
+  .mypage-section{
+     margin: 0;
+  }
+
+}
+
+@media (max-width: 500px) {
+  .mypage-section-wrap .sidebar-link-list .sidebar-link {
+    padding-right: 5px;
+  }
+  .sidebar-link-title {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 374px) {
+  .sidebar-link-title {
+    font-size: 11px;
+  }
+
+  .mypage-section-wrap .sidebar-section{
+    height: 40px;
+  }
+}

@@ -1,0 +1,125 @@
+.user-pagination {
+  margin-top: 43px;
+  width: 1102px;
+  height: fit-content;
+  background-color: #1e2128;
+  color: #dee1e6;
+  padding: 16px 26px;
+  font-family: "Manrope", Helvetica;
+}
+
+.user-pagination-tab-button {
+  background-color: transparent;
+  padding: 15px;
+  border: 0;
+  color: #dee1e6;
+  font-size: 14px;
+}
+
+.user-pagination-tab-button:hover {
+  cursor: pointer;
+  font-weight: 900;
+  border-bottom: 4px solid #dee1e6;
+}
+
+.user-pagination-tab-button.active {
+  font-weight: 900;
+  border-bottom: 4px solid #dee1e6;
+}
+
+.margin-top-32 {
+  margin-top: 32px;
+}
+
+.user-qna-list {
+  width: 100%;
+  background-color: #171a1f;
+}
+
+.user-qna-list-header {
+  display: grid;
+  grid-template-columns: 0.5fr 3fr 2fr 1fr 1.5fr 1fr;
+  padding: 20px 16px 16px;
+  font-family: "Lexend", Helvetica;
+  font-size: 14px;
+  font-weight: 700;
+  color: #dee1e6;
+}
+
+.user-qna-item {
+  font-family: '"Manrope", Helvetica';
+  height: 56px;
+  font-size: 14px;
+  font-weight: 400;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 0.5fr 3fr 2fr 1fr 1.5fr 1fr;
+  color: #dee1e6;
+  padding: 20px 16px 16px;
+}
+
+.user-qna-pagination-footer {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 32px;
+  padding: 0 16px;
+}
+
+.user-qna-pagination-buttons {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+}
+
+.user-qna-pagination-button {
+  background-color: transparent;
+  border: none;
+  width: 36px;
+  height: 36px;
+}
+
+.user-qna-pagination-button:hover {
+  cursor: pointer;
+}
+
+.user-qna-pagination-button.disabled:hover {
+  cursor: not-allowed;
+}
+
+.ellipsis {
+  margin: 0 8px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.user-qna-pagination-page-button {
+  background-color: transparent;
+  color: #dee1e6;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 0;
+}
+
+.user-qna-pagination-page-button:hover {
+  background-color: #bd9a31;
+  color: #1e2128;
+  cursor: pointer;
+}
+
+.user-qna-pagination-button-wrap {
+  display: flex;
+  gap: 4px;
+}
+
+.user-qna-pagination-page-button.active {
+  background-color: #bd9a31;
+  color: #1e2128;
+}
+
+.user-qna-pagination-count {
+  color: #dee1e6;
+}

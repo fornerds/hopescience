@@ -1,0 +1,82 @@
+.admin-sidebar {
+  min-width: 320px;
+  height: 100vh;
+  background-color: #1e2128;
+  font-family: "Manrope", Helvetica;
+  padding: 28px 28px 0 20px;
+}
+
+.admin-sidebar-inner {
+  overflow-y: auto;
+  border-radius: 8px;
+}
+
+.admin-logo-link {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #dee1e6;
+}
+
+.admin-logo-image {
+  height: 37px;
+}
+
+.admin-logo-text {
+  margin-left: 12px;
+  font-family: "Lexend", Helvetica;
+  font-size: 24px;
+  font-weight: 700;
+  color: #dee1e6;
+}
+
+.admin-menu-list {
+  margin-top: 58px;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.admin-menu-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  width: 261px;
+  color: white;
+  border-radius: 4px;
+  justify-content: start;
+}
+
+.admin-menu-item:hover,
+.admin-menu-item.active {
+  background-color: #171a1f;
+  color: #bd9a31;
+}
+
+.admin-menu-item:hover svg path,
+.admin-menu-item.active svg path {
+  stroke: #bd9a31;
+}
+
+.admin-menu-icon {
+  width: 24px;
+}
+
+.admin-menu-label {
+  margin-left: 8px;
+  flex: 1;
+}
+
+.admin-logout-button {
+  background-color: transparent;
+}
+
+.admin-logout-button span {
+  display: flex;
+  align-items: center;
+}

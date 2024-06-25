@@ -1,0 +1,243 @@
+.order-pagination-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 43px;
+  max-width: 1123px;
+  width: 100%;
+  background-color: #1e2128;
+  padding: 46px 20px 20px;
+}
+
+.order-pagination-sort-wrap {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.order-pagination-input-wrap {
+  max-width: 366px;
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.order-pagination-search-input {
+  flex-grow: 1;
+  height: 35px;
+  background-color: #171a1f;
+  border-radius: 6px;
+  color: #bdc1ca;
+  border: none;
+  font-size: 11pt;
+  padding-left: 36px;
+}
+
+.order-pagination-search-icon {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  margin: 10px;
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+.order-category {
+  position: relative;
+  background-color: #171a1f;
+  max-width: 102px;
+  width: 100%;
+  padding: 10px 12px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+}
+
+.order-category:hover,
+#order-category-select:hover {
+  cursor: pointer;
+}
+
+#order-category-select {
+  color: #9095a1;
+  max-width: 68px;
+  width: 100%;
+  height: inherit;
+  background: transparent;
+  border: 0 none;
+  outline: 0 none;
+  border: 0;
+  -o-appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  position: relative;
+  z-index: 3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.order-category .icoArrow {
+  position: absolute;
+  top: 0;
+  right: 6px;
+  z-index: 1;
+  width: 16px;
+  height: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.order-list {
+  width: 100%;
+  background-color: #171a1f;
+}
+
+.order-list-header {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr 1fr 3fr 1.5fr 1.5fr 1.5fr;
+  padding: 20px 16px 16px;
+  font-family: "Lexend", Helvetica;
+  font-size: 14px;
+  font-weight: 700;
+  color: #dee1e6;
+}
+
+.order-item {
+  font-family: '"Manrope", Helvetica';
+  height: 56px;
+  font-size: 14px;
+  font-weight: 400;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 0.5fr 1fr 1fr 3fr 1.5fr 1.5fr 1.5fr;
+  color: #dee1e6;
+  padding: 20px 16px 16px;
+}
+
+.order-pagination-footer {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 32px;
+  padding: 0 16px;
+}
+
+.order-pagination-buttons {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+}
+
+.order-pagination-button {
+  background-color: transparent;
+  border: none;
+  width: 36px;
+  height: 36px;
+}
+
+.order-pagination-button:hover {
+  cursor: pointer;
+}
+
+.order-pagination-button.disabled:hover {
+  cursor: not-allowed;
+}
+
+.ellipsis {
+  margin: 0 8px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.order-pagination-page-button {
+  background-color: transparent;
+  color: #dee1e6;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 0;
+}
+
+.order-pagination-page-button:hover {
+  background-color: #bd9a31;
+  color: #1e2128;
+  cursor: pointer;
+}
+
+.order-pagination-button-wrap {
+  display: flex;
+  gap: 4px;
+}
+
+.order-pagination-page-button.active {
+  background-color: #bd9a31;
+  color: #1e2128;
+}
+
+.order-item-state {
+  width: fit-content;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.order-item-state.CANCEL {
+  background-color: #de3b40;
+}
+
+.order-item-state.READY {
+  background-color: #efb034;
+  color: #5d4108;
+}
+
+.order-item-state.DONE {
+  background-color: #1dd75b;
+  color: #0a4d20;
+}
+
+.order-item-state.COMPLETED {
+  background-color: #1d58d7;
+  color: #dee1e6;
+}
+
+.order-pagination-count {
+  color: #dee1e6;
+}
+
+@media (max-width: 767px){
+  .order-list-header, .order-item {
+    grid-template-columns: 0.5fr 1fr 2fr 1.5fr;
+    gap: 10px
+  }
+  .order-item-state{
+    font-size: 10px;
+  }
+  .order-pagination-mobile-hide {
+    display: none;
+  }
+  .order-pagination-count {
+    font-size: 14px;
+  }
+
+  .order-pagination-input-wrap {
+    max-width: 100%;
+  }
+  
+  .order-pagination-search-input {
+    padding-left: 36px;
+  }
+  
+  .order-pagination-search-icon {
+    margin: 10px;
+  }
+}

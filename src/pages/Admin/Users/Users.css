@@ -1,0 +1,20 @@
+.layout-flex {
+  width: 100%;
+  display: flex;
+  justify-content: left;
+}
+
+.admin-main-content {
+  flex: 1;
+  padding: 28px 9px;
+  font-family: "Manrope", Helvetica;
+}
+
+.admin-page-title {
+  font-family: "Lexend", Helvetica;
+  font-size: 32px;
+  padding-left: 34px;
+  padding-bottom: 24px;
+  font-weight: 900;
+  color: #bd9a31;
+}

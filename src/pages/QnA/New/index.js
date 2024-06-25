@@ -1,0 +1,1 @@
+export { NewQnAInquiry } from "./New";

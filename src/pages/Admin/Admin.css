@@ -1,0 +1,77 @@
+.admin-background {
+  background-color: #171a1f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.admin-login-background {
+  background-color: #171a1f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.admin-form-container {
+  background-color: #1e2128;
+  padding: 24px;
+  font-family: "Manrope", Helvetica;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 531px;
+}
+
+.admin-title {
+  font-family: "Lexend", Helvetica;
+  color: #f7fafc;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-label {
+  display: block;
+  color: #dee1e6;
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.admin-input {
+  width: 100%;
+  height: 35px;
+  padding: 7px 12px;
+  border-radius: 4px;
+  background-color: #f3f4f6;
+  color: black;
+  font-size: 14px;
+}
+
+.admin-button {
+  width: 100%;
+  height: 44px;
+  margin-top: 27px;
+  margin-bottom: 59px;
+  background-color: #bd9a31;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: "Manrope", Helvetica;
+  transition: background-color 150ms ease-in-out;
+}
+
+.admin-button:hover {
+  background-color: #b7791f;
+}

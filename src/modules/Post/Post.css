@@ -1,0 +1,189 @@
+.post-detail-page-background {
+  background-color: #171a1f;
+  padding: 32px 107px 102px;
+  min-height: calc(100vh - 286px);
+}
+
+.post-detail-page {
+  color: #dee1e6;
+  font-family: "Manrope", Helvetica;
+  background-color: #1e2128;
+  max-width: 800px;
+  margin: auto;
+  padding: 24px 20px;
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.post-info-wrap {
+  max-width: 600px;
+  width: 100%;
+}
+
+.post-category {
+  font-size: 18px;
+  font-weight: 700;
+  color: #9095a1;
+}
+
+.post-title {
+  margin-top: 16px;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 42px;
+  margin-right: 16px;
+  word-break: keep-all;
+}
+
+.post-actions {
+  display: flex;
+  align-items: flex-start;
+  height: 120px;
+  width: 100%;
+  justify-content: end;
+}
+
+.post-actions button {
+  margin-left: 10px;
+}
+
+.post-info {
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.post-info span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.post-info .post-info-user {
+  gap: 13px;
+  font-size: 16px;
+}
+
+.post-content {
+  line-height: 28px;
+  font-size: 18px;
+  white-space: pre-wrap;
+  padding-bottom: 34px;
+}
+
+.comments-section {
+  border-top: 1px solid #bdc1ca;
+}
+
+.comments-section-title {
+  margin-top: 36px;
+  margin-bottom: 4px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #9095a1;
+}
+
+.comment-item {
+  gap: 18px;
+}
+
+.comments-section .comment-item {
+  border-bottom: 1px solid #333;
+  padding: 10px 0;
+}
+
+.comment-item-image {
+  align-self: flex-start;
+}
+
+.comment-item-header {
+  margin-top: 4px;
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.comment-info {
+  display: flex;
+  gap: 6px;
+}
+
+.comment-author {
+  font-weight: bold;
+}
+
+.comment-date {
+  color: #999;
+}
+
+.comment-content {
+  width: 100%;
+  margin-top: 10px;
+  line-height: 26px;
+  padding-left: 44px;
+}
+
+.comment-form {
+  width: 100%;
+  padding-left: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+}
+
+.comment-buttons {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.comment-textarea {
+  margin-top: 30px;
+  width: 100%;
+  min-height: 68px;
+  border-radius: 6px;
+  border: 1px solid #dee1e6;
+  padding: 7px 12px;
+  color: #bdc1ca;
+  font-size: 14px;
+  background-color: transparent;
+}
+
+.post-actions button, .post-actions a {
+  font-size: 14px;
+  width: 105px;
+  height: 36px;
+}
+
+@media screen and (max-width: 1000px){
+  .post-header {
+    flex-direction: column;
+    gap: 30px;
+    align-items: flex-start;
+  }
+
+  .post-actions {
+    justify-content: start;
+    height: fit-content;
+  }
+
+  .post-detail-page-background {
+    padding: 32px 10px 60px;
+  }
+}
+
+@media (max-width: 375px) {
+  /* 댓글 수와 조회 수를 나타내는 <span> 태그를 숨깁니다 */
+  .post-info span:nth-last-child(1), .post-info span:nth-last-child(2) {
+    display: none;
+  }
+}

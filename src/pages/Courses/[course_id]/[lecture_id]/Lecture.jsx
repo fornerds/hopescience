@@ -5,6 +5,7 @@ import { Header, Footer, Link } from "../../../../components";
 import { Pagination } from "../../../../modules/Pagination";
 import { VideoPlayer } from "../../../../modules/VideoPlayer";
 import { service, courseInquiry } from "../../../../store";
+import playIcon from "../../../../icons/button-play-1.svg"
 
 export const Lecture = () => {
   let { course_id, lecture_id } = useParams();
@@ -61,7 +62,7 @@ export const Lecture = () => {
             <img
               className="button-play-3"
               alt="Button play"
-              src="/img/button-play-1.svg"
+              src={playIcon}
             />
             <div className="lecture-QnA-wrap">
               <h3 className="lecture-index-text">QnA</h3>

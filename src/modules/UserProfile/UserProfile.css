@@ -1,0 +1,64 @@
+.admin-user-profile-section {
+  background-color: #1e2128;
+  max-width: 1108px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32px;
+  color: #dee1e6;
+}
+
+.admin-user-profile {
+  display: flex;
+  align-items: center;
+}
+
+.admin-user-profile-image {
+  width: 64px;
+  height: 64px;
+}
+
+.admin-user-profile-details {
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-user-profile-name {
+  font-size: 24px;
+}
+
+.admin-user-profile-status {
+  font-size: 14px;
+}
+
+.admin-user-profile-contact-details {
+  margin-left: 62px;
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+  gap: 13px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.admin-user-profile-email,
+.admin-user-profile-phone {
+  margin-right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-user-profile-delete-button {
+  width: 36px;
+  height: 36px;
+  vertical-align: middle;
+  text-align: center;
+  padding: auto;
+  background-color: transparent;
+  border-radius: 50%;
+  border: 1px solid #de3b40;
+  cursor: pointer;
+}

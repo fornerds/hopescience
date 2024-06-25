@@ -1,0 +1,1 @@
+export { NewAdminQnAInquiry } from "./New";

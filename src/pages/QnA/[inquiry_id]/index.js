@@ -1,0 +1,1 @@
+export { QnADetail } from "./QnADetail";

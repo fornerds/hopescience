@@ -1,0 +1,1 @@
+export { AdminQnADetail } from "./AdminQnADetail";
