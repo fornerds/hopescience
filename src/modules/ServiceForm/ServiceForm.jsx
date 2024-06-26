@@ -40,6 +40,7 @@ export const ServiceForm = () => {
   const categories = service((state) => state.categories);
   const getGroups = service((state) => state.getGroups);
   const groups = service((state) => state.groups);
+  const [totalUploadProgress, setTotalUploadProgress] = useState(0);
 
   const {
     register,
@@ -117,80 +118,211 @@ export const ServiceForm = () => {
     console.log(course)
   }
 
-  const onSubmit = async (data) => {
+  // const onSubmit = async (data) => {
 
-    const category = categories.find((c) => c.id === Number(data.courseCategoryId));
-    const group = groups.find((g) => g.id === Number(data.courseGroupId));
-    const formData = new FormData();
+    // const category = categories.find((c) => c.id === Number(data.courseCategoryId));
+    // const group = groups.find((g) => g.id === Number(data.courseGroupId));
+    // const formData = new FormData();
 
     // console.log("Form Data:", data);
     // console.log("category:", category.name);
     // console.log("group:", group.name);
 
+    // formData.append("title", data.courseTitle);
+    // formData.append("category_id", data.courseCategoryId);
+    // formData.append("group_id", data.courseGroupId);
+    // formData.append("category", category.name);
+    // formData.append("group", group.name);
+    // formData.append("summary", data.courseSummary);
+    // formData.append("is_active", data.courseStatus === "활성화" ? true : false);
+    // formData.append("description", data.courseDescription);
+    // formData.append("price", data.coursePrice);
+    // formData.append("discounted_price", data.courseDiscount);
+    // if (data.thumbnail) {
+    //   formData.append("thumbnail_image", data.thumbnail);
+    // }
+
+    // let totalDuration = 0;
+    // let totalLectureCount = 0;
+    // const sectionsData = [];
+
+    // data.sections.forEach((section, sectionIndex) => {
+    //   const sectionData = {
+    //     title: section.title,
+    //     description: "",
+    //     order: sectionIndex + 1,
+    //     lectures: [],
+    //   };
+
+    //   section.lectures.forEach((lecture, lectureIndex) => {
+    //     totalLectureCount += 1;
+    //     const lectureData = {
+    //       title: lecture.title,
+    //       videoUrl: lecture.videoUrl || null,
+    //       videoDuration: typeof(lecture.videoDuration) === 'string' ? lecture.videoDuration : formatDuration(lecture.videoDuration || 0),
+    //       order: lectureIndex + 1,
+    //     };
+    //     if(lecture.videoDuration && typeof(lecture.videoDuration) === 'string') {
+    //       totalDuration += parseDuration(lecture.videoDuration);
+    //     }else if(lecture.videoDuration){
+    //       totalDuration += lecture.videoDuration
+    //     }
+    //     sectionData.lectures.push(lectureData);
+    //   });
+
+    //   sectionsData.push(sectionData);
+    // });
+
+    // formData.append("total_duration", formatDuration(totalDuration));
+    // formData.append("total_lecture_count", totalLectureCount.toString());
+    // formData.append("sections", JSON.stringify(sectionsData));
+
+    // console.log("Form Data:", formData);
+
+  //   if (buttonLabel === "서비스 등록") {
+  //     const createServiceSuccess = await createService(formData);
+  //     if (createServiceSuccess) {
+  //       navigate("/admin/service");
+  //     }
+  //   } else {
+  //     // 1. 데이터 구조 확인 2. 파일 형식의 데이터 전달방식 수정하기
+  //     const updateServiceSuccess = await updateService(course_id, formData);
+  //     if (updateServiceSuccess) {
+  //       navigate("/admin/service");
+  //     }
+  //   }
+  // };
+
+  const onSubmit = async (data) => {
+    try {
+    const category = categories.find((c) => c.id === Number(data.courseCategoryId));
+    const group = groups.find((g) => g.id === Number(data.courseGroupId));
+    const formData = new FormData();
+  
+    // 기본 정보 추가
     formData.append("title", data.courseTitle);
     formData.append("category_id", data.courseCategoryId);
     formData.append("group_id", data.courseGroupId);
     formData.append("category", category.name);
     formData.append("group", group.name);
     formData.append("summary", data.courseSummary);
-    formData.append("is_active", data.courseStatus === "활성화" ? true : false);
+    formData.append("is_active", data.courseStatus === "활성화" ? "true" : "false");
     formData.append("description", data.courseDescription);
     formData.append("price", data.coursePrice);
     formData.append("discounted_price", data.courseDiscount);
     if (data.thumbnail) {
       formData.append("thumbnail_image", data.thumbnail);
     }
-
+  
     let totalDuration = 0;
     let totalLectureCount = 0;
     const sectionsData = [];
-
-    data.sections.forEach((section, sectionIndex) => {
+    const videoUploads = [];
+  
+    for (let sectionIndex = 0; sectionIndex < data.sections.length; sectionIndex++) {
+      const section = data.sections[sectionIndex];
       const sectionData = {
         title: section.title,
         description: "",
         order: sectionIndex + 1,
         lectures: [],
       };
-
-      section.lectures.forEach((lecture, lectureIndex) => {
+  
+      for (let lectureIndex = 0; lectureIndex < section.lectures.length; lectureIndex++) {
+        const lecture = section.lectures[lectureIndex];
         totalLectureCount += 1;
+        
         const lectureData = {
           title: lecture.title,
-          videoUrl: lecture.videoUrl || null,
-          videoDuration: typeof(lecture.videoDuration) === 'string' ? lecture.videoDuration : formatDuration(lecture.videoDuration || 0),
           order: lectureIndex + 1,
         };
-        if(lecture.videoDuration && typeof(lecture.videoDuration) === 'string') {
-          totalDuration += parseDuration(lecture.videoDuration);
-        }else if(lecture.videoDuration){
-          totalDuration += lecture.videoDuration
+  
+        if (lecture.videoDuration) {
+          if (typeof lecture.videoDuration === 'string') {
+            totalDuration += parseDuration(lecture.videoDuration);
+            lectureData.videoDuration = lecture.videoDuration;
+          } else {
+            totalDuration += lecture.videoDuration;
+            lectureData.videoDuration = formatDuration(lecture.videoDuration);
+          }
         }
+  
+        const lectureElement = document.getElementById(`lecture-${sectionIndex}-${lectureIndex}`);
+        const fileInput = lectureElement.querySelector('input[type="file"]');
+        
+        if (fileInput && fileInput.files.length > 0) {
+          videoUploads.push({
+            file: fileInput.files[0],
+            sectionIndex,
+            lectureIndex
+          });
+        } else if (lecture.videoUrl) {
+          lectureData.videoUrl = lecture.videoUrl;
+        }
+  
         sectionData.lectures.push(lectureData);
+      }
+  
+      sectionsData.push(sectionData);
+    }
+  
+    // 영상 업로드
+    if (videoUploads.length > 0) {
+      const videoFormData = new FormData();
+      videoUploads.forEach(upload => {
+        videoFormData.append('videos', upload.file);
       });
 
-      sectionsData.push(sectionData);
-    });
+      setTotalUploadProgress(0); // 업로드 시작 시 진행률 초기화
+      const response = await axios.post('https://nike-c5ae6242356b.herokuapp.com/courses/video', videoFormData, {
+        headers: { 
+          'Content-Type': 'multipart/form-data',
+          'Accept': 'application/json'
+        },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setTotalUploadProgress(percentCompleted);
+        }
+      });
 
+      if (response.data && response.data.length === videoUploads.length) {
+        response.data.forEach((uploadedVideo, index) => {
+          const { sectionIndex, lectureIndex } = videoUploads[index];
+          sectionsData[sectionIndex].lectures[lectureIndex].videoUrl = uploadedVideo.video_url;
+        });
+      } else {
+        throw new Error('Uploaded video count does not match');
+      }
+    }
+  
     formData.append("total_duration", formatDuration(totalDuration));
     formData.append("total_lecture_count", totalLectureCount.toString());
     formData.append("sections", JSON.stringify(sectionsData));
-
-    // console.log("Form Data:", formData);
-
-    if (buttonLabel === "서비스 등록") {
-      const createServiceSuccess = await createService(formData);
-      if (createServiceSuccess) {
-        navigate("/admin/service");
-      }
+  
+    // 서비스 생성/수정
+    if (course_id) {
+      await updateService(course_id, formData);
+      console.log('Course updated successfully');
+      alert('서비스가 성공적으로 수정되었습니다.');
     } else {
-      // 1. 데이터 구조 확인 2. 파일 형식의 데이터 전달방식 수정하기
-      const updateServiceSuccess = await updateService(course_id, formData);
-      if (updateServiceSuccess) {
-        navigate("/admin/service");
-      }
+      await createService(formData);
+      console.log('Course created successfully');
+      alert('서비스가 성공적으로 생성되었습니다.');
     }
-  };
+    navigate("/admin/service");
+
+  } catch (error) {
+    console.error('Error:', error);
+    if (error.message === 'Uploaded video count does not match') {
+      alert('영상 업로드 중 오류가 발생했습니다: 업로드된 비디오 수가 일치하지 않습니다.');
+    } else {
+      alert('서비스 저장 중 오류가 발생했습니다: ' + error.message);
+    }
+    setTotalUploadProgress(0); // 오류 발생 시 진행률 초기화
+  } finally {
+    setTotalUploadProgress(100); // 프로세스 완료 시 100%로 설정
+  }
+};
 
   const onError = (errors) => {
     console.error("Form Errors:", errors);
@@ -259,7 +391,7 @@ export const ServiceForm = () => {
   };
 
   useEffect(() => {
-    if (course) {
+    if (course_id && course) {
       const defaultValues = {
         courseTitle: course.title || "",
         courseDescription: course.description || "",
@@ -298,6 +430,15 @@ export const ServiceForm = () => {
       <form onSubmit={handleSubmit(onSubmit, onError)}>
         <div className="service-form-wrap">
           <div className="service-form-buttons-wrap">
+            {totalUploadProgress > 0 && totalUploadProgress < 100 && (
+              <div className="upload-progress-bar">
+                <div 
+                  className="upload-progress-fill" 
+                  style={{width: `${totalUploadProgress}%`}}
+                ></div>
+                <span className="upload-progress-text">{totalUploadProgress}%</span>
+              </div>
+            )}
             <Button
               label={buttonLabel !== undefined ? buttonLabel : "서비스 수정"}
               className="create-service-button"
