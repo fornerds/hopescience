@@ -69,6 +69,21 @@ export const Header = () => {
             label="문의게시판"
             color="white"
           />
+          {user && (
+                <div className="header-dropdown-menu-mobile">
+                  <Link
+                    className="header-mypage-link"
+                    to="/mypage/courses"
+                    label="마이페이지"
+                    buttonStyle="transparent"
+                    color="white"
+                    fontSize="14px"
+                  />
+                  <button onClick={handleLogout} className="header-mypage-link">
+                    로그아웃
+                  </button>
+                </div>
+              )}
         </div>
         {user ? (
           <div className="header-user-section">
