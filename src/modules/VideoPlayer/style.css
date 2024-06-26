@@ -1,4 +1,6 @@
 .video{
     max-width: 1150px;
     width: 100%;
+    min-height: 600px;
+    background-color: black;
 }

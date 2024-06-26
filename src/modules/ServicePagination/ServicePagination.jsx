@@ -10,9 +10,14 @@ import rightArrowButton from "../../icons/chevron-right-large.svg"
 export const ServicePagination = () => {
   const isLoading = service((state) => state.isLoading);
   const getServices = service((state) => state.getServices);
+  const searchServices = service((state) => state.searchServices);
+  const sortbyCategoryServices = service((state) => state.sortbyCategoryServices);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
   const deleteService = service((state) => state.deleteService);
   const [selectedIds, setSelectedIds] = useState([]);
   const services = service((state) => state.services || []);
+  const updateServiceActive = service((state) => state.updateServiceActive);
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 7;
   const totalPosts = services.length;
@@ -21,8 +26,36 @@ export const ServicePagination = () => {
     getServices();
   }, []);
 
+  useEffect(() => {
+    if (searchKeyword) {
+      searchServices(searchKeyword);
+    } else {
+      getServices();
+    }
+  }, [searchKeyword]);
+
+  useEffect(() => {
+    if (selectedCategory) {
+      sortbyCategoryServices(selectedCategory);
+    } else {
+      getServices();
+    }
+  }, [selectedCategory]);
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+  };
+  
+  const handleStatusChange = async (serviceId, newStatus) => {
+    const isActive = newStatus === "활성화";
+    const success = await updateServiceActive(serviceId, isActive);
+    if (success) {
+      getServices(); // 상태 변경 후 서비스 목록 새로고침
+    }
   };
 
   const renderPageButtons = () => {
@@ -63,7 +96,6 @@ export const ServicePagination = () => {
     const statusClassMap = {
       활성화: "active",
       비활성화: "deactive",
-      작성중: "writing",
     };
     return statusClassMap[status] || "";
   };
@@ -76,14 +108,17 @@ export const ServicePagination = () => {
     );
   };
 
-  const handleDeleteSelected = () => {
-    console.log(selectedIds);
-    // selectedIds.forEach((id) => {
-    //   deleteService(id).then(() => {
-    //     getServices(); // Refresh the list after deletion
-    //   });
-    // });
-    setSelectedIds([]); // Reset selection after deletion
+  const handleDeleteSelected = async () => {
+    for (const id of selectedIds) {
+      const success = await deleteService(id);
+      if (success) {
+        console.log(`서비스 ID ${id} 삭제 성공`);
+      } else {
+        console.error(`서비스 ID ${id} 삭제 실패`);
+      }
+    }
+    getServices(); // 삭제 후 서비스 목록 새로고침
+    setSelectedIds([]); // 선택 초기화
   };
 
   return (
@@ -96,10 +131,17 @@ export const ServicePagination = () => {
               type="search"
               className="service-pagination-search-input"
               placeholder="Search..."
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
             />
           </div>
           <div className="service-category">
-            <select id="service-category-select" name="service-category-select">
+            <select 
+              id="service-category-select"
+              name="service-category-select"
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+            >
               <option defaultValue="">카테고리</option>
               <option value="양형교육">양형교육</option>
               <option value="디지털 장의사">디지털 장의사</option>
@@ -258,7 +300,10 @@ export const ServicePagination = () => {
               >
                 {post.is_active ? "활성화" : "비활성화"}
               </div>
-              <Dropdown />
+              <Dropdown 
+                currentStatus={post.is_active ? "활성화" : "비활성화"}
+                onStatusChange={(newStatus) => handleStatusChange(post.id, newStatus)}
+              />
             </div>
           ))
         )}
@@ -305,18 +350,20 @@ export const ServicePagination = () => {
   );
 };
 
-function Dropdown() {
+function Dropdown({ currentStatus, onStatusChange}) {
   const [isOpen, setIsOpen] = useState(false); // 드롭다운 상태를 관리하는 상태 변수
-  const [selectedOption, setSelectedOption] = useState(""); // 선택된 옵션을 저장하는 상태 변수
 
   // 드롭다운 메뉴를 토글하는 함수
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   // 옵션 선택 핸들러
   const handleSelectOption = (option) => {
-    setSelectedOption(option);
-    setIsOpen(false); // 옵션 선택 후 드롭다운 닫기
+    if (option !== currentStatus) {
+      onStatusChange(option);
+    }
+    setIsOpen(false);
   };
+
 
   return (
     <div className="dropdown">

@@ -556,6 +556,68 @@ const useServiceStore = create((set) => ({
     }
   },
 
+  searchServices: async (keyword) => {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({ path: `/courses/?skip=0&limit=100&title=${keyword}` });
+      if (response) {
+        set({
+          services: response.map((service) => ({
+            id: service.id,
+            title: service.title,
+            category: service.category,
+            group: service.group,
+            price: service.price,
+            thumbnail: service.thumbnail_image,
+            discounted_price: service.discounted_price,
+            created_at: service.created_at,
+            is_active: service.is_active,
+          })),
+          isLoading: false,
+        });
+        console.log("서비스 리스트를 성공적으로 가져왔습니다.");
+      } else {
+        throw new Error(`Failed to fetch services: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      alert(
+        "서비스 리스트를 가져오는 중 오류가 발생했습니다: " + error.message
+      );
+    }
+  },
+
+  sortbyCategoryServices: async (category) => {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({ path: `/courses/?skip=0&limit=100&category=${category}` });
+      if (response) {
+        set({
+          services: response.map((service) => ({
+            id: service.id,
+            title: service.title,
+            category: service.category,
+            group: service.group,
+            price: service.price,
+            thumbnail: service.thumbnail_image,
+            discounted_price: service.discounted_price,
+            created_at: service.created_at,
+            is_active: service.is_active,
+          })),
+          isLoading: false,
+        });
+        console.log("서비스 리스트를 성공적으로 가져왔습니다.");
+      } else {
+        throw new Error(`Failed to fetch services: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      alert(
+        "서비스 리스트를 가져오는 중 오류가 발생했습니다: " + error.message
+      );
+    }
+  },
+
   getService: async (course_id) => {
     set({ isLoading: true });
     try {
@@ -716,16 +778,35 @@ const useServiceStore = create((set) => ({
     try {
       const response = await deleteApi({ path: `/courses/${course_id}` });
       if (response) {
-        set({
-          isLoading: false,
-        });
         console.log("해당 서비스를 성공적으로 삭제했습니다.");
+        set({ isLoading: false });
+        return true;
       } else {
-        throw new Error(`Failed to fetch services: Status ${response.status}`);
+        throw new Error(`Failed to delete service: Status ${response.status}`);
       }
     } catch (error) {
       set({ error: error.message, isLoading: false });
-      alert("해당 서비스를 삭제하는 중 오류가 발생했습니다: " + error.message);
+      alert(`서비스 삭제 중 오류가 발생했습니다: ${error.message}`);
+      return false;
+    }
+  },
+
+  updateServiceActive: async (course_id, is_active) => {
+    try {
+      const response = await patchApi({
+        path: `/courses/${course_id}/active`,
+        data: JSON.stringify({ is_active }),
+      });
+      if (response) {
+        console.log(`서비스 상태가 성공적으로 ${is_active ? '활성화' : '비활성화'}되었습니다.`);
+        return true;
+      } else {
+        throw new Error(`Failed to update service status: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message });
+      alert(`서비스 상태 변경 중 오류가 발생했습니다: ${error.message}`);
+      return false;
     }
   },
 
