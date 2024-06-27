@@ -1,46 +1,89 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import Player from "@vimeo/player";
 import "./style.css"
 
 export const VideoPlayer = ({ videoUrl }) => {
-  const [watchedTime, setWatchedTime] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const iframeRef = useRef(null);
+  const playerRef = useRef(null);
 
-  // 이전 시청한 시간을 로컬 스토리지에서 불러옵니다.
   useEffect(() => {
-    const savedTime = localStorage.getItem("watchedTime");
-    if (savedTime) {
-      setWatchedTime(parseInt(savedTime));
+    if (!videoUrl) {
+      console.error("No video URL provided");
+      return;
     }
-  }, []);
 
-  // 페이지를 떠날 때 이전 시청한 시간을 저장합니다.
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      localStorage.setItem("watchedTime", watchedTime.toString());
+    const videoId = videoUrl.split('/').pop().split('?')[0];
+
+    const initPlayer = async () => {
+      if (!iframeRef.current) return;
+
+      try {
+        playerRef.current = new Player(iframeRef.current, {
+          id: videoId,
+          width: 1150,
+          height: 600
+        });
+
+        await playerRef.current.ready();
+
+        const videoDuration = await playerRef.current.getDuration();
+        setDuration(videoDuration);
+
+        const savedTime = localStorage.getItem("watchedTime");
+        if (savedTime) {
+          const parsedTime = parseFloat(savedTime);
+          // 저장된 시간이 비디오 길이보다 작은 경우에만 설정
+          if (parsedTime < videoDuration) {
+            await playerRef.current.setCurrentTime(parsedTime);
+          } else {
+            console.warn("Saved time is greater than video duration. Starting from beginning.");
+            localStorage.removeItem("watchedTime");
+          }
+        }
+
+        const timeUpdateHandler = (data) => {
+          setCurrentTime(data.seconds);
+          localStorage.setItem("watchedTime", data.seconds.toString());
+        };
+
+        playerRef.current.on('timeupdate', timeUpdateHandler);
+
+        playerRef.current.on('error', (error) => {
+          console.error("Vimeo player error:", error);
+        });
+
+      } catch (error) {
+        console.error("Error initializing Vimeo player:", error);
+      }
     };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
+    initPlayer();
 
     return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
+      if (playerRef.current) {
+        playerRef.current.off('timeupdate');
+        playerRef.current.off('error');
+        playerRef.current.destroy();
+      }
     };
-  }, [watchedTime]);
+  }, [videoUrl]);
 
-  // 영상을 재생할 때마다 시간을 업데이트합니다.
-  const handleTimeUpdate = (currentTime) => {
-    setWatchedTime(currentTime);
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
+  if (!videoUrl) {
+    return <div>No video URL provided</div>;
+  }
+
   return (
-    // <video
-    //   controls
-    //   onTimeUpdate={(e) => handleTimeUpdate(e.target.currentTime)}
-    //   width="1150"
-    //   className="video"
-    // >
-    //   <source src={videoUrl} type="video/mp4" />
-    //   비디오 기능을 지원하지 않는 브라우저입니다. 원활한 영상 시청을 위해 Chrome
-    //   브라우저를 권장합니다.
-    // </video>
-    <iframe src={videoUrl} width="1150" className="video" allow="autoplay; fullscreen" allowFullScreen></iframe>
+    <div>
+      <div ref={iframeRef}></div>
+      <p>Current Time: {formatTime(currentTime)} / {formatTime(duration)}</p>
+    </div>
   );
 };

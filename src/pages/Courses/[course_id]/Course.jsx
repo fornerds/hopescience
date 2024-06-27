@@ -29,8 +29,9 @@ export const Course = () => {
     getService(course_id);
     getCourseInquiries(course_id);
   }, []);
+  
 if(course){
-  console.log(course?.sections[0].lectures[0].video_url)
+  console.log(course?.sections[0]?.lectures[0]?.video_url)
 }
 
   return (

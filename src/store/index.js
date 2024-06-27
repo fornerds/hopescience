@@ -894,6 +894,21 @@ const useServiceStore = create((set) => ({
       alert("이미지 업로드 실패: " + (error.response?.data?.message || error.message));
       return false;
     }
+  },
+
+  getNextLecture: async(course_id, lecture_id) => {
+    try {
+      const response = await getApi({ path: `/courses/${course_id}/lectures/${lecture_id}/navigation` });
+      if (response) {
+        console.log("해당 강의의 이전 강의, 다음 강의의 데이터를 성공적으로 가져왔습니다.");
+        return response
+      } else {
+        throw new Error(`Failed to fetch service: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      alert("해당 강의의 이전 강의, 다음 강의의 데이터를 가져오는 중 오류가 발생했습니다: " + error.message);
+    }
   }
 
 }));
@@ -1307,6 +1322,166 @@ const useCourseInquiryStore = create((set) => ({
     set({ courseQnA: null });
   },
 }));
+
+const useEnrollmentStore = create((set) => ({
+  isLoading: false,
+  error: null,
+  enrollments: [],
+  enrollment: null,
+  enrollmentProgress: [],
+
+  getEnrollments: async (userId) => {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({ path: `/enrollments/?user_id=${userId}` });
+      if (response) {
+        set({ enrollments: response, isLoading: false });
+        console.log("수강 목록을 성공적으로 가져왔습니다.");
+      } else {
+        throw new Error(`Failed to fetch enrollments: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("수강 목록을 가져오는 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
+  createEnrollment: async (userData) => {
+    set({ isLoading: true });
+    try {
+      const response = await postApi({ path: '/enrollments/', data: userData });
+      if (response) {
+        set({ isLoading: false });
+        console.log("수강 신청이 성공적으로 완료되었습니다.");
+        return response;
+      } else {
+        throw new Error("Failed to create enrollment");
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("수강 신청 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
+  getEnrollment: async (enrollmentId) => {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({ path: `/enrollments/${enrollmentId}` });
+      if (response) {
+        set({ enrollment: response, isLoading: false });
+        console.log("수강 정보를 성공적으로 가져왔습니다.");
+      } else {
+        throw new Error(`Failed to fetch enrollment: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("수강 정보를 가져오는 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
+  updateEnrollment: async (enrollmentId, updateData) => {
+    set({ isLoading: true });
+    try {
+      const response = await putApi({ path: `/enrollments/${enrollmentId}`, data: updateData });
+      if (response) {
+        set({ isLoading: false });
+        console.log("수강 정보가 성공적으로 업데이트되었습니다.");
+        return response;
+      } else {
+        throw new Error("Failed to update enrollment");
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("수강 정보 업데이트 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
+  deleteEnrollment: async (enrollmentId) => {
+    set({ isLoading: true });
+    try {
+      const response = await deleteApi({ path: `/enrollments/${enrollmentId}` });
+      if (response) {
+        set({ isLoading: false });
+        console.log("수강 신청이 성공적으로 취소되었습니다.");
+        return true;
+      } else {
+        throw new Error("Failed to delete enrollment");
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("수강 신청 취소 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
+  getEnrollmentProgress: async (enrollmentId) => {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({ path: `/enrollments/${enrollmentId}/progress` });
+      if (response) {
+        set({ enrollmentProgress: response, isLoading: false });
+        console.log("수강 진행 상황을 성공적으로 가져왔습니다.");
+      } else {
+        throw new Error(`Failed to fetch enrollment progress: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("수강 진행 상황을 가져오는 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
+  createEnrollmentProgress: async (enrollmentId, progressData) => {
+    set({ isLoading: true });
+    try {
+      const response = await postApi({ path: `/enrollments/${enrollmentId}/progress`, data: progressData });
+      if (response) {
+        set({ isLoading: false });
+        console.log("수강 진행 상황이 성공적으로 생성되었습니다.");
+        return response;
+      } else {
+        throw new Error("Failed to create enrollment progress");
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("수강 진행 상황 생성 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
+  updateEnrollmentProgress: async (enrollmentId, lectureId, progressData) => {
+    set({ isLoading: true });
+    try {
+      const response = await putApi({ path: `/enrollments/${enrollmentId}/progress/${lectureId}`, data: progressData });
+      if (response) {
+        set({ isLoading: false });
+        console.log("수강 진행 상황이 성공적으로 업데이트되었습니다.");
+        return response;
+      } else {
+        throw new Error("Failed to update enrollment progress");
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("수강 진행 상황 업데이트 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
+  isCourseCompleted: async (enrollmentId) => {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({ path: `/enrollments/${enrollmentId}/is-completed` });
+      set({ isLoading: false });
+      console.log("과정 완료 여부를 성공적으로 확인했습니다.");
+      return response;
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("과정 완료 여부 확인 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
+  clearEnrollment: () => {
+    set({ enrollment: null });
+  },
+}));
+
+export const enrollment = useEnrollmentStore;
 export const courseInquiry = useCourseInquiryStore;
 export const inquiry = useInquiryStore;
 export const user = useUserStore;

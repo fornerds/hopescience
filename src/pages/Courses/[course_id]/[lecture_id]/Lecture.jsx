@@ -1,5 +1,5 @@
 import "./style.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Header, Footer, Link } from "../../../../components";
 import { Pagination } from "../../../../modules/Pagination";
@@ -9,10 +9,12 @@ import playIcon from "../../../../icons/button-play-1.svg"
 
 export const Lecture = () => {
   let { course_id, lecture_id } = useParams();
-  const { isLoading, getLecture, lecture } = service((state) => ({
+  const [nextLecture, setNextLecture] = useState([])
+  const { isLoading, getLecture, lecture, getNextLecture } = service((state) => ({
     isLoading: state.isLoading,
     getLecture: state.getLecture,
     lecture: state.lecture,
+    getNextLecture: state.getNextLecture
   }));
   const { isCourseInquiryLoading, getCourseInquiries, courseInquiries } =
     courseInquiry((state) => ({
@@ -25,6 +27,15 @@ export const Lecture = () => {
     getLecture(lecture_id);
     getCourseInquiries(course_id);
   }, [course_id, lecture_id]);
+
+  useEffect(()=> {
+    async function fetchData() {
+      setNextLecture([])
+      const res = await getNextLecture(course_id, lecture_id);
+      setNextLecture(res)
+    }
+    fetchData();
+  }, [course_id, lecture_id])
 
   const filteredInquiries = courseInquiries?.filter(
     (inquiry) => inquiry?.lecture_id === Number(lecture_id)
@@ -45,15 +56,34 @@ export const Lecture = () => {
                 </h2>
                 <VideoPlayer videoUrl={lecture?.video_url} />
                 <div className="lecture-link-wrap">
-                  <Link
-                    to={`/courses/${course_id}/${lecture_id}`}
-                    label="&#60; 이전영상"
+                  {nextLecture?.previous ? (
+                    <Link
+                      to={`/courses/${course_id}/${nextLecture.previous.lecture_id}`}
+                      label="이전영상"
+                      color="white"
+                      buttonStyle="default"
+                    />
+                  ) : (
+                    <div className="link-placeholder"></div>
+                  )}
+                  
+                  <Link 
+                    to={`/courses/${course_id}`} 
+                    label="목록으로" 
+                    color="white" 
+                    buttonStyle="default" 
                   />
-                  <Link to={`/courses/${course_id}`} label="목록으로" />
-                  <Link
-                    to={`/courses/${course_id}/${lecture_id}`}
-                    label="다음영상 &#62;"
-                  />
+                  
+                  {nextLecture?.next ? (
+                    <Link
+                      to={`/courses/${course_id}/${nextLecture.next.lecture_id}`}
+                      label="다음영상"
+                      color="white"
+                      buttonStyle="default"
+                    />
+                  ) : (
+                    <div className="link-placeholder"></div>
+                  )}
                 </div>
               </>
             )}
