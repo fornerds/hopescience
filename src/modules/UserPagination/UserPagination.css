@@ -31,6 +31,96 @@
   margin-top: 32px;
 }
 
+/* User Lecture Styles */
+.user-lecture-list {
+  width: 100%;
+  background-color: #171a1f;
+}
+
+.user-lecture-header {
+  font-family: '"Manrope", Helvetica';
+  height: 56px;
+  font-size: 14px;
+  font-weight: 400;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr 3fr 2fr 2fr 1fr;
+  color: #dee1e6;
+  padding: 20px 16px 16px;
+}
+
+.user-lecture-item {
+  font-family: '"Manrope", Helvetica';
+  height: 56px;
+  font-size: 14px;
+  font-weight: 400;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr 3fr 2fr 2fr 1fr;
+  color: #dee1e6;
+  padding: 20px 16px 16px;
+}
+
+.user-lecture-pagination-footer {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 32px;
+  padding: 0 16px;
+}
+
+.user-lecture-pagination-buttons {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+}
+
+.user-lecture-pagination-button {
+  background-color: transparent;
+  border: none;
+  width: 36px;
+  height: 36px;
+}
+
+.user-lecture-pagination-button:hover {
+  cursor: pointer;
+}
+
+.user-lecture-pagination-button.disabled:hover {
+  cursor: not-allowed;
+}
+
+.user-lecture-pagination-page-button {
+  background-color: transparent;
+  color: #dee1e6;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 0;
+}
+
+.user-lecture-pagination-page-button:hover {
+  background-color: #bd9a31;
+  color: #1e2128;
+  cursor: pointer;
+}
+
+.user-lecture-pagination-button-wrap {
+  display: flex;
+  gap: 4px;
+}
+
+.user-lecture-pagination-page-button.active {
+  background-color: #bd9a31;
+  color: #1e2128;
+}
+
+.user-lecture-pagination-count {
+  color: #dee1e6;
+}
+
+/* User QnA Styles */
 .user-qna-list {
   width: 100%;
   background-color: #171a1f;
@@ -54,6 +144,18 @@
   display: grid;
   align-items: center;
   grid-template-columns: 0.5fr 3fr 2fr 1fr 1.5fr 1fr;
+  color: #dee1e6;
+  padding: 20px 16px 16px;
+}
+
+.user-qna-header {
+  font-family: '"Manrope", Helvetica';
+  height: 56px;
+  font-size: 14px;
+  font-weight: 400;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr 3fr 2fr 2fr 1fr;
   color: #dee1e6;
   padding: 20px 16px 16px;
 }

@@ -438,6 +438,50 @@ const useUserStore = create((set) => ({
       alert("회원 정보를 변경하는 중 오류가 발생했습니다: " + error.message);
     }
   },
+
+  getEnrollments: async (userId) => {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({ path: `/enrollments/?user_id=${userId}` });
+      set({ isLoading: false });
+      return response;
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      alert("수강 정보를 가져오는 중 오류가 발생했습니다: " + error.message);
+    }
+  },
+
+  getUserQnA: async (user_id) => {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({ path: `/user/${user_id}/qna` });
+      if (response) {
+        set({
+          userQnA: response.map((qna) => ({
+            id: qna.id,
+            course_id: qna.course_id,
+            user_id: qna.user_id,
+            lecture_id: qna.lecture_id,
+            title: qna.title,
+            content: qna.content,
+            created_at: qna.created_at,
+            updated_at: qna.updated_at,
+            view_count: qna.view_count,
+            user_name: qna.user_name,
+            comments: qna.comments,
+            category: qna.category,
+          })),
+          isLoading: false,
+        });
+        console.log("사용자 QnA를 성공적으로 가져왔습니다.");
+      } else {
+        throw new Error(`Failed to fetch user QnA: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      alert("사용자 QnA를 가져오는 중 오류가 발생했습니다: " + error.message);
+    }
+  },
 }));
 
 const useServiceStore = create((set) => ({
