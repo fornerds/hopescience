@@ -116,10 +116,21 @@ export const Cart = () => {
     }
   }, [course]);
 
-
   const handlePaymentRequest = async (orderId, serviceName, name, email, phone, amount, userId, courseId) => {
     try {
-      const success = await createPayment(orderId, amount, Number(userId), Number(courseId));
+      if (!course?.category?.name) {
+        throw new Error("카테고리 정보가 없습니다. 관리자에게 문의해주세요.");
+      }
+  
+      const success = await createPayment(
+        orderId, 
+        amount, 
+        Number(userId), 
+        Number(courseId), 
+        serviceName, 
+        course.category.name
+      );
+      
       if (success) {
         await paymentWidget?.requestPayment({
           orderId: orderId,

@@ -121,3 +121,47 @@
     flex-direction: column;
   }
 }
+
+.enrolled-course-progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.enrolled-course-progress-wrap {
+  display: flex;
+  gap: 17px;
+  align-items: center;
+}
+
+.enrolled-course-progress{
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.enrolled-course-progress::-webkit-progress-bar {
+  max-width: 300px;
+  width: 100%;
+  height: 12px;
+  background-color: #dee1e6;
+  border-radius: 6px;
+}
+
+progress {
+  max-width: 300px;
+  width: 100%;
+  height: 12px;
+  border-radius: 6px;
+  background-color: #dee1e6;
+}
+
+.enrolled-course-progress::-webkit-progress-value {
+  background-color: #BD9A31;
+  border-radius: 6px;
+}
+
+.enrolled-course-survey-wrap, .enrolled-course-certification-wrap {
+  display: flex;
+  gap: 60px;
+  align-items: center;
+}

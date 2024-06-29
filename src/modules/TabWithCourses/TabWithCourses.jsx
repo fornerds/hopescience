@@ -198,7 +198,6 @@ export const TabWithCourses = () => {
                   value={course.progress}
                   className="mypage-course-progress"
                 >
-                  {course.progress}%
                 </progress>
                 {course.progress}%
               </div>

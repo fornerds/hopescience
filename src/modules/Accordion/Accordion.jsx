@@ -9,16 +9,15 @@ import arrowDownIcon from "../../icons/chevron-down-large.svg";
 import arrowDownBigIcon from "../../icons/chevron-down-large02.svg";
 import videoIcon from "../../icons/video.svg";
 import lockIcon from "../../icons/lock.svg";
+import checkIcon from "../../icons/lock-1.svg"
 
-export const Accordion = ({ section }) => {
+export const Accordion = ({ section, enrollmentData, enrollmentProgress }) => {
   const [activeIndex, setActiveIndex] = useState(null);
   let { course_id } = useParams();
 
   const toggleAccordion = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
   };
-
-  // console.log(section);
 
   return (
     <div className="accordion-container">
@@ -50,7 +49,8 @@ export const Accordion = ({ section }) => {
           </span>
         </div>
         <div className="accordion-content">
-          {section.lectures.map((lecture) => (
+        {section.lectures.map((lecture) => (
+          enrollmentData ? (
             <Link
               key={`${section.id}-${lecture.id}`}
               className="accordion-content-item"
@@ -65,9 +65,35 @@ export const Accordion = ({ section }) => {
                 {section.order}-{lecture.order}. {lecture.title} &#40;
                 {lecture.video_duration}&#41;
               </div>
-              <img className="lock" alt="Lock" src={lockIcon} />
+              {enrollmentProgress.some(progress => progress.lecture_id === lecture.id) ? (
+                <img
+                  className="img-9"
+                  alt="checkIcon"
+                  src={checkIcon}
+                />
+              ) : (
+                <></>
+              )}
             </Link>
-          ))}
+          ) : (
+            <div
+              key={`${section.id}-${lecture.id}`}
+              className="accordion-content-item"
+              onClick={() => alert("구매 후에 이용이 가능합니다.")}
+            >
+              <div className="accordion-content-item-title">
+                <img
+                  className="play-media"
+                  alt="Play media"
+                  src={videoIcon}
+                />{" "}
+                {section.order}-{lecture.order}. {lecture.title} &#40;
+                {lecture.video_duration}&#41;
+              </div>
+              <img className="lock" alt="Lock" src={lockIcon} />
+            </div>
+          )
+        ))}
         </div>
       </div>
     </div>

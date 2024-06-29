@@ -1,15 +1,16 @@
 import "./style.css";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState, useMemo } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Header, Footer, Link } from "../../../../components";
 import { Pagination } from "../../../../modules/Pagination";
 import { VideoPlayer } from "../../../../modules/VideoPlayer";
-import { service, courseInquiry } from "../../../../store";
+import { service, courseInquiry, enrollment } from "../../../../store";
 import playIcon from "../../../../icons/button-play-1.svg"
 
 export const Lecture = () => {
   let { course_id, lecture_id } = useParams();
   const [nextLecture, setNextLecture] = useState([])
+  const navigate = useNavigate();
   const { isLoading, getLecture, lecture, getNextLecture } = service((state) => ({
     isLoading: state.isLoading,
     getLecture: state.getLecture,
@@ -23,7 +24,26 @@ export const Lecture = () => {
       courseInquiries: state.courseInquiries,
     }));
 
+  const {getIsEnrolled, enrollment: enrollmentData} = enrollment(state => ({ getIsEnrolled: state.getIsEnrolled, enrollment: state.enrollment }));
+
+  const myUserId = useMemo(() => {
+    const data = sessionStorage.getItem("auth-storage");
+    return data ? JSON.parse(data).state?.user?.userId : null;
+  }, []);
+
   useEffect(() => {
+    if(course_id && myUserId){
+      getIsEnrolled(myUserId, course_id)
+    }else{
+      if(!course_id){
+        alert("해당 강의는 존재하지 않는 강의입니다.")
+        navigate("/courses")
+      }
+      if(!myUserId){
+        alert("로그인 상태가 아닙니다. 다시 로그인해 주세요.")
+        navigate("/signin")
+      }
+    }
     getLecture(lecture_id);
     getCourseInquiries(course_id);
   }, [course_id, lecture_id]);
@@ -54,7 +74,7 @@ export const Lecture = () => {
                 <h2 className="lecture-title">
                   {lecture?.course_section_id}-{lecture?.id}. {lecture?.title}
                 </h2>
-                <VideoPlayer videoUrl={lecture?.video_url} />
+                <VideoPlayer videoUrl={lecture?.video_url} enrollmentData={enrollmentData} lectureId={lecture_id}/>
                 <div className="lecture-link-wrap">
                   {nextLecture?.previous ? (
                     <Link

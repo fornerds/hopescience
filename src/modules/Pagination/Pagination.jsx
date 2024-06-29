@@ -112,6 +112,8 @@ export const Pagination = ({ inquiries, isLoading }) => {
                 : `/courses/${course_id}/${lecture_id}/new`
             }
             label="글쓰기"
+            buttonStyle="default"
+            color="white"
           />
         </div>
       </div>
