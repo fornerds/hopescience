@@ -22,7 +22,7 @@ import { Orders } from "./pages/MyPage/Orders";
 import { Order } from "./pages/MyPage/Orders/[payment_id]";
 import { Setting } from "./pages/MyPage/Setting";
 import { Certificates } from "./pages/MyPage/Certificates";
-import { Certificate } from "./pages/MyPage/Certificates/[course_id]";
+import { Certificate } from "./pages/MyPage/Certificates/[certificate_id]";
 import { Admin } from "./pages/Admin";
 import { Users } from "./pages/Admin/Users";
 import { User } from "./pages/Admin/Users/[user_id]";
@@ -62,7 +62,7 @@ function App() {
         <Route path="/mypage/orders/:payment_id" element={<Order />} />
         <Route path="/mypage/setting" element={<Setting />} />
         <Route path="/mypage/certificates" element={<Certificates />} />
-        <Route path="/mypage/certificates/:course_id" element={<Certificate />} />
+        <Route path="/mypage/certificates/:certificate_id" element={<Certificate />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/users" element={<Users />} />
         <Route path="/admin/users/:user_id" element={<User />} />

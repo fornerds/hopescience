@@ -2,10 +2,13 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { Button } from "../../components/Button";
 import "./PdfGenerator.css";
-import downloadIcon from "../../icons/move-layer-down.svg"
-import pdfIndexIcon01 from "../../icons/container-156.svg"
-import pdfIndexIcon02 from "../../icons/container-157.svg"
-import stampImage from "../../images/stamp.png"
+import downloadIcon from "../../icons/move-layer-down.svg";
+import pdfIndexIcon01 from "../../icons/container-156.svg";
+import pdfIndexIcon02 from "../../icons/container-157.svg";
+import stampImage from "../../images/stamp.png";
+import { certificate } from "../../store";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 const generateAndDownloadPDF = async (certificate_id) => {
   const input = document.getElementById(`certificate-${certificate_id}`);
@@ -70,11 +73,23 @@ const receiptPDF = async (payment_id) => {
 };
 
 export const PdfGenerator = () => {
-  const certificate_id = 2;
+  let {certificate_id} = useParams();
 
-  const name = "홍길동";
-  const title = "직장내 성희롱 예방교육";
-  const completedDate = "2024년 3월 28일";
+  const {getCertificate, certificate:certificateData, clearCertificate} = certificate((state=>({getCertificate: state.getCertificate, certificate: state.certificate, clearCertificate: state.clearCertificate})))
+
+  useEffect(()=>{
+    clearCertificate();
+    getCertificate(certificate_id);
+  },[])
+
+  function formatISOToKoreanDate(isoString) {
+    const date = new Date(isoString);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // getMonth()는 0부터 시작하므로 1을 더합니다.
+    const day = date.getDate();
+  
+    return `${year}년 ${month.toString().padStart(2, '0')}월 ${day.toString().padStart(2, '0')}일`;
+  }
 
   return (
     <div className="pdf-generator">
@@ -92,22 +107,22 @@ export const PdfGenerator = () => {
 
       <div className="certificate" id={`certificate-${certificate_id}`}>
         <div className="certificate-pdf-content">
-          <p className="certificate-pdf-id">발급번호: 202405030102</p>
+          <p className="certificate-pdf-id">발급번호: {certificateData?.certificate_id}</p>
           <h1 className="certificate-pdf-title">수 료 증 서</h1>
           <h2 className="certificate-pdf-title-eng">
             Certificate of completion
           </h2>
           <div className="certificate-pdf-data">
             <div className="certificate-pdf-data-index">성 명:</div>
-            <div>{name}</div>
+            <div>{certificateData?.user_name}</div>
           </div>
           <div className="certificate-pdf-data">
             <div className="certificate-pdf-data-index">교 육 과 정:</div>
-            <div>{title}</div>
+            <div>{certificateData?.course_name}</div>
           </div>
           <div className="certificate-pdf-data">
             <div className="certificate-pdf-data-index">수 료 일:</div>
-            <div>{completedDate}</div>
+            <div>{formatISOToKoreanDate(certificateData?.completion_date)}</div>
           </div>
           <div className="certificate-pdf-desc">
             &nbsp;&nbsp;&nbsp;상기 사람은 본 센터에서 실시한 위 소정의 교육과정

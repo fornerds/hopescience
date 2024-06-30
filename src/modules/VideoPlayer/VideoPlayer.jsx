@@ -1,20 +1,25 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Player from "@vimeo/player";
 import "./style.css";
-import { enrollment } from "../../store";
+import { enrollment, service, certificate } from "../../store";
 import { debounce } from 'lodash';
 
-export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId }) => {
+export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const watchedIntervalsRef = useRef([]);
   const iframeRef = useRef(null);
   const playerRef = useRef(null);
-  const { createEnrollmentProgress, updateEnrollmentProgress, getEnrollmentProgress } = enrollment((state) => ({
+  const { createEnrollmentProgress, updateEnrollmentProgress, getEnrollmentProgress, updateEnrollmentCompletedCount, updateEnrollmentIsCompleted, updateEnrollmentTotalProcess } = enrollment((state) => ({
     createEnrollmentProgress: state.createEnrollmentProgress,
     updateEnrollmentProgress: state.updateEnrollmentProgress,
-    getEnrollmentProgress: state.getEnrollmentProgress
+    getEnrollmentProgress: state.getEnrollmentProgress,
+    updateEnrollmentCompletedCount: state.updateEnrollmentCompletedCount,
+    updateEnrollmentIsCompleted: state.updateEnrollmentIsCompleted,
+    updateEnrollmentTotalProcess: state.updateEnrollmentTotalProcess
   }));
+  const { getService } = service((state) => ({getService: state.getService}))
+  const { createCertificate } =  certificate((state)=> ({createCertificate: state.createCertificate}))
 
   const videoId = useMemo(() => {
     if (!videoUrl) return null;
@@ -31,39 +36,73 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId }) => {
     debounce(async () => {
       const totalWatchedTime = calculateTotalWatchedTime();
       const currentIsCompleted = (totalWatchedTime / duration) >= 0.9;
-    
+  
       if (!enrollmentData?.id) {
         console.error("Enrollment ID is undefined");
         return;
       }
-    
+  
       try {
         const existingProgress = await getEnrollmentProgress(Number(enrollmentData.id));
         const progressArray = Array.isArray(existingProgress) ? existingProgress : [];
         const existingLectureProgress = progressArray?.find(p => Number(p.lecture_id) === Number(lectureId));
         let isCompleted = currentIsCompleted;
-    
+  
         if (existingLectureProgress && existingLectureProgress.is_completed) {
           isCompleted = true;
         }
-    
+  
         const progressData = {
           enrollment_id: enrollmentData.id,
           lecture_id: lectureId,
           video_progress_time: Math.min(totalWatchedTime, duration),
           is_completed: isCompleted
         };
-    
+  
         if (existingLectureProgress) {
           await updateEnrollmentProgress(enrollmentData.id, lectureId, progressData);
         } else {
           await createEnrollmentProgress(enrollmentData.id, progressData);
         }
+  
+        if (isCompleted) {
+          const completedLecturesCount = progressArray.filter(p => p.is_completed).length + (existingLectureProgress ? 0 : 1);
+          await updateEnrollmentCompletedCount(enrollmentData.id, completedLecturesCount);
+  
+          const courseData = await getService(course_id);
+          if(courseData){
+            const processRate = Math.round((Number(completedLecturesCount) / Number(courseData.total_lecture_count)) * 100);
+            await updateEnrollmentTotalProcess(enrollmentData.id, processRate);
+          }
+  
+          if (courseData && Number(courseData.total_lecture_count) === Number(completedLecturesCount)) {
+            await updateEnrollmentIsCompleted(enrollmentData.id);
+  
+            const generateCertificateNumber = () => {
+              const today = new Date();
+              const yyyy = String(today.getFullYear()).slice(4);
+              const mm = String(today.getMonth() + 1).padStart(2, '0');
+              const dd = String(today.getDate()).padStart(2, '0');
+              const dateStr = `${yyyy}${mm}${dd}`;
+          
+              const randomNum = String(Math.floor(Math.random() * 10000)).padStart(4, '0');
+              
+              return `${dateStr}${randomNum}`;
+            };
+  
+            const certificateId = generateCertificateNumber();
+            const userName = enrollmentData.user_name;
+            const completionDate = new Date().toISOString();
+            const certificateData = { certificate_id: certificateId, user_name: userName, completion_date: completionDate, is_issued: false };
+  
+            await createCertificate(enrollmentData.user_id, course_id, certificateData);
+          }
+        }
       } catch (error) {
         console.error("Error saving progress:", error);
       }
-    }, 1000), // 1초 디바운스 적용
-    [enrollmentData?.id, lectureId, duration, calculateTotalWatchedTime, getEnrollmentProgress, updateEnrollmentProgress, createEnrollmentProgress]
+    }, 1000),
+    [enrollmentData?.id, lectureId, duration, calculateTotalWatchedTime, getEnrollmentProgress, updateEnrollmentProgress, createEnrollmentProgress, updateEnrollmentCompletedCount, getService, course_id, updateEnrollmentIsCompleted, createCertificate]
   );
 
   const updateWatchedIntervals = useCallback((newTime) => {
@@ -105,26 +144,34 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId }) => {
 
   useEffect(() => {
     if (!videoId || !iframeRef.current || playerRef.current || !enrollmentData?.id) return;
-
+  
     const player = new Player(iframeRef.current, {
       id: videoId,
       width: 1150,
       height: 600,
       autopause: false,
-      autoplay: false
+      autoplay: false,
+      loop: false  // 루프 재생을 비활성화합니다.
     });
-
+  
     playerRef.current = player;
-
+  
     const handleTimeUpdate = (data) => {
       setCurrentTime(data.seconds);
       localStorage.setItem(`watchedTime-${lectureId}`, calculateTotalWatchedTime().toString());
       updateWatchedIntervals(data.seconds);
       saveProgress(); // 디바운스된 saveProgress 호출
     };
-
+  
+    const handleEnded = () => {
+      // 영상이 끝났을 때의 동작을 여기에 정의합니다.
+      console.log("Video ended");
+      saveProgress.flush(); // 진행 상황을 즉시 저장합니다.
+    };
+  
     player.on('timeupdate', handleTimeUpdate, { passive: true });
-
+    player.on('ended', handleEnded);
+  
     player.ready().then(() => {
       player.getDuration().then((duration) => setDuration(duration));
       const savedTime = localStorage.getItem(`watchedTime-${lectureId}`);
@@ -137,9 +184,10 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId }) => {
         }
       }
     }).catch(error => console.error("Error initializing Vimeo player:", error));
-
+  
     return () => {
       player.off('timeupdate', handleTimeUpdate);
+      player.off('ended', handleEnded);
       player.destroy();
       playerRef.current = null;
     };

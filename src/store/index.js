@@ -688,6 +688,7 @@ const useServiceStore = create((set) => ({
           isLoading: false,
         });
         console.log("해당 서비스를 성공적으로 가져왔습니다.");
+        return response
       } else {
         throw new Error(`Failed to fetch services: Status ${response.status}`);
       }
@@ -1409,7 +1410,7 @@ const useEnrollmentStore = create((set) => ({
   },
 
   getIsEnrolled: async (userId, courseId) => {
-    set({ isLoading: true });
+    set({ isLoading: true, enrollment: null });
     try {
       const response = await getApi({ path: `/enrollments/user/${userId}/course/${courseId}` });
       if (response) {
@@ -1557,11 +1558,189 @@ const useEnrollmentStore = create((set) => ({
     }
   },
 
+  updateEnrollmentCompletedCount: async (enrollmentId, count) => {
+    set({ isLoading: true });
+    try {
+      const response = await patchApi({ path: `/enrollments/${enrollmentId}/completed-lecture-count`, data: {
+        completed_lecture_count: count,
+      }, });
+      set({ isLoading: false });
+      console.log("영상 진도율 강의 수 업데이트를 성공적으로 확인했습니다.");
+      return response
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("영상 진도율 강의 수를 업데이트하는 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
+  updateEnrollmentIsCompleted: async (enrollmentId) => {
+    set({ isLoading: true });
+    try {
+      const response = await patchApi({ path: `/enrollments/${enrollmentId}/is-completed`, data: {is_completed: true} });
+      set({ isLoading: false });
+      console.log("완강 여부 데이터 업데이트를 성공적으로 확인했습니다.");
+      return response
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("완강 여부 데이터 업데이트하는 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
+  updateEnrollmentTotalProcess: async (enrollmentId, progressRate) => {
+    set({ isLoading: true });
+    try {
+      const response = await patchApi({ 
+        path: `/enrollments/${enrollmentId}/progress`, 
+        data: { progress: progressRate } 
+      });
+      set({ isLoading: false });
+      console.log("전체 진도율 업데이트를 성공적으로 완료했습니다.");
+      return response;
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("전체 진도율 업데이트하는 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
   clearEnrollment: () => {
     set({ enrollment: null });
   },
 }));
 
+const useCertificateStore = create((set) => ({
+  isLoading: false,
+  error: null,
+  certificates: [],
+  certificate: null,
+
+  getCertificates: async (skip = 0, limit = 100) => {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({ path: `/certificates/?skip=${skip}&limit=${limit}` });
+      if (response) {
+        set({ certificates: response, isLoading: false });
+        console.log("인증서 목록을 성공적으로 가져왔습니다.");
+      } else {
+        throw new Error(`Failed to fetch certificates: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("인증서 목록을 가져오는 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
+  createCertificate: async (userId, courseId, certificateData) => {
+    set({ isLoading: true });
+    try {
+      const response = await postApi({ 
+        path: `/certificates/?user_id=${userId}&course_id=${courseId}`,
+        data: certificateData 
+      });
+      if (response) {
+        set({ isLoading: false });
+        alert("강의를 모두 수강하여, 이수증서가 성공적으로 생성되었습니다.");
+        return response;
+      } else {
+        throw new Error("Failed to create certificate");
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("이수증서 생성 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
+  getCertificate: async (certificateId) => {
+    set({ certificate: null, isLoading: true });
+    try {
+      const response = await getApi({ path: `/certificates/${certificateId}` });
+      if (response) {
+        set({ certificate: response, isLoading: false });
+        console.log("인증서 정보를 성공적으로 가져왔습니다.");
+      } else {
+        throw new Error(`Failed to fetch certificate: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("인증서 정보를 가져오는 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
+  updateCertificate: async (certificateId, updateData) => {
+    set({ isLoading: true });
+    try {
+      const response = await putApi({ path: `/certificates/${certificateId}`, data: updateData });
+      if (response) {
+        set({ isLoading: false });
+        console.log("인증서 정보가 성공적으로 업데이트되었습니다.");
+        return response;
+      } else {
+        throw new Error("Failed to update certificate");
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("인증서 정보 업데이트 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
+  deleteCertificate: async (certificateId) => {
+    set({ isLoading: true });
+    try {
+      const response = await deleteApi({ path: `/certificates/${certificateId}` });
+      if (response) {
+        set({ isLoading: false });
+        console.log("인증서가 성공적으로 삭제되었습니다.");
+        return true;
+      } else {
+        throw new Error("Failed to delete certificate");
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("인증서 삭제 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
+  getCertificatesByUser: async (userId) => {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({ path: `/certificates/user/${userId}` });
+      if (response) {
+        set({ certificates: response, isLoading: false });
+        console.log("사용자의 인증서 목록을 성공적으로 가져왔습니다.");
+      } else {
+        throw new Error(`Failed to fetch user certificates: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("사용자의 인증서 목록을 가져오는 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
+  getCertificatesByCourse: async (courseId) => {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({ path: `/certificates/course/${courseId}` });
+      if (response) {
+        set({ certificates: response, isLoading: false });
+        console.log("코스의 인증서 목록을 성공적으로 가져왔습니다.");
+      } else {
+        throw new Error(`Failed to fetch course certificates: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("코스의 인증서 목록을 가져오는 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
+  clearCertificate: () => {
+    set({ certificate: null });
+  },
+
+  clearCertificates: () => {
+    set({ certificates: [] });
+  }
+}));
+
+export const certificate = useCertificateStore;
 export const enrollment = useEnrollmentStore;
 export const courseInquiry = useCourseInquiryStore;
 export const inquiry = useInquiryStore;

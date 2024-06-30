@@ -10,13 +10,17 @@
   border-bottom: 0.5px solid #dee1e6;
   padding: 20px 22px;
   display: grid;
-  grid-template-columns: 3fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 3fr 1fr 1fr;
 }
 
 .certificate-table-item {
   display: grid;
-  grid-template-columns: 3fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 3fr 1fr 1fr;
   align-items: center;
+}
+
+.certificate-table-loading-item{
+  padding: 20px;
 }
 
 .certificate-table-item {

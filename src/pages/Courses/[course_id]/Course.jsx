@@ -15,9 +15,10 @@ export const Course = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   
-  const { isLoading, getService, course } = service(state => ({
+  const { isLoading, getService, course, clearCourse } = service(state => ({
     isLoading: state.isLoading,
     getService: state.getService,
+    clearCourse: state.clearCourse,
     course: state.course || null
   }));
 
@@ -31,7 +32,7 @@ export const Course = () => {
     courseInquiries: state.courseInquiries || null
   }));
 
-  const {isLoading: isEnrollmentLoading, getIsEnrolled, enrollment: enrollmentData, getEnrollmentProgress, enrollmentProgress} = enrollment(state => ({isLoading: state.isLoading, getIsEnrolled: state.getIsEnrolled, enrollment: state.enrollment, getEnrollmentProgress: state.getEnrollmentProgress, enrollmentProgress: state.enrollmentProgress }));
+  const {isLoading: isEnrollmentLoading, getIsEnrolled, enrollment: enrollmentData, getEnrollmentProgress, enrollmentProgress, clearEnrollment} = enrollment(state => ({isLoading: state.isLoading, getIsEnrolled: state.getIsEnrolled, enrollment: state.enrollment, getEnrollmentProgress: state.getEnrollmentProgress, enrollmentProgress: state.enrollmentProgress, clearEnrollment: state.clearEnrollment }));
 
   const myUserId = useMemo(() => {
     const data = sessionStorage.getItem("auth-storage");
@@ -41,9 +42,11 @@ export const Course = () => {
   const handleOpenModal = () => setIsOpen(true);
   const handleCloseModal = () => setIsOpen(false);
   useEffect(() => {
+    clearEnrollment();
     if(course_id && myUserId){
       getIsEnrolled(myUserId, course_id)
     }
+    clearCourse();
     getService(course_id);
     getCourseInquiries(course_id);
   }, [course_id]);
@@ -85,7 +88,7 @@ export const Course = () => {
                   /> 
                   }
                 </div>
-                <div className="course-info">
+                <div className={enrollmentData ? "enrolled-course-info" : "course-info"}>
                 { enrollmentData ?
                    (
                    <>
@@ -103,13 +106,9 @@ export const Course = () => {
                       </div>
                     </div>
                     {enrollmentData?.is_completed ? (<>
-                      <div className="enrolled-course-survey-wrap">
-                        <h3 className="course-index-text">설문조사</h3>
-                        <Link to="#" buttonStyle="default" label="설문조사 하러가기" color="white" fontSize="16px"/>
-                      </div>
                       <div className="enrolled-course-certification-wrap">
                         <h3 className="course-index-text">이수증서</h3>
-                        <Link to="#" buttonStyle="default" label="이수증 발급하기" color="white" fontSize="16px"/>
+                        <Link to="/mypage/certificates" buttonStyle="default" label="이수증 발급하기" color="white" fontSize="16px"/>
                       </div>
                     </>): <></>}
                    </>
@@ -192,7 +191,7 @@ export const Course = () => {
         </section>
         <VideoModal
           isOpen={isOpen}
-          videoSrc={course?.sections[0].lectures[0].video_url}
+          videoSrc={course?.sections?.[0]?.lectures?.[0]?.video_url}
           onClose={handleCloseModal}
         />
       </main>

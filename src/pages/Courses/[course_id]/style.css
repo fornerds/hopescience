@@ -60,6 +60,12 @@
   justify-content: space-between;
 }
 
+.enrolled-course-info {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
 .course-info-flex {
   display: flex;
   row-gap: 12px;
