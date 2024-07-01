@@ -8,7 +8,12 @@
     display: flex;
     overflow: hidden;
     overflow-x: scroll;
+    -ms-overflow-style: none;
   }
+
+  .cards::-webkit-scrollbar{
+    display:none;
+  } 
   
   .card {
     width: 338px;

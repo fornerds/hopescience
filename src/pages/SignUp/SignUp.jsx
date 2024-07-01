@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import { Header } from "../../components/Header";
 import { Footer } from "../../components/Footer";
 import { Input } from "../../components/Input";
@@ -16,7 +16,7 @@ import naverImage from "../../images/naver.png";
 
 const schema = yup
   .object({
-    name: yup.string().required("이름을 입력해주세요."),
+    name: yup.string().required("이름을 입력해주세요.").matches(/^[가-힣]{2,}$|^[a-zA-Z]{2,}$/, "유효한 이름형식으로 입력해주세요"),
     phone: yup
       .string()
       .required("연락처를 입력해주세요.")
@@ -73,6 +73,24 @@ export const SignUp = () => {
       alert("회원가입 실패: " + error.message);
     }
   };
+
+  const formatPhoneNumber = useCallback((value) => {
+    if (!value) return value;
+    const phoneNumber = value.replace(/[^\d]/g, '');
+    const phoneNumberLength = phoneNumber.length;
+    if (phoneNumberLength <= 3) return phoneNumber;
+    if (phoneNumberLength <= 7) {
+      return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`;
+    }
+    return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`;
+  }, []);
+
+  const handlePhoneChange = useCallback((e, onChange) => {
+    const inputValue = e.target.value;
+    const currentValue = inputValue.replace(/[^\d]/g, '');
+    const formattedValue = formatPhoneNumber(currentValue);
+    onChange(formattedValue);
+  }, [formatPhoneNumber]);
 
   const { naver } = window;
   const NAVER_CLIENT_ID = process.env.REACT_APP_CLIENT_ID; // 발급 받은 Client ID 입력
@@ -133,15 +151,16 @@ export const SignUp = () => {
                   name="phone"
                   control={control}
                   defaultValue=""
-                  render={({ field }) => (
+                  render={({ field: { onChange, value } }) => (
                     <div className="signup-input">
                       <label htmlFor="tel" className="signup-input-label">
                         연락처
                       </label>
                       <Input
-                        {...field}
                         type="tel"
                         placeholder="연락처를 입력하세요"
+                        value={value}
+                        onChange={(e) => handlePhoneChange(e, onChange)}
                       />
                       {errors.phone && (
                         <p className="input-error-message">

@@ -206,11 +206,11 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
     };
   }, [saveProgress]);
 
-  const formatTime = (time) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  };
+  // const formatTime = (time) => {
+  //   const minutes = Math.floor(time / 60);
+  //   const seconds = Math.floor(time % 60);
+  //   return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  // };
 
   if (!videoUrl) {
     return <div>영상이 정상적으로 처리되지 않았습니다. 관리자에게 문의해주세요.</div>;
@@ -219,8 +219,8 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
   return (
     <div>
       <div ref={iframeRef}></div>
-      <p>Current Time: {formatTime(currentTime)} / {formatTime(duration)}</p>
-      <p>Total Watched Time: {formatTime(calculateTotalWatchedTime())}</p>
+      {/* <p>Current Time: {formatTime(currentTime)} / {formatTime(duration)}</p>
+      <p>Total Watched Time: {formatTime(calculateTotalWatchedTime())}</p> */}
     </div>
   );
 };
