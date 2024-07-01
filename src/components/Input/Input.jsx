@@ -4,7 +4,7 @@ import "./Input.css";
 
 export const Input = forwardRef(
   (
-    { type, placeholder, onChange, value, mode, style, error, className },
+    { type, placeholder, onChange, value, mode, style, error, className, onKeyDown },
     ref
   ) => {
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -20,15 +20,18 @@ export const Input = forwardRef(
     return (
       <div className={`input-container`}>
         <input
+          ref={ref}
           type={inputType}
           className={`input input--${mode} ${className}`}
           style={{ ...style }}
           placeholder={placeholder}
           onChange={onChange}
           value={value}
+          onKeyDown={onKeyDown}
         />
         {type === "password" && (
           <button
+            type="button"
             className="toggle-password-button"
             onClick={togglePasswordVisibility}
           >
@@ -127,6 +130,7 @@ Input.propTypes = {
   type: PropTypes.oneOf(["name", "text", "password", "email", "tel"]),
   placeholder: PropTypes.string,
   onChange: PropTypes.func,
+  onKeyDown: PropTypes.func,
   mode: PropTypes.oneOf(["default", "dark", "underline"]),
 };
 
@@ -134,5 +138,6 @@ Input.defaultProps = {
   type: "text",
   placeholder: "",
   onChange: () => {},
+  onKeyDown: () => {},
   mode: "default",
 };

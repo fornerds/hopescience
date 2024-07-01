@@ -49,6 +49,7 @@ export const SignUp = () => {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: yupResolver(schema),
+    mode: 'onSubmit',
   });
   const navigate = useNavigate();
 
