@@ -5,6 +5,7 @@ import "./PdfGenerator.css";
 import downloadIcon from "../../icons/move-layer-down.svg";
 import pdfIndexIcon01 from "../../icons/container-156.svg";
 import pdfIndexIcon02 from "../../icons/container-157.svg";
+import { payment } from "../../store";
 import stampImage from "../../images/stamp.png";
 import { certificate } from "../../store";
 import { useEffect } from "react";
@@ -146,8 +147,43 @@ export const PdfGenerator = () => {
   );
 };
 
+
 export const ReceiptPdfGenerator = () => {
-  const payment_id = 3;
+  const { order_id } = useParams();
+  const getPaymentByOrderId = payment((state) => state.getPaymentByOrderId);
+  const paymentData = payment((state) => state.payment);
+  const isLoading = payment((state) => state.isLoading);
+  const cancelPayment = payment((state) => state.cancelPayment);
+
+  useEffect(() => {
+    const fetchPayment = async () => {
+      await getPaymentByOrderId(order_id);
+    };
+    fetchPayment();
+  }, [getPaymentByOrderId, order_id]);
+
+  const handleCancel = async () => {
+    const paymentKey = paymentData?.payment_key;
+    if (paymentKey) {
+      const confirmCancel = window.confirm("정말로 결제를 취소하시겠습니까?");
+      if (confirmCancel) {
+        try {
+          await cancelPayment(paymentKey, "관리자에 의한 결제 취소", paymentData?.amount);
+        } catch (error) {
+          if (error.status === 404) {
+            alert("결제 정보를 찾을 수 없습니다.");
+          } else {
+            alert("결제 취소 중 오류가 발생했습니다.");
+          }
+        }
+      }
+    }
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <div className="order-title-wrap">
@@ -155,7 +191,7 @@ export const ReceiptPdfGenerator = () => {
         <div className="order-buttons">
           <Button
             label="영수증 저장하기"
-            onClick={() => receiptPDF(payment_id)}
+            onClick={() => receiptPDF(order_id)}
             style={{
               height: "36px",
               padding: "auto 16px",
@@ -171,11 +207,12 @@ export const ReceiptPdfGenerator = () => {
           <Button
             label="결제 취소하기"
             style={{ height: "36px", padding: "auto 16px", fontSize: "14px" }}
+            onClick={handleCancel}
           ></Button>
         </div>
       </div>
       <div className="order-receipt-wrap">
-        <div className="order-receipt" id={`order-receipt-${payment_id}`}>
+        <div className="order-receipt" id={`order-receipt-${order_id}`}>
           <div className="order-receipt-info">
             <div className="order-receipt-index-wrap">
               <img src={pdfIndexIcon01} alt="결제 방법" />
@@ -185,37 +222,39 @@ export const ReceiptPdfGenerator = () => {
               <tbody>
                 <tr>
                   <td>결제금액</td>
-                  <td>40,000</td>
+                  <td>{paymentData?.amount}</td>
                 </tr>
                 <tr>
                   <td>부가세</td>
-                  <td>4,000</td>
+                  <td>{(paymentData?.amount * 0.1).toFixed(0)}</td>
                 </tr>
                 <tr>
                   <td>할인액</td>
-                  <td>-0</td>
+                  <td>0</td>
                 </tr>
                 <tr>
                   <td>Total</td>
-                  <td className="order-receipt-info-value-strong">44,000</td>
+                  <td className="order-receipt-info-value-strong">
+                    {paymentData?.amount}
+                  </td>
                 </tr>
               </tbody>
               <tbody>
                 <tr>
                   <td>결제일</td>
-                  <td>2024-01-19 05:35 PM</td>
+                  <td>{new Date(paymentData?.created_at).toLocaleString()}</td>
                 </tr>
                 <tr>
                   <td>구매자</td>
-                  <td>Elizabeth Allen</td>
+                  <td>{paymentData?.user_name}</td>
                 </tr>
                 <tr>
                   <td>결제번호</td>
-                  <td>#996</td>
+                  <td>#{paymentData?.payment_id}</td>
                 </tr>
                 <tr>
                   <td>할부</td>
-                  <td>10개월</td>
+                  <td>일시불</td>
                 </tr>
               </tbody>
             </table>
@@ -228,8 +267,8 @@ export const ReceiptPdfGenerator = () => {
             <table className="order-receipt-pay-by-table">
               <tbody>
                 <tr>
-                  <td>삼성카드</td>
-                  <td>0000-****-****-1234</td>
+                  <td>카드사</td>
+                  <td>0000-****-****-0000</td>
                 </tr>
               </tbody>
             </table>
@@ -241,6 +280,39 @@ export const ReceiptPdfGenerator = () => {
 };
 
 export const AdminReceiptPdfGenerator = () => {
+  const { order_id } = useParams();
+  const getPaymentByOrderId = payment((state) => state.getPaymentByOrderId);
+  const paymentData = payment((state) => state.payment);
+  const isLoading = payment((state) => state.isLoading);
+  const cancelPayment = payment((state) => state.cancelPayment);
+
+  useEffect(() => {
+    const fetchPayment = async () => {
+      if (order_id) {
+        await getPaymentByOrderId(order_id);
+      }
+    };
+    fetchPayment();
+  }, [getPaymentByOrderId, order_id]);
+
+  const handleCancel = async () => {
+    const paymentKey = paymentData?.payment_key;
+    if (paymentKey) {
+      const confirmCancel = window.confirm("정말로 결제를 취소하시겠습니까?");
+      if (confirmCancel) {
+        try {
+          await cancelPayment(paymentKey, "관리자에 의한 결제 취소", paymentData?.amount);
+        } catch (error) {
+          if (error.status === 404) {
+            alert("결제 정보를 찾을 수 없습니다.");
+          } else {
+            alert("결제 취소 중 오류가 발생했습니다.");
+          }
+        }
+      }
+    }
+  };
+
   const getStateClassName = (state) => {
     const stateClassMap = {
       결제취소: "cancel",
@@ -250,24 +322,27 @@ export const AdminReceiptPdfGenerator = () => {
     return stateClassMap[state] || "";
   };
 
-  const payment_id = 3;
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <div className="admin-order-title-wrap">
         <div className="admin-order-price-state">
-          <h2 className="admin-order-title">44,000원</h2>
+          <h2 className="admin-order-title">{paymentData?.amount}원</h2>
           <div
             className={`admin-order-item-state ${getStateClassName(
-              "결제완료"
+              paymentData?.status
             )}`}
           >
-            결제완료
+            {paymentData?.status}
           </div>
         </div>
         <div className="admin-order-buttons">
           <Button
             label="영수증 보내기"
-            onClick={() => receiptPDF(payment_id)}
+            onClick={() => receiptPDF(order_id)}
             style={{
               height: "36px",
               padding: "auto 16px",
@@ -277,13 +352,14 @@ export const AdminReceiptPdfGenerator = () => {
           <Button
             label="환불 하기"
             style={{ height: "36px", padding: "auto 16px", fontSize: "14px" }}
+            onClick={handleCancel}
           ></Button>
         </div>
       </div>
       <div className="admin-order-receipt-wrap">
         <div
           className="admin-order-receipt"
-          id={`admin-order-receipt-${payment_id}`}
+          id={`admin-order-receipt-${order_id}`}
         >
           <div className="admin-order-receipt-info">
             <div className="admin-order-receipt-index-wrap">
@@ -294,39 +370,39 @@ export const AdminReceiptPdfGenerator = () => {
               <tbody>
                 <tr>
                   <td>결제금액</td>
-                  <td>40,000</td>
+                  <td>{paymentData?.amount}</td>
                 </tr>
                 <tr>
                   <td>부가세</td>
-                  <td>4,000</td>
+                  <td>{(paymentData?.amount * 0.1).toFixed(0)}</td>
                 </tr>
                 <tr>
                   <td>할인액</td>
-                  <td>-0</td>
+                  <td>0</td>
                 </tr>
                 <tr>
                   <td>Total</td>
                   <td className="admin-order-receipt-info-value-strong">
-                    44,000
+                    {paymentData?.amount}
                   </td>
                 </tr>
               </tbody>
               <tbody>
                 <tr>
                   <td>결제일</td>
-                  <td>2024-01-19 05:35 PM</td>
+                  <td>{new Date(paymentData?.created_at).toLocaleString()}</td>
                 </tr>
                 <tr>
                   <td>구매자</td>
-                  <td>Elizabeth Allen</td>
+                  <td>{paymentData?.user_name}</td>
                 </tr>
                 <tr>
                   <td>결제번호</td>
-                  <td>#996</td>
+                  <td>#{paymentData?.payment_id}</td>
                 </tr>
                 <tr>
                   <td>할부</td>
-                  <td>10개월</td>
+                  <td>일시불</td>
                 </tr>
               </tbody>
             </table>
@@ -339,8 +415,8 @@ export const AdminReceiptPdfGenerator = () => {
             <table className="admin-order-receipt-pay-by-table">
               <tbody>
                 <tr>
-                  <td>삼성카드</td>
-                  <td>0000-****-****-1234</td>
+                  <td>카드사</td>
+                  <td>0000-****-****-0000</td>
                 </tr>
               </tbody>
             </table>

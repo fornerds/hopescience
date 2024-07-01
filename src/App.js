@@ -73,7 +73,7 @@ function App() {
         <Route path="/admin/service/new" element={<NewService />} />
         <Route path="/admin/service/:course_id" element={<ServiceEdit />} />
         <Route path="/admin/orders" element={<AdminOrders />} />
-        <Route path="/admin/orders/:payment_id" element={<AdminOrder />} />
+        <Route path="/admin/orders/:order_id" element={<AdminOrder />} />
       </Routes>
     </Router>
   );
