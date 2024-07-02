@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Button } from "../../components/Button";
 import "./TabWithCourses.css";
-import mainImage from "../../images/main.png"
-import exampleImage from "../../images/example.png"
-import opengraphImage from "../../images/opengraph.png"
+import { enrollment } from "../../store"
 
 const tabButtons = [
   { key: "all", label: "전체" },
@@ -27,86 +25,38 @@ export const TabWithCourses = () => {
     completed: [],
   });
 
-  const allCourses = [
-    {
-      id: 1,
-      title: "마약범죄 재범방지교육 및 인지행동 개선훈련",
-      img: mainImage,
-      progress: 50,
-      status: "수강중",
-      paymentDate: "2024-04-10",
-      lastAccessed: "2024-04-01",
-    },
-    {
-      id: 2,
-      title: "직장내 성희롱 예방교육",
-      img: exampleImage,
-      progress: 100,
-      status: "수강완료",
-      paymentDate: "2024-03-15",
-      lastAccessed: "2024-03-05",
-    },
-    {
-      id: 3,
-      title: "음주폐혜 예방 심리교육",
-      img: opengraphImage,
-      progress: 23,
-      status: "수강중",
-      paymentDate: "2024-03-19",
-      lastAccessed: "2024-03-15",
-    },
-    {
-      id: 4,
-      title: "중독범죄 예방 심리교육",
-      img: opengraphImage,
-      progress: 99,
-      status: "설문조사중",
-      paymentDate: "2024-04-03",
-      lastAccessed: "2024-03-01",
-    },
-  ];
+  const [allCourses, setAllCourses] = useState([]);
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
+  const [completedCourses, setCompletedCourses] = useState([]);
 
-  const enrolledCourses = [
-    {
-      id: 1,
-      title: "마약범죄 재범방지교육 및 인지행동 개선훈련",
-      img: mainImage,
-      progress: 50,
-      status: "수강중",
-      paymentDate: "2024-04-10",
-      lastAccessed: "2024-04-01",
-    },
-    {
-      id: 3,
-      title: "음주폐혜 예방 심리교육",
-      img: opengraphImage,
-      progress: 23,
-      status: "수강중",
-      paymentDate: "2024-03-19",
-      lastAccessed: "2024-03-15",
-    },
-    {
-      id: 4,
-      title: "중독범죄 예방 심리교육",
-      img: opengraphImage,
-      progress: 99,
-      status: "설문조사중",
-      paymentDate: "2024-04-03",
-      lastAccessed: "2024-03-15",
-    },
-  ];
+  const { getUserEnrollments, enrollments, clearEnrollments, isLoading } = enrollment((state=>({getUserEnrollments: state.getUserEnrollments, enrollments: state.enrollments, clearEnrollments: state.clearEnrollments, isLoading: state.isLoading})))
 
-  const completedCourses = [
-    {
-      id: 2,
-      title: "직장내 성희롱 예방교육",
-      img: exampleImage,
-      progress: 100,
-      status: "수강완료",
-      paymentDate: "2024-03-15",
-      lastAccessed: "2024-03-05",
-    },
-  ];
+  const myUserId = useMemo(() => {
+    const data = sessionStorage.getItem("auth-storage");
+    return data ? JSON.parse(data).state?.user?.userId : null;
+  }, []);
+
+  useEffect(()=>{
+    clearEnrollments();
+    getUserEnrollments(myUserId);
+  }, [])
+
+  useEffect(() => {
+    if (enrollments.length > 0) {
+      const formattedCourses = enrollments.map(course => ({
+        id: course.id,
+        title: course.course_title,
+        progress: course.progress,
+        status: course.is_completed ? "수강완료" : "수강중",
+        paymentDate: new Date(course.enrolled_at).toISOString().split('T')[0],
+        completedDate: course.completed_at ? new Date(course.completed_at).toISOString().split('T')[0] : "미완료",
+      }));
+      setAllCourses(formattedCourses);
+      setEnrolledCourses(formattedCourses.filter(course => course.status !=="수강완료"));
+      setCompletedCourses(formattedCourses.filter(course => course.status ==="수강완료"));
+    }
+  }, [enrollments]);
+
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -146,6 +96,40 @@ export const TabWithCourses = () => {
   };
 
   const renderCourses = (courses) => {
+
+    if (isLoading) {
+      return  (
+      <ul className="mypage-course-list">
+        <div className="mypage-course-header">
+          <div>
+            <input
+              type="checkbox"
+              name="mypage-course-checkbox-all"
+              id="mypage-course-checkbox-all"
+              checked={
+                courses.length &&
+                courses.every((course) =>
+                  selectedCourses[activeTab].includes(course.id)
+                )
+              }
+              onChange={toggleSelectAll}
+            />
+          </div>
+          <div className="mypage-course-index-center-align">강의명</div>
+          <div className="mypage-course-index-center-align">진도율</div>
+          <div className="mypage-course-index-start-align">상태</div>
+          <div className="mypage-course-index-start-align">결제일</div>
+          <div className="mypage-course-index-start-align">수강완료일</div>
+        </div>
+        <div className="mypage-course-loading">Loading...</div>
+      </ul>
+      )
+    }
+
+    if (courses.length === 0) {
+      return <div className="no-courses">수강 중인 과정이 없습니다.</div>;
+    }
+
     return (
       <ul className="mypage-course-list">
         <div className="mypage-course-header">
@@ -167,7 +151,7 @@ export const TabWithCourses = () => {
           <div className="mypage-course-index-center-align">진도율</div>
           <div className="mypage-course-index-start-align">상태</div>
           <div className="mypage-course-index-start-align">결제일</div>
-          <div className="mypage-course-index-start-align">수강신청일</div>
+          <div className="mypage-course-index-start-align">수강완료일</div>
         </div>
         {courses.map((course) => (
           <li key={course.id} className="mypage-course-item">
@@ -182,13 +166,6 @@ export const TabWithCourses = () => {
                 />
               </div>
               <div className="mypage-course-title">
-                <div className="mypage-course-image-wrap">
-                  <img
-                    className="mypage-course-image"
-                    src={course.img}
-                    alt={course.title}
-                  />
-                </div>
                 <h3>{course.title}</h3>
               </div>
               <div className="mypage-course-progress-wrap">
@@ -207,7 +184,7 @@ export const TabWithCourses = () => {
                 {course.status}
               </p>
               <p className="payment-date">{course.paymentDate}</p>
-              <p className="last-accessed">{course.lastAccessed}</p>
+              <p className="last-accessed">{course.completedDate}</p>
             </div>
           </li>
         ))}

@@ -91,6 +91,27 @@
   font-weight: 400;
 }
 
+.signup-modal-button {
+  background-color: transparent;
+  color: #565d6d;
+  width: 100%;
+  font-size: 15px;
+}
+
+.signup-modal-button:hover {
+  text-decoration: underline;
+}
+
+.signup-modal-scroll {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  overflow-y: scroll;
+  border: #828282 1px solid;
+  border-radius: 8px;
+  margin: 20px 0px;
+}
+
 @media (max-width: 600px) {
   .signup-box{
     width: 90%;

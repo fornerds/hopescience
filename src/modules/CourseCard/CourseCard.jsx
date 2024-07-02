@@ -8,13 +8,14 @@ export const CourseCard = ({
   title,
   price,
   discountedPrice,
+  thumbnail,
   createdAt,
 }) => {
   return (
     <CourseLink to={`/courses/${id}`} className="CourseLink">
       <div className="course-card">
         <div className="image-wrap">
-          <img className="course-image" src={mainImage} alt="default" />
+          <img className="course-image" src={src ? src : mainImage} alt="default" />
           {/* <img className="course-image" src={src} alt={title} /> */}
         </div>
         <div className="course-title">{title}</div>

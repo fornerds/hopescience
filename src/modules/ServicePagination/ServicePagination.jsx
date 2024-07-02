@@ -142,7 +142,7 @@ export const ServicePagination = () => {
               value={selectedCategory}
               onChange={handleCategoryChange}
             >
-              <option defaultValue="">카테고리</option>
+              <option defaultValue="">전체 카테고리</option>
               <option value="양형교육">양형교육</option>
               <option value="디지털 장의사">디지털 장의사</option>
             </select>
@@ -225,6 +225,8 @@ export const ServicePagination = () => {
               width: "fit-content",
               height: "fit-content",
             }}
+            buttonStyle="default"
+            color="white"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

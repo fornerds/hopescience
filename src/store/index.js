@@ -326,7 +326,7 @@ const usePaymentStore = create((set) => ({
       const response = await getApi({ path: `/payments/user/${userId}` });
       if (response) {
         set({
-          payment: response,
+          payments: response,
           isLoading: false,
         });
         console.log("결제 데이터를 성공적으로 가져왔습니다.");
@@ -398,6 +398,11 @@ const usePaymentStore = create((set) => ({
       }
     }
   },
+
+  clearPayments: () => {
+    set({ payments: [] });
+  },
+
 }));
 
 const useUserStore = create((set) => ({
@@ -1250,6 +1255,10 @@ const useInquiryStore = create((set) => ({
   clearQnA: () => {
     set({ QnA: null });
   },
+
+  clearInquiries: () => {
+    set({ inquiries: [] });
+  },
 }));
 
 const useCourseInquiryStore = create((set) => ({
@@ -1686,6 +1695,10 @@ const useEnrollmentStore = create((set) => ({
 
   clearEnrollment: () => {
     set({ enrollment: null });
+  },
+
+  clearEnrollments: () => {
+    set({ enrollments: [] });
   },
 }));
 

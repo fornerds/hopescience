@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./OrdersPagination.css";
 import { Link } from "../../components/Link";
 import { useLocation } from "react-router-dom";
@@ -7,153 +7,6 @@ import searchIcon from "../../icons/search.svg"
 import leftArrowButton from "../../icons/chevron-left-large.svg"
 import rightArrowButton from "../../icons/chevron-right-large.svg"
 
-// const mockData = [
-//   {
-//     id: 1139,
-//     state: "결제취소",
-//     user: "김복동",
-//     course: "직장내 성희롱 예방교육",
-//     category: "양형교육",
-//     price: "258,000",
-//     paymentDate: "2024-04-16",
-//   },
-//   {
-//     id: 1104,
-//     state: "결제중",
-//     user: "marktaylor",
-//     course: "직장내 성희롱 예방교육",
-//     category: "양형교육",
-//     price: "258,000",
-//     paymentDate: "2024-04-08",
-//   },
-//   {
-//     id: 996,
-//     state: "결제완료",
-//     user: "johnnelson",
-//     course: "디지털 장의사",
-//     category: "디지털 장의사",
-//     price: "428,000",
-//     paymentDate: "2024-04-02",
-//   },
-//   {
-//     id: 984,
-//     state: "결제완료",
-//     user: "너구리",
-//     course: "직장내 성희롱 예방교육",
-//     category: "양형교육",
-//     price: "258,000",
-//     paymentDate: "2024-03-22",
-//   },
-//   {
-//     id: 975,
-//     state: "결제완료",
-//     user: "짱짱맨",
-//     course: "직장내 성희롱 예방교육",
-//     category: "양형교육",
-//     price: "258,000",
-//     paymentDate: "2024-03-21",
-//   },
-//   {
-//     id: 973,
-//     state: "결제취소",
-//     user: "김복동",
-//     course: "직장내 성희롱 예방교육",
-//     category: "양형교육",
-//     price: "258,000",
-//     paymentDate: "2024-02-16",
-//   },
-//   {
-//     id: 971,
-//     state: "결제완료",
-//     user: "김복동",
-//     course: "직장내 성희롱 예방교육",
-//     category: "양형교육",
-//     price: "258,000",
-//     paymentDate: "2024-02-16",
-//   },
-//   {
-//     id: 970,
-//     state: "결제완료",
-//     user: "김복동",
-//     course: "직장내 성희롱 예방교육",
-//     category: "양형교육",
-//     price: "258,000",
-//     paymentDate: "2024-02-16",
-//   },
-//   {
-//     id: 969,
-//     state: "결제완료",
-//     user: "김복동",
-//     course: "직장내 성희롱 예방교육",
-//     category: "양형교육",
-//     price: "258,000",
-//     paymentDate: "2024-02-16",
-//   },
-//   {
-//     id: 968,
-//     state: "결제완료",
-//     user: "김복동",
-//     course: "직장내 성희롱 예방교육",
-//     category: "양형교육",
-//     price: "258,000",
-//     paymentDate: "2024-02-16",
-//   },
-//   {
-//     id: 967,
-//     state: "결제완료",
-//     user: "김복동",
-//     course: "직장내 성희롱 예방교육",
-//     category: "양형교육",
-//     price: "258,000",
-//     paymentDate: "2024-02-16",
-//   },
-//   {
-//     id: 966,
-//     state: "결제완료",
-//     user: "김복동",
-//     course: "직장내 성희롱 예방교육",
-//     category: "양형교육",
-//     price: "258,000",
-//     paymentDate: "2024-02-16",
-//   },
-//   {
-//     id: 965,
-//     state: "결제완료",
-//     user: "김복동",
-//     course: "직장내 성희롱 예방교육",
-//     category: "양형교육",
-//     price: "258,000",
-//     paymentDate: "2024-02-16",
-//   },
-//   {
-//     id: 964,
-//     state: "결제완료",
-//     user: "김복동",
-//     course: "직장내 성희롱 예방교육",
-//     category: "양형교육",
-//     price: "258,000",
-//     paymentDate: "2024-02-16",
-//   },
-//   {
-//     id: 963,
-//     state: "결제완료",
-//     user: "김복동",
-//     course: "직장내 성희롱 예방교육",
-//     category: "양형교육",
-//     price: "258,000",
-//     paymentDate: "2024-02-16",
-//   },
-//   {
-//     id: 962,
-//     state: "결제완료",
-//     user: "김복동",
-//     course: "직장내 성희롱 예방교육",
-//     category: "양형교육",
-//     price: "258,000",
-//     paymentDate: "2024-02-16",
-//   },
-// ];
-
 export const OrdersPagination = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLink, setCurrentLink] = useState("/mypage/orders/");
@@ -161,6 +14,8 @@ export const OrdersPagination = () => {
   const getPayments = payment((state)=>state.getPayments);
   const payments = payment((state)=>state.payments);
   const isLoading = payment((state)=>state.isLoading);
+  const getPaymentByUser = payment((state)=>state.getPaymentByUser)
+  const clearPayments = payment((state)=>state.clearPayments)
   const totalPosts = payments?.length || 0;
 
   const handlePageChange = (page) => {
@@ -169,10 +24,19 @@ export const OrdersPagination = () => {
 
   const location = useLocation();
 
+  const myUserId = useMemo(() => {
+    const data = sessionStorage.getItem("auth-storage");
+    return data ? JSON.parse(data).state?.user?.userId : null;
+  }, []);
+
   useEffect(() => {
+    clearPayments()
     if (location.pathname === "/admin/orders") {
       setCurrentLink("/admin/orders/");
       getPayments();
+    }else {
+      getPaymentByUser(myUserId)
+      // getPayments();
     }
   }, [location]);
 
@@ -294,7 +158,7 @@ export const OrdersPagination = () => {
             >
               <div>{post.course_title}</div>
             </Link>
-            <div className="order-pagination-mobile-hide">{post.category}</div>
+            <div className="order-pagination-mobile-hide">{post.category_name}</div>
             <div className="order-pagination-mobile-hide">₩{(post.amount).toLocaleString()}</div>
             <div>{new Date(post.created_at).toLocaleDateString("ko-KR")}</div>
           </div>

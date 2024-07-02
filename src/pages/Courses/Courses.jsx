@@ -7,7 +7,6 @@ import leftButtonIcon from "../../icons/left-button.svg"
 import activeLeftButtonIcon from "../../icons/active-left-button.svg"
 import rightButtonIcon from "../../icons/right-button.svg"
 import activeRightButtonIcon from "../../icons/active-right-button.svg"
-import mainImage from "../../images/main.png"
 
 export const Courses = () => {
   const getServices = service((state) => state.getServices);
@@ -24,6 +23,8 @@ export const Courses = () => {
   const indexOfLastCourse = currentPage * coursesPerPage;
   const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
   const currentCourses = services?.slice(indexOfFirstCourse, indexOfLastCourse);
+
+  console.log(currentCourses)
 
   // 페이지 이동 함수
   const prevPage = () => {
@@ -98,7 +99,7 @@ export const Courses = () => {
                         id={id}
                         title={title}
                         src={
-                          thumbnail ? thumbnail : mainImage
+                          thumbnail
                         }
                         price={price}
                         discountedPrice={discounted_price}

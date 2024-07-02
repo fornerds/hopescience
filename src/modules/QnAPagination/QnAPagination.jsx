@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "../../components/Link";
 import leftArrowButton from "../../icons/chevron-left-large.svg"
 import rightArrowButton from "../../icons/chevron-right-large.svg"
+import { inquiry, courseInquiry } from "../../store";
 
 const QnAList = [
   {
@@ -467,13 +468,20 @@ export const QnAPagination = () => {
     setActiveTab(tab);
   };
 
+  const {getInquiries, inquiries, clearInquiries} = inquiry((state=> ({getInquiries: state.getInquiries, inquiries: state.inquiries, clearInquiries: state.clearInquiries})))
+
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 7; // 한 페이지당 보여줄 데이터 수를 7로 변경
-  const totalPosts = QnAList.length;
+  const totalPosts = inquiries.length;
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+
+  useEffect(()=>{
+    clearInquiries();
+    getInquiries()
+  },[])
 
   const renderPageButtons = () => {
     const pageButtons = [];
@@ -507,7 +515,7 @@ export const QnAPagination = () => {
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = QnAList.slice(indexOfFirstPost, indexOfLastPost);
+  const currentPosts = inquiries.slice(indexOfFirstPost, indexOfLastPost);
 
   const [currentPage2, setCurrentPage2] = useState(1);
   const postsPerPage2 = 7; // 한 페이지당 보여줄 데이터 수를 7로 변경
@@ -640,6 +648,8 @@ export const QnAPagination = () => {
             to="/admin/QnA/new"
             label="글쓰기"
             style={{ width: "105px", height: "35px", fontSize: "14px" }}
+            buttonStyle="default"
+            color="white"
           />
         </div>
         <div className="user-pagination-tab-content">
@@ -679,15 +689,15 @@ export const QnAPagination = () => {
                     </Link>
                     <div>{post.category}</div>
 
-                    <div>{post.writer}</div>
-                    <div>{post.publishDate}</div>
-                    <div>{post.views}</div>
+                    <div>{post.user_name}</div>
+                    <div>{new Date(post.created_at).toLocaleDateString()}</div>
+                    <div>{post.view_count}</div>
                   </div>
                 ))}
               </div>
               <div className="user-qna-pagination-footer">
                 <div className="user-qna-pagination-count">
-                  {QnAList.length} results
+                  {inquiries.length} results
                 </div>
                 <div className="user-qna-pagination-buttons">
                   <button

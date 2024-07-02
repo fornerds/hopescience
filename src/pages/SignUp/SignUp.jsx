@@ -1,9 +1,6 @@
-import React, { useEffect, useRef, useCallback } from "react";
-import { Header } from "../../components/Header";
-import { Footer } from "../../components/Footer";
-import { Input } from "../../components/Input";
-import { Button } from "../../components/Button";
-import { Link } from "../../components/Link";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { Header, Footer, Input, Button, Link } from "../../components";
+import { Modal } from "../../modules/Modal";
 import "./style.css";
 import { auth } from "../../store";
 import { useForm, Controller } from "react-hook-form";
@@ -13,6 +10,7 @@ import * as yup from "yup";
 import LineLeft from "../../icons/line-left.svg";
 import LineRight from "../../icons/line-right.svg";
 import naverImage from "../../images/naver.png";
+import { PolicyContent } from "../Policy/Policy";
 
 const schema = yup
   .object({
@@ -41,6 +39,8 @@ const schema = yup
 export const SignUp = () => {
   const signup = auth((state) => state.register);
   const isLoading = auth((state) => state.isLoading);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const naverLoginRef = useRef();
   const {
     register,
@@ -224,7 +224,9 @@ export const SignUp = () => {
                       <div className="signup-check">
                         <input {...field} type="checkbox" id="terms" />
                         <label htmlFor="terms">
-                          이용약관 및 정보보호정책 동의
+                          <Button onClick={()=>setIsModalOpen(true)} className="signup-modal-button">
+                            이용약관 및 정보보호정책 동의
+                          </Button>
                         </label>
                       </div>
                       {errors.terms && (
@@ -276,6 +278,15 @@ export const SignUp = () => {
             </Button>
           </div>
         </div>
+        <Modal
+          modalTitle="이용약관 및 정보보호정책"
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        >
+          <div className="signup-modal-scroll">
+            <PolicyContent />
+          </div>
+        </Modal>
       </main>
       <Footer />
     </>

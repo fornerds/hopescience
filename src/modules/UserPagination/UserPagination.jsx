@@ -24,7 +24,8 @@ export const UserPagination = () => {
   const enrollments = user((state) => state.enrollments);
   const isEnrollmentsLoading = user((state) => state.isLoading);
   const getPaymentByUser = payment((state) => state.getPaymentByUser);
-  const payments = payment((state) => state.payment);
+  const clearPayments = payment((state)=>state.clearPayments)
+  const payments = payment((state) => state.payments);
   const isPaymentsLoading = payment((state) => state.isLoading);
   const getUserQnA = user((state) => state.getUserQnA);
   const userQnA = user((state) => state.userQnA);
@@ -38,11 +39,9 @@ export const UserPagination = () => {
   }, [getEnrollments, user_id]);
 
   useEffect(() => {
-    const fetchPayments = async () => {
-      await getPaymentByUser(user_id);
-    };
-    fetchPayments();
-  }, [getPaymentByUser, user_id]);
+    clearPayments();
+    getPaymentByUser(user_id);
+  }, [user_id]);
 
   useEffect(() => {
     const fetchUserQnA = async () => {
@@ -95,6 +94,16 @@ export const UserPagination = () => {
     });
   };
 
+  const getStateClassName = (state) => {
+    const stateClassMap = {
+      CANCEL: "결제취소",
+      READY: "결제중",
+      DONE: "결제완료",
+      COMPLETED: "결제확인",
+    };
+    return stateClassMap[state] || "";
+  };
+
   const renderEnrollments = (enrollments, currentPage) => {
     const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
     const endIndex = startIndex + POSTS_PER_PAGE;
@@ -144,12 +153,8 @@ export const UserPagination = () => {
         <div>
           <input type="checkbox" name={payment.id} id={payment.id} />
         </div>
-        <div
-          className={`order-item-state ${getPaymentStatusClassName(
-            payment.status
-          )}`}
-        >
-          {payment.status}
+        <div className={`order-item-state ${payment.status}`} >
+          {getStateClassName(payment.status)}
         </div>
         <div>#{payment.order_id}</div>
         <Link
@@ -178,6 +183,8 @@ export const UserPagination = () => {
       </div>
     ));
   };
+
+  console.log(payments, user_id)
 
   const renderPosts = (posts, currentPage) => {
     const startIndex = (currentPage - 1) * POSTS_PER_PAGE;

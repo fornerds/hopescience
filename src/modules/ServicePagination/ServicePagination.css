@@ -61,7 +61,7 @@ select::-ms-expand {
 .service-category {
   position: relative;
   background-color: #171a1f;
-  width: 102px;
+  width: 120px;
   padding: 10px 12px;
   height: 35px;
   display: flex;
@@ -75,7 +75,7 @@ select::-ms-expand {
 
 #service-category-select {
   color: #9095a1;
-  width: 68px;
+  width: 80px;
   height: inherit;
   background: transparent;
   border: 0 none;

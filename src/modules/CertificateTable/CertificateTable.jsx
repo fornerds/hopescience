@@ -29,10 +29,10 @@ export const CertificateTable = () => {
           {
           isLoading? (
             <li className="certificate-table-loading-item">
-              사용자의 이수증서 정보를 가져오고 있습니다...
+              Loading...
             </li>
           ):
-          certificates ?
+          certificates && certificates.length > 0 ?
           certificates.map((certificate) => (
             <li className="certificate-table-item" key={certificate.id}>
               <div className="certificate-table-mobile-hide">{certificate.certificate_id}</div>
@@ -48,10 +48,8 @@ export const CertificateTable = () => {
             </li>
           ))
           :
-          <li className="certificate-table-item">
-            <div className="certificate-table-item-title-wrap">
-              <h3>아직 모든 강의를 수강한 서비스가 존재하지 않습니다.</h3>
-            </div>
+          <li className="certificate-table-loading-item">
+            이수한 서비스가 존재하지 않습니다.
           </li>
         }
         </ol>
