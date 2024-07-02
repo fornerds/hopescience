@@ -23,13 +23,12 @@ export const UserPagination = () => {
   const getEnrollments = user((state) => state.getEnrollments);
   const enrollments = user((state) => state.enrollments);
   const isEnrollmentsLoading = user((state) => state.isLoading);
-  const getPayments = payment((state) => state.getPayments);
-  const payments = payment((state) => state.payments);
+  const getPaymentByUser = payment((state) => state.getPaymentByUser);
+  const payments = payment((state) => state.payment);
   const isPaymentsLoading = payment((state) => state.isLoading);
   const getUserQnA = user((state) => state.getUserQnA);
   const userQnA = user((state) => state.userQnA);
 
-  // 컴포넌트 마운트 시 데이터 가져오기
   useEffect(() => {
     const fetchEnrollments = async () => {
       const enrollmentsData = await getEnrollments(user_id);
@@ -40,10 +39,10 @@ export const UserPagination = () => {
 
   useEffect(() => {
     const fetchPayments = async () => {
-      await getPayments(user_id);
+      await getPaymentByUser(user_id);
     };
     fetchPayments();
-  }, [getPayments, user_id]);
+  }, [getPaymentByUser, user_id]);
 
   useEffect(() => {
     const fetchUserQnA = async () => {
@@ -52,7 +51,6 @@ export const UserPagination = () => {
     fetchUserQnA();
   }, [getUserQnA, user_id]);
 
-  // 이벤트 핸들러
   const handleTabClick = (tab) => {
     setActiveTab(tab);
     setCurrentPageInProgress(1);
@@ -72,7 +70,6 @@ export const UserPagination = () => {
     setCurrentPagePosts(page);
   };
 
-  // 페이지네이션 버튼 렌더링
   const renderPaginationButtons = (totalItems, currentPage, onPageChange) => {
     const totalPages = Math.ceil(totalItems / POSTS_PER_PAGE);
     let startPage = Math.max(currentPage - 2, 1);
@@ -98,7 +95,6 @@ export const UserPagination = () => {
     });
   };
 
-  // 수강 중인 강의 렌더링
   const renderEnrollments = (enrollments, currentPage) => {
     const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
     const endIndex = startIndex + POSTS_PER_PAGE;
@@ -129,7 +125,6 @@ export const UserPagination = () => {
     ));
   };
 
-  // 구매 내역 상태에 따른 클래스명 반환
   const getPaymentStatusClassName = (status) => {
     const statusClassMap = {
       결제취소: "cancel",
@@ -139,7 +134,6 @@ export const UserPagination = () => {
     return statusClassMap[status] || "";
   };
 
-  // 구매 내역 렌더링
   const renderPayments = (payments, currentPage) => {
     const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
     const endIndex = startIndex + POSTS_PER_PAGE;
@@ -157,7 +151,7 @@ export const UserPagination = () => {
         >
           {payment.status}
         </div>
-        <div>#{payment.payment_id}</div>
+        <div>#{payment.order_id}</div>
         <Link
           to={`/admin/orders/${payment.order_id}`}
           className="post-item-link"
@@ -185,7 +179,6 @@ export const UserPagination = () => {
     ));
   };
 
-  // 게시물 렌더링
   const renderPosts = (posts, currentPage) => {
     const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
     const endIndex = startIndex + POSTS_PER_PAGE;
@@ -219,14 +212,12 @@ export const UserPagination = () => {
     ));
   };
 
-  // 데이터 로딩 중일 때 로딩 메시지 표시
   if (isEnrollmentsLoading || isPaymentsLoading) {
     return <div>Loading...</div>;
   }
 
   return (
     <div className="user-pagination">
-      {/* 탭 메뉴 */}
       <div className="user-pagination-tab-menu">
         {TAB_BUTTONS.map((tab) => (
           <button
@@ -240,9 +231,7 @@ export const UserPagination = () => {
           </button>
         ))}
       </div>
-      {/* 탭 콘텐츠 */}
       <div className="user-pagination-tab-content">
-        {/* 수강 중인 강의 탭 */}
         {activeTab === "inProgress" && (
           <>
             <div className="user-lecture-list margin-top-32">
@@ -307,7 +296,6 @@ export const UserPagination = () => {
             </div>
           </>
         )}
-        {/* 구매 내역 탭 */}
         {activeTab === "purchases" && (
           <>
             <div className="order-list margin-top-32">
@@ -374,7 +362,6 @@ export const UserPagination = () => {
             </div>
           </>
         )}
-        {/* 게시물 탭 */}
         {activeTab === "posts" && (
           <>
             <div className="user-qna-list margin-top-32">

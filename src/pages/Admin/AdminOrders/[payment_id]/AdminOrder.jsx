@@ -1,5 +1,6 @@
 import { AdminSideBar } from "../../../../modules/AdminSideBar";
 import { AdminReceiptPdfGenerator } from "../../../../modules/PdfGenerator/PdfGenerator";
+
 export const AdminOrder = () => {
   return (
     <>

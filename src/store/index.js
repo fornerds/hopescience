@@ -54,7 +54,7 @@ const useAuthStore = create(
             uuid,
           } = response;
           set({
-            user: { userId: user_id, name, userType: user_type, uuid},
+            user: { userId: user_id, name, userType: user_type, uuid },
             accessToken: access_token,
             refreshToken: refresh_token,
             isLoading: false,
@@ -318,6 +318,86 @@ const usePaymentStore = create((set) => ({
       );
     }
   },
+
+  
+  getPaymentByUser: async (userId) => {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({ path: `/payments/user/${userId}` });
+      if (response) {
+        set({
+          payment: response,
+          isLoading: false,
+        });
+        console.log("결제 데이터를 성공적으로 가져왔습니다.");
+      } else {
+        throw new Error(`Failed to fetch payment: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      alert(
+        "결제 데이터를 가져오는 중 오류가 발생했습니다: " + error.message
+      );
+    }
+  },
+
+
+  getPaymentByOrderId: async (orderId) => {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({ path: `/payments/order/${orderId}` });
+      if (response) {
+        set({
+          payment: response,
+          isLoading: false,
+        });
+        console.log("결제 데이터를 성공적으로 가져왔습니다.");
+      } else {
+        throw new Error(`Failed to fetch payment: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      alert(
+        "결제 데이터를 가져오는 중 오류가 발생했습니다: " + error.message
+      );
+    }
+  },
+
+  cancelPayment: async (paymentKey, cancelReason, cancelAmount) => {
+    try {
+      const response = await postApi({
+        path: `/payments/cancel/${paymentKey}`,
+        data: {
+          cancel_reason: cancelReason,
+          cancel_amount: cancelAmount,
+        },
+      });
+      console.log(response);
+      if (response.message === "Payment canceled successfully") {
+        alert("결제가 취소되었습니다.");
+        set({ payment: null });
+      }
+      else if (response.status === 404) {
+        alert("결제 정보를 찾을 수 없습니다.");
+      } else {
+        alert("결제 취소 중 오류가 발생했습니다.");
+      }
+    }  catch (error) {
+      if (error.response) {
+        if (error.response.data.detail.code === "ALREADY_CANCELED_PAYMENT") {
+          alert("이미 취소된 결제입니다.");
+        } else if (error.response.status === 404) {
+          alert("결제 정보를 찾을 수 없습니다.");
+        } else {
+          console.error("결제 취소 중 오류가 발생했습니다.", error);
+          alert("결제 취소 중 오류가 발생했습니다.");
+        }
+      } else {
+        console.error("결제 취소 중 오류가 발생했습니다.", error);
+        alert("결제 취소 중 오류가 발생했습니다.");
+      }
+    }
+  },
 }));
 
 const useUserStore = create((set) => ({
@@ -359,7 +439,7 @@ const useUserStore = create((set) => ({
   searchUsers: async (keyword) => {
     set({ isLoading: true });
     try {
-      const response = await getApi({ path: "/users/?skip=0&limit=100&keyword=" + keyword});
+      const response = await getApi({ path: "/users/?skip=0&limit=100&keyword=" + keyword });
       if (response) {
         set({
           users: response.map((user) => ({
@@ -814,7 +894,7 @@ const useServiceStore = create((set) => ({
       });
       alert(
         "서비스 업데이트 실패: " +
-          (error.response?.data?.message || error.message)
+        (error.response?.data?.message || error.message)
       );
       return false;
     }
@@ -943,7 +1023,7 @@ const useServiceStore = create((set) => ({
     }
   },
 
-  getNextLecture: async(course_id, lecture_id) => {
+  getNextLecture: async (course_id, lecture_id) => {
     try {
       const response = await getApi({ path: `/courses/${course_id}/lectures/${lecture_id}/navigation` });
       if (response) {
@@ -1497,7 +1577,7 @@ const useEnrollmentStore = create((set) => ({
   getEnrollmentProgress: async (enrollmentId) => {
     set({ isLoading: true });
     try {
-      const response = await getApi({ path: `/enrollments/${enrollmentId}/progress`});
+      const response = await getApi({ path: `/enrollments/${enrollmentId}/progress` });
       if (response) {
         set({ enrollmentProgress: response, isLoading: false });
         console.log("수강 진행 상황을 성공적으로 가져왔습니다.");
@@ -1561,9 +1641,11 @@ const useEnrollmentStore = create((set) => ({
   updateEnrollmentCompletedCount: async (enrollmentId, count) => {
     set({ isLoading: true });
     try {
-      const response = await patchApi({ path: `/enrollments/${enrollmentId}/completed-lecture-count`, data: {
-        completed_lecture_count: count,
-      }, });
+      const response = await patchApi({
+        path: `/enrollments/${enrollmentId}/completed-lecture-count`, data: {
+          completed_lecture_count: count,
+        },
+      });
       set({ isLoading: false });
       console.log("영상 진도율 강의 수 업데이트를 성공적으로 확인했습니다.");
       return response
@@ -1576,7 +1658,7 @@ const useEnrollmentStore = create((set) => ({
   updateEnrollmentIsCompleted: async (enrollmentId) => {
     set({ isLoading: true });
     try {
-      const response = await patchApi({ path: `/enrollments/${enrollmentId}/is-completed`, data: {is_completed: true} });
+      const response = await patchApi({ path: `/enrollments/${enrollmentId}/is-completed`, data: { is_completed: true } });
       set({ isLoading: false });
       console.log("완강 여부 데이터 업데이트를 성공적으로 확인했습니다.");
       return response
@@ -1589,9 +1671,9 @@ const useEnrollmentStore = create((set) => ({
   updateEnrollmentTotalProcess: async (enrollmentId, progressRate) => {
     set({ isLoading: true });
     try {
-      const response = await patchApi({ 
-        path: `/enrollments/${enrollmentId}/progress`, 
-        data: { progress: progressRate } 
+      const response = await patchApi({
+        path: `/enrollments/${enrollmentId}/progress`,
+        data: { progress: progressRate }
       });
       set({ isLoading: false });
       console.log("전체 진도율 업데이트를 성공적으로 완료했습니다.");
@@ -1632,9 +1714,9 @@ const useCertificateStore = create((set) => ({
   createCertificate: async (userId, courseId, certificateData) => {
     set({ isLoading: true });
     try {
-      const response = await postApi({ 
+      const response = await postApi({
         path: `/certificates/?user_id=${userId}&course_id=${courseId}`,
-        data: certificateData 
+        data: certificateData
       });
       if (response) {
         set({ isLoading: false });
