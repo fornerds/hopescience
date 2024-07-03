@@ -3,12 +3,32 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { loadPaymentWidget } from "@tosspayments/payment-widget-sdk";
-import { Header, Footer, Button } from "../../../../components";
+import { Header, Footer, Button, Input } from "../../../../components";
 import { Modal } from "../../../../modules/Modal";
 import { payment, user, service } from "../../../../store";
-import exampleImage from "../../../../images/example.png"
+import mainImage from "../../../../images/main.png";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 const widgetClientKey = process.env.REACT_APP_TOSS_PAYMENTS_CLIENT_KEY;
+
+const editUserSchema = yup
+  .object({
+    name: yup.string().required("이름을 입력해주세요.").matches(/^[가-힣]{2,}$|^[a-zA-Z]{2,}$/, "유효한 이름형식으로 입력해주세요"),
+    phone: yup
+      .string()
+      .required("연락처를 입력해주세요.")
+      .matches(
+        /^\d{3}-\d{3,4}-\d{4}$/,
+        "유효한 연락처를 입력해주세요. 예 010-0000-0000"
+      ),
+    email: yup
+      .string()
+      .required("이메일 주소를 입력해주세요.")
+      .email("유효한 이메일 주소를 입력해주세요."),
+  })
+  .required();
 
 export const Cart = () => {
   const [paymentWidget, setPaymentWidget] = useState(null);
@@ -30,6 +50,22 @@ export const Cart = () => {
   const course = service((state) => state.course) || null;
   const myUserId = data ? JSON.parse(data).state?.user?.userId : null;
   const orderNumberGenerated = useRef(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editedUserData, setEditedUserData] = useState({
+    name: '',
+    phone: '',
+    email: ''
+  });
+  const updateUser = user((state) => state.updateUser);
+
+  const { control, handleSubmit, setValue, formState: { errors } } = useForm({
+    resolver: yupResolver(editUserSchema),
+    defaultValues: {
+      name: '',
+      phone: '',
+      email: ''
+    }
+  });
 
   const removeHyphensFromPhoneNumber = (phoneNumber) => {
     return phoneNumber.replace(/-/g, '');
@@ -150,6 +186,96 @@ export const Cart = () => {
     }
   };
 
+  useEffect(() => {
+    if (userData) {
+      setValue('name', userData.name);
+      setValue('phone', userData.phone);
+      setValue('email', userData.email);
+    }
+  }, [userData, setValue]);
+
+
+  const handleEditUser = async (data) => {
+    console.log(data.email, data.name, data.phone);
+    try {
+      await updateUser(myUserId, userData.uuid, data.email, data.name, data.phone);
+      setIsEditModalOpen(false);
+      getUser(myUserId); // 수정된 정보를 다시 불러옵니다.
+    } catch (error) {
+      console.error("Failed to update user:", error);
+      setErrorMessage("회원 정보 수정에 실패했습니다.");
+      setIsModalOpen(true);
+    }
+  };
+
+  const formatPhoneNumber = (value) => {
+    if (!value) return value;
+    const phoneNumber = value.replace(/[^\d]/g, '');
+    const phoneNumberLength = phoneNumber.length;
+    if (phoneNumberLength <= 3) return phoneNumber;
+    if (phoneNumberLength <= 7) {
+      return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`;
+    }
+    return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`;
+  };
+
+  const handlePhoneChange = (e, onChange) => {
+    const formattedValue = formatPhoneNumber(e.target.value);
+    onChange(formattedValue);
+  };
+
+  const renderEditUserModal = () => (
+    <Modal
+      modalTitle="회원 정보 수정"
+      isOpen={isEditModalOpen}
+      onClose={() => setIsEditModalOpen(false)}
+      onConfirm={handleSubmit(handleEditUser)}
+      confirmLabel="수정하기"
+      cancelLabel="취소"
+    >
+      <form className="edit-user-form">
+        <Controller
+          name="name"
+          control={control}
+          render={({ field }) => (
+            <div className="edit-user-input">
+              <label htmlFor="name">이름</label>
+              <Input {...field} type="text" placeholder="이름을 입력하세요" />
+              {errors.name && <p className="input-error-message">{errors.name.message}</p>}
+            </div>
+          )}
+        />
+        <Controller
+          name="phone"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <div className="edit-user-input">
+              <label htmlFor="phone">연락처</label>
+              <Input
+                type="tel"
+                placeholder="연락처를 입력하세요"
+                value={value}
+                onChange={(e) => handlePhoneChange(e, onChange)}
+              />
+              {errors.phone && <p className="input-error-message">{errors.phone.message}</p>}
+            </div>
+          )}
+        />
+        <Controller
+          name="email"
+          control={control}
+          render={({ field }) => (
+            <div className="edit-user-input">
+              <label htmlFor="email">이메일</label>
+              <Input {...field} type="email" placeholder="이메일 주소를 입력하세요" />
+              {errors.email && <p className="input-error-message">{errors.email.message}</p>}
+            </div>
+          )}
+        />
+      </form>
+    </Modal>
+  );
+
   return (
     <>
       <Header />
@@ -183,7 +309,7 @@ export const Cart = () => {
               <div className="cart-course-image-wrap">
                 <img
                   className="cart-course-image"
-                  src={exampleImage}
+                  src={course?.thumbnail ? course?.thumbnail : mainImage}
                   alt="강의 썸네일"
                 />
               </div>
@@ -212,6 +338,7 @@ export const Cart = () => {
                   backgroundColor: "#171A1F",
                   fontSize: "14px",
                 }}
+                onClick={() => setIsEditModalOpen(true)}
               />
             </div>
             {isUserLoading ? (
@@ -281,10 +408,12 @@ export const Cart = () => {
             onClick={()=>handlePaymentRequest(orderNumber, course?.title, userData?.name, userData?.email, userData?.phone, Number(course?.discounted_price), userData?.id, course_id)}
           />
         </div>
+        {renderEditUserModal()}
         <Modal
           modalTitle="결제오류"
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
+          cancelLabel="확인"
         >
           <p>{errorMessage}</p>
         </Modal>

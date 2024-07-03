@@ -295,6 +295,7 @@ export const Setting = () => {
           setShowModal(false);
           navigate("/");
         }}
+        confirmLabel="삭제"
       >
         <p>
           회원님이 결제한 강의정보와 이수증서 등 회원님이 활동한 정보가 탈퇴한

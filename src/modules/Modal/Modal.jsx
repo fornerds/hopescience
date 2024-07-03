@@ -2,7 +2,7 @@ import React from "react";
 import "./Modal.css"; // 모달에 대한 스타일 지정
 import { Button } from "../../components/Button";
 
-export const Modal = ({ modalTitle, isOpen, children, onClose, onConfirm }) => {
+export const Modal = ({ modalTitle, isOpen, children, onClose, onConfirm, confirmLabel, cancelLabel }) => {
   if (!isOpen) return null;
 
   return (
@@ -10,29 +10,22 @@ export const Modal = ({ modalTitle, isOpen, children, onClose, onConfirm }) => {
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         {modalTitle ? <h2 className="modal-title">{modalTitle}</h2> : ""}
         {children}
-        {onConfirm ? (
-          <div className="modal-buttons-group">
+        <div className="modal-buttons-group">
+          {onConfirm && (
             <Button
               className="action-button"
               onClick={onConfirm}
-              label="삭제"
-              variant="danger"
-            />
-            <Button
-              className="close-button"
-              onClick={onClose}
-              label="취소"
+              label={confirmLabel || "확인"}
               variant="primary"
             />
-          </div>
-        ) : (
+          )}
           <Button
             className="close-button"
             onClick={onClose}
-            label="확인"
-            variant="primary"
+            label={cancelLabel || "취소"}
+            variant={onConfirm ? "secondary" : "primary"}
           />
-        )}
+        </div>
       </div>
     </div>
   );

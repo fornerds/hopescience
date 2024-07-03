@@ -191,6 +191,19 @@
   height: 16px;
 }
 
+.edit-user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 20px 10px 40px;
+}
+
+.edit-user-input{
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
 @keyframes loading {
   0% {
       background-position: 200% 0;

@@ -402,6 +402,7 @@ export const Post = () => {
               ? navigate("/QnA")
               : navigate(`/courses/${course_id}`);
           }}
+          confirmLabel="삭제"
         >
           <p>정말 문의한 내용을 삭제하시겠습니까?</p>
         </Modal>

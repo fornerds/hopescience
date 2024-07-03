@@ -72,7 +72,7 @@ export const Course = () => {
                 <div className="course-preview">
                   <div className="course-image-wrap">
                     <img
-                      src={mainImage}
+                      src={course?.thumbnail ? course?.thumbnail : mainImage}
                       alt="강의 섬네일"
                       className="course-image"
                     />

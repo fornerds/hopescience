@@ -482,6 +482,7 @@ export const ServiceForm = () => {
         modalTitle="서비스 등록 오류"
         isOpen={showModal}
         onClose={() => setShowModal(false)}
+        cancelLabel="확인"
       >
         <p>{errorMessage}</p>
       </Modal>

@@ -282,6 +282,7 @@ export const SignUp = () => {
           modalTitle="이용약관 및 정보보호정책"
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
+          cancelLabel="확인"
         >
           <div className="signup-modal-scroll">
             <PolicyContent />

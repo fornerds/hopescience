@@ -34,12 +34,18 @@
   gap: 54px;
 }
 
+.course-preview {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 23px;
+}
+
 .course-image-wrap {
   max-width: 425px;
   width: 100%;
   max-height: 288px;
   overflow: hidden;
-  margin-bottom: 23px;
 }
 
 .course-image {
