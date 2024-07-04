@@ -788,23 +788,25 @@ const useServiceStore = create((set) => ({
     try {
       const response = await getApi({ path: "/courses/categories" });
       if (response) {
+        const categories = response.map((category) => ({
+          id: category.id,
+          name: category.name,
+        }));
         set({
-          categories: response.map((category) => ({
-            id: category.id,
-            name: category.name,
-          })),
+          categories,
           isLoading: false,
         });
         console.log("카테고리를 성공적으로 가져왔습니다.");
+        console.log(response);
+        return categories; // 카테고리 데이터를 반환
       } else {
-        throw new Error(
-          `Failed to fetch categories: Status ${response.status}`
-        );
+        throw new Error(`Failed to fetch categories: Status ${response.status}`);
       }
     } catch (error) {
       set({ error: error.message, isLoading: false });
       console.error("getCategories Error:", error);
-      alert("카테고리를를 가져오는 중 오류가 발생했습니다: " + error.message);
+      alert("카테고리를 가져오는 중 오류가 발생했습니다: " + error.message);
+      return []; // 오류 발생 시 빈 배열 반환
     }
   },
 
@@ -1456,6 +1458,42 @@ const useCourseInquiryStore = create((set) => ({
 
   clearCourseQnA: () => {
     set({ courseQnA: null });
+  },
+
+  getCourseInquiriesByCategory: async (category) => {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({ path: `/category/${category}/qna/` });
+      if (response) {
+        const sortedInquiries = response
+          .map((inquiry) => ({
+            id: inquiry.id,
+            course_id: inquiry.course_id,
+            user_id: inquiry.user_id,
+            title: inquiry.title,
+            content: inquiry.content,
+            created_at: inquiry.created_at,
+            updated_at: inquiry.updated_at,
+            view_count: inquiry.view_count,
+            user_name: inquiry.user_name,
+            comments: inquiry.comments,
+            lecture_id: inquiry.lecture_id,
+            category: inquiry.category,
+          }))
+          .sort((a, b) => b.id - a.id); // 최근순으로 정렬
+
+        set({
+          courseInquiries: sortedInquiries,
+          isLoading: false,
+        });
+        console.log(`${category} 카테고리의 질문 리스트를 성공적으로 가져왔습니다.`);
+      } else {
+        throw new Error(`Failed to fetch inquiries: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      alert(`${category} 카테고리의 질문 리스트를 가져오는 중 오류가 발생했습니다: ` + error.message);
+    }
   },
 }));
 
