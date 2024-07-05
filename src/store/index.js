@@ -1873,6 +1873,38 @@ const useCertificateStore = create((set) => ({
   }
 }));
 
+const useCounselingStore = create((set) => ({
+  isLoading: false,
+  error: null,
+  createCounseling: async (name, email, phone, content) => {
+    set({ isLoading: true });
+  
+    try {
+      const response = await postApi({
+        path: "/counselings",
+        data: {
+          name,
+          email,
+          phone,
+          content,
+        },
+      });
+  
+      if (response?.id) {
+        set({ isLoading: false });
+        return true;
+      } else {
+        set({ isLoading: false });
+        return false;
+      }
+    } catch (error) {
+      set({ error: error.response.data.message, isLoading: false });
+      return false;
+    }
+  },
+}));
+
+
 export const certificate = useCertificateStore;
 export const enrollment = useEnrollmentStore;
 export const courseInquiry = useCourseInquiryStore;
@@ -1881,3 +1913,4 @@ export const user = useUserStore;
 export const payment = usePaymentStore;
 export const auth = useAuthStore;
 export const service = useServiceStore;
+export { useCounselingStore };

@@ -11,6 +11,8 @@ import locationPinIcon from "../../icons/location-pin.svg";
 import phoneIcon from "../../icons/phone.svg";
 import mailIcon from "../../icons/mail.svg";
 import contactImage from "../../images/contact.png";
+import { useCounselingStore } from '../../store';
+import { useState } from 'react';
 
 
 const reviews = [
@@ -148,6 +150,38 @@ const faqData = [
 ];
 
 export const Home = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const counseling = useCounselingStore();
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [content, setContent] = useState('');
+
+  const handleCounselingSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const success = await counseling.createCounseling(name, email, phone, content);
+      if (success) {
+        alert("상담문의가 정상적으로 접수되었습니다.");
+        setName('');
+        setEmail('');
+        setPhone('');
+        setContent('');
+      } else {
+        alert("상담문의 등록에 실패했습니다. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      console.error("상담문의 등록 실패:", error);
+      alert("상담문의 등록 중 오류가 발생했습니다. 다시 시도해주세요.");
+    }
+
+    setIsSubmitting(false);
+  };
+
 
   return (
     <>
@@ -204,26 +238,26 @@ export const Home = () => {
           <figure className="home-certificate-table-figure">
             <h4>성범죄 예방 심리교육</h4>
             <img
-                className="home-certificate-image"
-                src={certificationImage}
-                alt="이수증서 예시 이미지"
-              />
+              className="home-certificate-image"
+              src={certificationImage}
+              alt="이수증서 예시 이미지"
+            />
           </figure>
           <figure className="home-certificate-table-figure">
             <h4>음주폐혜 예방 심리교육&#40;준비중&#41;</h4>
             <img
-                className="home-certificate-image"
-                src={certificationImage}
-                alt="이수증서 예시 이미지"
-              />
+              className="home-certificate-image"
+              src={certificationImage}
+              alt="이수증서 예시 이미지"
+            />
           </figure>
           <figure className="home-certificate-table-figure">
             <h4>중독범죄 예방 심리교육&#40;준비중&#41;</h4>
             <img
-                className="home-certificate-image"
-                src={certificationImage}
-                alt="이수증서 예시 이미지"
-              />
+              className="home-certificate-image"
+              src={certificationImage}
+              alt="이수증서 예시 이미지"
+            />
           </figure>
         </div>
       </section>
@@ -301,12 +335,12 @@ export const Home = () => {
           그 다음 주인공은 바로 여러분 입니다.
         </div>
         <Carousel items={reviews} />
-      </section>
+        </section>
       <section className="home-FAQ-section">
         <div className="home-FAQ-section-title">FAQ</div>
         <div className="home-section-title-large">자주 묻는 질문</div>
         <FaqAccordion faqs={faqData} />
-      </section>
+        </section>
       <section className="home-contact-section">
         <div className="home-contact-info">
           <h4 className="home-contact-info-title">상담문의</h4>
@@ -339,30 +373,43 @@ export const Home = () => {
           />
         </div>
         <div className="home-contact-form">
-          <Input
-            mode="underline"
-            type="name"
-            placeholder="이름"
-            style={{ width: "90%", height: "44px", padding: "0", maxWidth: "456px", display: "flex" }}
-          />
-          <Input
-            mode="underline"
-            type="email"
-            placeholder="이메일"
-            style={{ width: "90%", height: "44px", padding: "0", maxWidth: "456px", display: "flex" }}
-          />
-          <Input
-            mode="underline"
-            type="tel"
-            placeholder="연락처"
-            style={{ width: "90%", height: "44px", padding: "0", maxWidth: "456px", display: "flex" }}
-          />
-          <textarea
-            name="contact-content"
-            id="contact-content"
-            placeholder="문의 내용"
-          ></textarea>
-          <Button label="문의하기" style={{ marginTop: "25px" }} />
+        <form onSubmit={handleCounselingSubmit}>
+      <Input
+        mode="underline"
+        type="text"
+        placeholder="이름"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        style={{ width: "90%", height: "44px", padding: "0", maxWidth: "456px", display: "flex" }}
+      />
+      <Input
+        mode="underline"
+        type="email"
+        placeholder="이메일"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        style={{ width: "90%", height: "44px", padding: "0", maxWidth: "456px", display: "flex" }}
+      />
+      <Input
+        mode="underline"
+        type="tel"
+        placeholder="연락처"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
+        style={{ width: "90%", height: "44px", padding: "0", maxWidth: "456px", display: "flex" }}
+      />
+      <textarea
+        id="contact-content"
+        placeholder="문의 내용"
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+      ></textarea>
+        {isSubmitting ? (
+          <Button type="submit" label="문의 접수 중..." style={{ marginTop: "25px" }} disabled />
+        ) : (
+          <Button type="submit" label="문의하기" style={{ marginTop: "25px" }} />
+        )}
+        </form>
         </div>
       </section>
       <Footer />
