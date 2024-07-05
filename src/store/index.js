@@ -259,15 +259,15 @@ const usePaymentStore = create((set) => ({
         },
       });
 
-      alert(`결제 정보 저장: 주문번호 ${orderId}`);
+      console.log(`결제 정보 저장: 주문번호 ${orderId}`);
       set({ isLoading: false });
       return response;
     } catch (err) {
       set({
-        error: err.message || "결제 처리 중 오류가 발생했습니다",
+        error: err.message || "결제 DB 생성 중 오류가 발생했습니다",
         isLoading: false,
       });
-      alert(err.message || "결제 처리 중 오류가 발생했습니다");
+      alert(err.message || "결제 DB 생성 중 오류가 발생했습니다. 새로 고침 후 다시 이용 부탁드립니다.");
     }
   },
 
@@ -284,16 +284,16 @@ const usePaymentStore = create((set) => ({
       });
 
       if (response) {
-        alert(`결제 성공: 주문번호 ${orderId}`);
+        console.log(`결제 성공: 주문번호 ${orderId}`);
         set({ isLoading: false });
         return true;
       }
     } catch (error) {
       set({
-        error: error.message || "결제 처리 중 오류가 발생했습니다",
+        error: error.message || "결제 완료 처리 중 오류가 발생했습니다",
         isLoading: false,
       });
-      alert(error.message || "결제 처리 중 오류가 발생했습니다");
+      alert(error.message || "결제 완료 처리 중 오류가 발생했습니다.");
       return false;
     }
   },
@@ -1071,8 +1071,7 @@ const useInquiryStore = create((set) => ({
               user_name: inquiry.user_name,
               view_count: inquiry.view_count,
               comments: inquiry.comments,
-            }))
-            .sort((a, b) => b.id - a.id),
+            })),
           isLoading: false,
         });
         console.log("질문 리스트를 성공적으로 가져왔습니다.");
@@ -1104,7 +1103,7 @@ const useInquiryStore = create((set) => ({
               view_count: inquiry.view_count,
               comments: inquiry.comments,
             }))
-            .sort((a, b) => b.id - a.id),
+            ,
           isLoading: false,
         });
         console.log("질문 리스트를 성공적으로 가져왔습니다.");
@@ -1127,7 +1126,7 @@ const useInquiryStore = create((set) => ({
           isLoading: false,
         });
         console.log("질문을 성공적으로 가져왔습니다.");
-        const sortedComments = response.comments.sort((a, b) => a.id - b.id);
+        const sortedComments = response.comments;
         response.comments = sortedComments;
       } else {
         throw new Error(`Failed to fetch inquiry: Status ${response.status}`);
@@ -1289,8 +1288,7 @@ const useCourseInquiryStore = create((set) => ({
               comments: inquiry.comments,
               lecture_id: inquiry.lecture_id,
               category: inquiry.category,
-            }))
-            .sort((a, b) => b.id - a.id),
+            })),
           isLoading: false,
         });
         console.log("질문 리스트를 성공적으로 가져왔습니다.");
@@ -1314,8 +1312,6 @@ const useCourseInquiryStore = create((set) => ({
           courseQnA: response,
           isLoading: false,
         });
-        const sortedComments = response.comments.sort((a, b) => a.id - b.id);
-        response.comments = sortedComments;
         console.log("질문을 성공적으로 가져왔습니다.");
       } else {
         throw new Error(`Failed to fetch inquiry: Status ${response.status}`);
@@ -1480,8 +1476,6 @@ const useCourseInquiryStore = create((set) => ({
             lecture_id: inquiry.lecture_id,
             category: inquiry.category,
           }))
-          .sort((a, b) => b.id - a.id); // 최근순으로 정렬
-
         set({
           courseInquiries: sortedInquiries,
           isLoading: false,

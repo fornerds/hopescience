@@ -68,7 +68,23 @@ export const Lecture = () => {
         <section className="lecture-section">
           <div className="lecture-video-wrap">
             {isLoading ? (
-              <p className="color-white">Loading...</p>
+              <>
+                <h2 className="lecture-title-loading">
+                </h2>
+                <div className="video-player-container">
+                  <div className="video-player-loading">
+                    <div className="video-player-loader"></div>
+                  </div>
+                </div>
+                <div className="lecture-link-wrap">
+                  <div className="lecture-link-button-loading">
+                  </div>
+                  <div className="lecture-link-button-loading">
+                  </div>
+                  <div className="lecture-link-button-loading">
+                  </div>
+                </div>
+              </>
             ) : (
               <>
                 <h2 className="lecture-title">

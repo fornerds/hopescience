@@ -191,7 +191,7 @@
   height: 16px;
 }
 
-.edit-user-form {
+.edit-user-form, .popup-blocked-modal {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -199,6 +199,12 @@
 }
 
 .edit-user-input{
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.popup-blocked-modal-list {
   gap: 10px;
   display: flex;
   flex-direction: column;

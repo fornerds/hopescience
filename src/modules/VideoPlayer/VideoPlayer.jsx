@@ -7,6 +7,7 @@ import { debounce } from 'lodash';
 export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const watchedIntervalsRef = useRef([]);
   const iframeRef = useRef(null);
   const playerRef = useRef(null);
@@ -145,13 +146,15 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
   useEffect(() => {
     if (!videoId || !iframeRef.current || playerRef.current || !enrollmentData?.id) return;
   
+    setIsLoading(true);
     const player = new Player(iframeRef.current, {
       id: videoId,
       width: 1150,
       height: 600,
       autopause: false,
       autoplay: false,
-      loop: false  // 루프 재생을 비활성화합니다.
+      loop: false,
+      controls: true,
     });
   
     playerRef.current = player;
@@ -160,17 +163,21 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
       setCurrentTime(data.seconds);
       localStorage.setItem(`watchedTime-${lectureId}`, calculateTotalWatchedTime().toString());
       updateWatchedIntervals(data.seconds);
-      saveProgress(); // 디바운스된 saveProgress 호출
+      saveProgress();
     };
   
     const handleEnded = () => {
-      // 영상이 끝났을 때의 동작을 여기에 정의합니다.
       console.log("Video ended");
-      saveProgress.flush(); // 진행 상황을 즉시 저장합니다.
+      saveProgress.flush();
+    };
+  
+    const handleLoaded = () => {
+      setIsLoading(false);
     };
   
     player.on('timeupdate', handleTimeUpdate, { passive: true });
     player.on('ended', handleEnded);
+    player.on('loaded', handleLoaded);
   
     player.ready().then(() => {
       player.getDuration().then((duration) => setDuration(duration));
@@ -188,6 +195,7 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
     return () => {
       player.off('timeupdate', handleTimeUpdate);
       player.off('ended', handleEnded);
+      player.off('loaded', handleLoaded);
       player.destroy();
       playerRef.current = null;
     };
@@ -217,8 +225,13 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
   }
 
   return (
-    <div>
-      <div ref={iframeRef}></div>
+    <div className="video-player-container">
+      {isLoading && (
+        <div className="video-player-loading">
+          <div className="video-player-loader"></div>
+        </div>
+      )}
+      <div ref={iframeRef} className={isLoading ? 'hidden' : ''}></div>
       {/* <p>Current Time: {formatTime(currentTime)} / {formatTime(duration)}</p>
       <p>Total Watched Time: {formatTime(calculateTotalWatchedTime())}</p> */}
     </div>

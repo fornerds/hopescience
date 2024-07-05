@@ -76,7 +76,7 @@ const receiptPDF = async (payment_id) => {
 export const PdfGenerator = () => {
   let {certificate_id} = useParams();
 
-  const {getCertificate, certificate:certificateData, clearCertificate} = certificate((state=>({getCertificate: state.getCertificate, certificate: state.certificate, clearCertificate: state.clearCertificate})))
+  const {getCertificate, certificate:certificateData, clearCertificate, updateCertificate} = certificate((state=>({getCertificate: state.getCertificate, certificate: state.certificate, clearCertificate: state.clearCertificate, updateCertificate: state.updateCertificate})))
 
   useEffect(()=>{
     clearCertificate();
@@ -92,11 +92,29 @@ export const PdfGenerator = () => {
     return `${year}년 ${month.toString().padStart(2, '0')}월 ${day.toString().padStart(2, '0')}일`;
   }
 
+  const handleGenerateAndDownload = async () => {
+    await generateAndDownloadPDF(certificate_id);
+    
+    if (certificateData && certificateData.user_name && certificateData.completion_date && !certificateData.is_issued) {
+      const updateData = {
+        user_name: certificateData.user_name,
+        completion_date: certificateData.completion_date,
+        is_issued: true
+      };
+      
+      try {
+        await updateCertificate(certificate_id, updateData);
+      } catch (error) {
+        console.error("함수 발행 여부 변경이 실패했습니다:", error);
+      }
+    }
+  };
+
   return (
     <div className="pdf-generator">
       <Button
         label="저장하기"
-        onClick={() => generateAndDownloadPDF(certificate_id)}
+        onClick={handleGenerateAndDownload}
         style={{ alignSelf: "end", marginTop: "20px" }}
       >
         <img

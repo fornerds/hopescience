@@ -73,3 +73,26 @@
   width: 165px;
   height: 44px;
 }
+
+.lecture-title-loading {
+  max-width: 300px;
+  width: 100%;
+  height: 30px;
+  margin-bottom: 40px;
+  align-self: flex-start;
+  background: linear-gradient(90deg, #1e2128 25%, #2c303a 50%, #1e2128 75%);
+  background-size: 200% 100%;
+  animation: loading 2s infinite ease-in-out;
+  border-radius: 8px;
+}
+
+.lecture-link-button-loading {
+  max-width: 165px;
+  width: 100%;
+  height: 44px;
+  align-self: flex-start;
+  background: linear-gradient(90deg, #1e2128 25%, #2c303a 50%, #1e2128 75%);
+  background-size: 200% 100%;
+  animation: loading 2s infinite ease-in-out;
+  border-radius: 8px;
+}
