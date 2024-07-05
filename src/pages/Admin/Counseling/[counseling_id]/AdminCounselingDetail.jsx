@@ -1,7 +1,7 @@
 import { AdminSideBar } from "../../../../modules/AdminSideBar";
-import { AdminPost } from "../../../../modules/Post";
+import { AdminCounseling } from "../../../../modules/Post";
 
-export const AdminQnADetail = () => {
+export const AdminCounselingDetail = () => {
   return (
     <>
       <div className="admin-background">
@@ -9,7 +9,7 @@ export const AdminQnADetail = () => {
           <AdminSideBar />
           <main className="admin-main-content">
             <h2 className="admin-page-title">게시글관리</h2>
-            <AdminPost />
+            <AdminCounseling />
           </main>
         </div>
       </div>

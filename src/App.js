@@ -34,6 +34,8 @@ import { NewService } from "./pages/Admin/Service/New";
 import { ServiceEdit } from "./pages/Admin/Service/[course_id]";
 import { AdminOrders } from "./pages/Admin/AdminOrders";
 import { AdminOrder } from "./pages/Admin/AdminOrders/[payment_id]";
+import { AdminCategoryDetail } from "./pages/Admin/Category/[course_inquiry_id]";
+import { AdminCounselingDetail } from "./pages/Admin/Counseling/[counseling_id]";
 
 function App() {
   return (
@@ -69,6 +71,8 @@ function App() {
         <Route path="/admin/QnA" element={<AdminQnA />} />
         <Route path="/admin/QnA/:inquiry_id" element={<AdminQnADetail />} />
         <Route path="/admin/QnA/new" element={<NewAdminQnAInquiry />} />
+        <Route path="/admin/Category/:course_inquiry_id" element={<AdminCategoryDetail />} />
+        <Route path="/admin/Counseling/:counseling_id" element={<AdminCounselingDetail />} />
         <Route path="/admin/service" element={<Service />} />
         <Route path="/admin/service/new" element={<NewService />} />
         <Route path="/admin/service/:course_id" element={<ServiceEdit />} />

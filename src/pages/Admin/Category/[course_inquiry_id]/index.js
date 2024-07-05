@@ -1,0 +1,1 @@
+export {AdminCategoryDetail} from "./AdminCategoryDetail"

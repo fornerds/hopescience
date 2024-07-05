@@ -1870,6 +1870,47 @@ const useCertificateStore = create((set) => ({
 const useCounselingStore = create((set) => ({
   isLoading: false,
   error: null,
+  counselings: [],
+  counseling: null,
+
+  // getCounselings: async(counseling_id)=> {
+  //   set({ isLoading: true });
+  //   try {
+  //     const response = await getApi({
+  //       path: `/counselings/${counseling_id}`
+  //     });
+  
+  //     if (response) {
+  //       set({ counseling: response, isLoading: false });
+  //       console.log("문의를 성공적으로 가져왔습니다.");
+  //     } else {
+  //       throw new Error(`Failed to fetch counselings: Status ${response.status}`);
+  //     }
+  //   } catch (error) {
+  //     set({ error: error.message, isLoading: false });
+  //     console.error("문의를 가져오는 중 오류가 발생했습니다:", error.message);
+  //   }
+  // },
+
+  getCounselings: async()=> {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({
+        path: `/counselings/?skip=0&limit=100`
+      });
+  
+      if (response) {
+        set({ counselings: response, isLoading: false });
+        console.log("문의 목록을 성공적으로 가져왔습니다.");
+      } else {
+        throw new Error(`Failed to fetch counselings: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("문의 목록을 가져오는 중 오류가 발생했습니다:", error.message);
+    }
+  },
+
   createCounseling: async (name, email, phone, content) => {
     set({ isLoading: true });
   
@@ -1894,6 +1935,23 @@ const useCounselingStore = create((set) => ({
     } catch (error) {
       set({ error: error.response.data.message, isLoading: false });
       return false;
+    }
+  },
+
+  deleteCounseling: async (counseling_id) => {
+    set({ isLoading: true });
+    try {
+      const response = await deleteApi({ path: `/counselings/${counseling_id}` });
+      if (response) {
+        set({ isLoading: false });
+        console.log("문의를 성공적으로 삭제되었습니다.");
+        return true;
+      } else {
+        throw new Error("Failed to delete Counseling");
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("문의 삭제 중 오류가 발생했습니다:", error.message);
     }
   },
 }));

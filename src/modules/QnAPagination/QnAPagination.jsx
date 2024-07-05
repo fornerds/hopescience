@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "../../components/Link";
 import leftArrowButton from "../../icons/chevron-left-large.svg";
 import rightArrowButton from "../../icons/chevron-right-large.svg";
-import { inquiry, courseInquiry, service } from "../../store";
+import { inquiry, courseInquiry, service, useCounselingStore } from "../../store";
 
 export const QnAPagination = () => {
   const [activeTab, setActiveTab] = useState("메인게시판");
@@ -19,6 +19,12 @@ export const QnAPagination = () => {
     courseInquiries: state.courseInquiries,
   }));
 
+  const {isLoading: counselingLoading, getCounselings, counselings } = useCounselingStore((state)=>   ({
+    isLoading: state.isLoading,
+    getCounselings: state.getCounselings,
+    counselings: state.counselings
+  }))
+
   const { getCategories } = service((state) => ({
     getCategories: state.getCategories,
   }));
@@ -31,7 +37,7 @@ export const QnAPagination = () => {
     if (activeTab === "메인게시판") {
       clearInquiries();
       getInquiries();
-    } else {
+    } else{
       getCourseInquiriesByCategory(activeTab);
     }
   }, [activeTab]);
@@ -39,6 +45,10 @@ export const QnAPagination = () => {
   useEffect(() => {
     fetchCategories();
   }, []);
+
+  useEffect(()=> {
+    getCounselings();
+  }, [])
 
   const fetchCategories = async () => {
     try {
@@ -52,7 +62,7 @@ export const QnAPagination = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 7;
-  const totalPosts = activeTab === "메인게시판" ? inquiries.length : courseInquiries.length;
+  const totalPosts = activeTab === "메인게시판" ? inquiries.length : activeTab === "문의하기" ? counselings.length : courseInquiries.length;
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -91,8 +101,11 @@ export const QnAPagination = () => {
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts =
     activeTab === "메인게시판"
-      ? inquiries.slice(indexOfFirstPost, indexOfLastPost)
-      : courseInquiries.slice(indexOfFirstPost, indexOfLastPost);
+      ? inquiries.slice(indexOfFirstPost, indexOfLastPost): 
+      activeTab === "문의하기" 
+        ? 
+        counselings.slice(indexOfFirstPost, indexOfLastPost):
+        courseInquiries.slice(indexOfFirstPost, indexOfLastPost);
 
   return (
     <>
@@ -113,6 +126,14 @@ export const QnAPagination = () => {
               onClick={() => handleTabClick("메인게시판")}
             >
               메인게시판
+            </button>
+            <button
+              className={`user-pagination-tab-button ${
+                activeTab === "문의하기" ? "active" : ""
+              }`}
+              onClick={() => handleTabClick("문의하기")}
+            >
+              문의하기
             </button>
             {categories.map((category) => (
               <button
@@ -218,6 +239,87 @@ export const QnAPagination = () => {
               </div>
             </>
           )}
+          {activeTab === "문의하기" && (
+            <>
+              <div className="user-counseling-list margin-top-32">
+                <div className="user-counseling-list-header">
+                  <div>No</div>
+                  <div>글쓴이</div>
+                  <div>이메일</div>
+                  <div>연락처</div>
+                  <div>작성일자</div>
+                </div>
+                {currentPosts.map((post) => (
+                  <div key={post.id} className="user-counseling-item">
+                    <div>{post.id}</div>
+                    <Link
+                      to={`/admin/Counseling/${post.id}`}
+                      className="post-item-link"
+                      style={{
+                        backgroundColor: "transparent",
+                        fontFamily: '"Lexend", Helvetica',
+                        fontWeight: "700",
+                        fontSize: "14px",
+                        color: "#dee1e6",
+                        height: "18px",
+                        textAlign: "left",
+                        display: "block",
+                        width: "100%",
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      <div>{post.name}</div>
+                    </Link>
+                    <div>{post.email}</div>
+                    <div>{post.phone}</div>
+                    <div>{new Date(post.created_at).toLocaleDateString()}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="user-qna-pagination-footer">
+                <div className="user-qna-pagination-count">
+                  {counselings?.length} results
+                </div>
+                <div className="user-qna-pagination-buttons">
+                  <button
+                    className={`user-qna-pagination-button ${
+                      currentPage === 1 ? "disabled" : ""
+                    }`}
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    <img
+                      className="img-11"
+                      alt="Chevron left large"
+                      src={leftArrowButton}
+                    />
+                  </button>
+                  <div className="user-qna-pagination-button-wrap">
+                    {renderPageButtons(counselings?.length)}
+                  </div>
+                  <button
+                    className={`user-qna-pagination-button ${
+                      currentPage === Math.ceil(totalPosts / postsPerPage)
+                        ? "disabled"
+                        : ""
+                    }`}
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={
+                      currentPage === Math.ceil(totalPosts / postsPerPage)
+                    }
+                  >
+                    <img
+                      className="img-11"
+                      alt="Chevron right large"
+                      src={rightArrowButton}
+                    />
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
           {categories.map((category) => (
             <div key={category.id}>
               {activeTab === category.name && (
@@ -235,7 +337,7 @@ export const QnAPagination = () => {
                       <div key={inquiry.id} className="user-qna-item">
                         <div>{inquiry.id}</div>
                         <Link
-                          to={`/admin/QnA/${inquiry.id}`}
+                          to={`/admin/Category/${inquiry.id}`}
                           className="post-item-link"
                           style={{
                             backgroundColor: "transparent",
