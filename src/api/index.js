@@ -8,7 +8,9 @@ const send = async ({
   access_token = "",
   headers = {},
 } = {}) => {
-  const commonUrl = process.env.REACT_APP_API_URL; // 수정된 부분
+
+  const isDevelopment = process.env.REACT_APP_ENV === 'development';
+  const commonUrl = isDevelopment ? process.env.REACT_APP_API_URL_DEV : process.env.REACT_APP_API_URL_PROD;
   const url = commonUrl + path;
 
   const defaultHeaders = {

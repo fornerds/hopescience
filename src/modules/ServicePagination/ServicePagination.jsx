@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import "./ServicePagination.css";
 import { Link } from "../../components/Link";
 import { Button } from "../../components/Button";
+import { Input } from "../../components/Input";
 import { service } from "../../store";
 import searchIcon from "../../icons/search.svg"
 import leftArrowButton from "../../icons/chevron-left-large.svg"
 import rightArrowButton from "../../icons/chevron-right-large.svg"
+import arrowUpIcon from "../../icons/chevron-up-large.svg"
+import arrowDownIcon from "../../icons/chevron-down-large-4.svg"
 
 export const ServicePagination = () => {
   const isLoading = service((state) => state.isLoading);
@@ -17,6 +20,8 @@ export const ServicePagination = () => {
   const deleteService = service((state) => state.deleteService);
   const [selectedIds, setSelectedIds] = useState([]);
   const services = service((state) => state.services || []);
+  const categories = service((state) => state.categories || []);
+  const getCategories = service((state) => state.getCategories);
   const updateServiceActive = service((state) => state.updateServiceActive);
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 7;
@@ -24,6 +29,7 @@ export const ServicePagination = () => {
 
   useEffect(() => {
     getServices();
+    getCategories();
   }, []);
 
   useEffect(() => {
@@ -122,232 +128,332 @@ export const ServicePagination = () => {
   };
 
   return (
-    <div className="service-pagination-container">
-      <div className="service-pagination-container-header">
-        <div className="service-pagination-sort-wrap">
-          <div className="service-pagination-search-input-wrap">
-            <img src={searchIcon} className="search-icon" alt="검색이미지" />
-            <input
-              type="search"
-              className="service-pagination-search-input"
-              placeholder="Search..."
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-            />
+    <>
+      <AccordionSection title="카테고리 관리">
+        <div className="service-category-container">
+          <div className="service-category-list">
+            <ol className="service-category-list-contents">
+                {categories && categories.length > 0 ? 
+                categories.map((category)=> (
+                <li className="service-category-list-item" key={category.id}>
+                  <p className="service-category-list-item-name">{category.name}</p>
+                  <Button
+                    label="삭제"
+                    variant="danger"
+                    style={{
+                      fontSize: "14px",
+                      padding: "7px 20px",
+                      width: "fit-content",
+                      height: "fit-content",
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16px"
+                      height="14px"
+                      viewBox="0 0 24 22"
+                      fill="none"
+                    >
+                      <path
+                        d="M10 12V17"
+                        stroke="#ffffff"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M14 12V17"
+                        stroke="#ffffff"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M4 7H20"
+                        stroke="#ffffff"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M6 10V18C6 19.6569 7.34315 21 9 21H15C16.6569 21 18 19.6569 18 18V10"
+                        stroke="#ffffff"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z"
+                        stroke="#ffffff"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </Button>
+              </li>)
+            ): (<div className="service-category-list-item">생성된 카테고리가 없습니다.</div>)}
+            </ol>
           </div>
-          <div className="service-category">
-            <select 
-              id="service-category-select"
-              name="service-category-select"
-              value={selectedCategory}
-              onChange={handleCategoryChange}
-            >
-              <option defaultValue="">전체 카테고리</option>
-              <option value="양형교육">양형교육</option>
-              <option value="디지털 장의사">디지털 장의사</option>
-            </select>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="15"
-              height="15"
-              viewBox="0 0 15 15"
-              fill="none"
-            >
-              <path
-                d="M3.06559 4.5061L2.12695 5.44474L7.37695 10.6947L12.627 5.44474L11.6883 4.5061L7.37695 8.81744L3.06559 4.5061Z"
-                fill="#9095a1"
-              />
-            </svg>
+          <div className="service-category-create-input-wrap">
+            <Input className="service-category-create-input"></Input>
+            <Button className="service-category-create-button" label="카테고리 추가" variant="default" />
           </div>
         </div>
-        <div className="service-pagination-action-wrap">
-          <Button
-            label="선택된 서비스 삭제"
-            variant="danger"
-            style={{
-              fontSize: "14px",
-              padding: "7px 20px",
-              width: "fit-content",
-              height: "fit-content",
-            }}
-            onClick={handleDeleteSelected}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16px"
-              height="14px"
-              viewBox="0 0 24 22"
-              fill="none"
-            >
-              <path
-                d="M10 12V17"
-                stroke="#ffffff"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M14 12V17"
-                stroke="#ffffff"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M4 7H20"
-                stroke="#ffffff"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M6 10V18C6 19.6569 7.34315 21 9 21H15C16.6569 21 18 19.6569 18 18V10"
-                stroke="#ffffff"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z"
-                stroke="#ffffff"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Button>
-          <Link
-            to="/admin/service/new"
-            label="서비스 등록하기"
-            style={{
-              fontSize: "14px",
-              padding: "7px 20px",
-              width: "fit-content",
-              height: "fit-content",
-            }}
-            buttonStyle="default"
-            color="white"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16px"
-              height="16px"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <path
-                d="M4 12H20M12 4V20"
-                stroke="#ffffff"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Link>
-        </div>
-      </div>
-      <div className="service-list">
-        <div className="service-list-header">
-          <div></div>
-          <div>서비스명</div>
-          <div>카테고리</div>
-          <div>기본가격</div>
-          <div>할인가격</div>
-          <div>등록일자</div>
-          <div>서비스상태</div>
-          <div></div>
-        </div>
-        {isLoading ? (
-          <div className="service-item">
-            <div></div>
-            <p className="">Loading...</p>
-          </div>
-        ) : (
-          currentPosts.map((post) => (
-            <div key={post.id} className="service-item">
-              <div>
-                <input
-                  type="checkbox"
-                  name={post.id}
-                  id={post.id}
-                  checked={selectedIds.includes(post.id)}
-                  onChange={() => handleCheckboxChange(post.id)}
-                />
-              </div>
-              <Link
-                to={`/admin/service/${post.id}`}
-                className="post-item-link"
-                style={{
-                  backgroundColor: "transparent",
-                  fontFamily: '"Lexend", Helvetica',
-                  fontWeight: "700",
-                  fontSize: "14px",
-                  color: "#dee1e6",
-                  width: "auto",
-                  height: "18px",
-                  textAlign: "left",
-                  display: "block",
-                }}
-              >
-                <div>{post.title}</div>
-              </Link>
-              <div>{post.category.name}</div>
-              <div>₩ {post.price}</div>
-              <div>₩ {post.discounted_price}</div>
-              <div>{new Date(post.created_at).toLocaleDateString("ko-KR")}</div>
-              <div
-                className={`service-item-state ${getStatusClassName(
-                  post.is_active ? "활성화" : "비활성화"
-                )}`}
-              >
-                {post.is_active ? "활성화" : "비활성화"}
-              </div>
-              <Dropdown 
-                currentStatus={post.is_active ? "활성화" : "비활성화"}
-                onStatusChange={(newStatus) => handleStatusChange(post.id, newStatus)}
+      </AccordionSection>
+      <div className="service-pagination-container">
+        <div className="service-pagination-container-header">
+          <div className="service-pagination-sort-wrap">
+            <div className="service-pagination-search-input-wrap">
+              <img src={searchIcon} className="search-icon" alt="검색이미지" />
+              <input
+                type="search"
+                className="service-pagination-search-input"
+                placeholder="Search..."
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
               />
             </div>
-          ))
-        )}
-      </div>
-      <div className="service-pagination-footer">
-        <div className="service-pagination-count">
-          {services ? services.length : 0} results
-        </div>
-        <div className="service-pagination-buttons">
-          <button
-            className={`service-pagination-button ${
-              currentPage === 1 ? "disabled" : ""
-            }`}
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            <img
-              className="img-11"
-              alt="Chevron left large"
-              src={leftArrowButton}
-            />
-          </button>
-          <div className="service-pagination-button-wrap">
-            {renderPageButtons()}
+            <div className="service-category">
+              <select 
+                id="service-category-select"
+                name="service-category-select"
+                value={selectedCategory}
+                onChange={handleCategoryChange}
+              >
+                <option defaultValue="">전체 카테고리</option>
+                <option value="양형교육">양형교육</option>
+                <option value="디지털 장의사">디지털 장의사</option>
+              </select>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="15"
+                height="15"
+                viewBox="0 0 15 15"
+                fill="none"
+              >
+                <path
+                  d="M3.06559 4.5061L2.12695 5.44474L7.37695 10.6947L12.627 5.44474L11.6883 4.5061L7.37695 8.81744L3.06559 4.5061Z"
+                  fill="#9095a1"
+                />
+              </svg>
+            </div>
           </div>
-          <button
-            className={`service-pagination-button ${
-              currentPage === Math.ceil(totalPosts / postsPerPage)
-                ? "disabled"
-                : ""
-            }`}
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === Math.ceil(totalPosts / postsPerPage)}
-          >
-            <img
-              className="img-11"
-              alt="Chevron right large"
-              src={rightArrowButton}
-            />
-          </button>
+          <div className="service-pagination-action-wrap">
+            <Button
+              label="선택된 서비스 삭제"
+              variant="danger"
+              style={{
+                fontSize: "14px",
+                padding: "7px 20px",
+                width: "fit-content",
+                height: "fit-content",
+              }}
+              onClick={handleDeleteSelected}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16px"
+                height="14px"
+                viewBox="0 0 24 22"
+                fill="none"
+              >
+                <path
+                  d="M10 12V17"
+                  stroke="#ffffff"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M14 12V17"
+                  stroke="#ffffff"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M4 7H20"
+                  stroke="#ffffff"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M6 10V18C6 19.6569 7.34315 21 9 21H15C16.6569 21 18 19.6569 18 18V10"
+                  stroke="#ffffff"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z"
+                  stroke="#ffffff"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </Button>
+            <Link
+              to="/admin/service/new"
+              label="서비스 등록하기"
+              style={{
+                fontSize: "14px",
+                padding: "7px 20px",
+                width: "fit-content",
+                height: "fit-content",
+              }}
+              buttonStyle="default"
+              color="white"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16px"
+                height="16px"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  d="M4 12H20M12 4V20"
+                  stroke="#ffffff"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </Link>
+          </div>
+        </div>
+        <div className="service-list">
+          <div className="service-list-header">
+            <div></div>
+            <div>서비스명</div>
+            <div>카테고리</div>
+            <div>기본가격</div>
+            <div>할인가격</div>
+            <div>등록일자</div>
+            <div>서비스상태</div>
+            <div></div>
+          </div>
+          {isLoading ? (
+            <div className="service-item">
+              <div></div>
+              <p className="">Loading...</p>
+            </div>
+          ) : (
+            currentPosts.map((post) => (
+              <div key={post.id} className="service-item">
+                <div>
+                  <input
+                    type="checkbox"
+                    name={post.id}
+                    id={post.id}
+                    checked={selectedIds.includes(post.id)}
+                    onChange={() => handleCheckboxChange(post.id)}
+                  />
+                </div>
+                <Link
+                  to={`/admin/service/${post.id}`}
+                  className="post-item-link"
+                  style={{
+                    backgroundColor: "transparent",
+                    fontFamily: '"Lexend", Helvetica',
+                    fontWeight: "700",
+                    fontSize: "14px",
+                    color: "#dee1e6",
+                    width: "auto",
+                    height: "18px",
+                    textAlign: "left",
+                    display: "block",
+                  }}
+                >
+                  <div>{post.title}</div>
+                </Link>
+                <div>{post.category.name}</div>
+                <div>₩ {post.price}</div>
+                <div>₩ {post.discounted_price}</div>
+                <div>{new Date(post.created_at).toLocaleDateString("ko-KR")}</div>
+                <div
+                  className={`service-item-state ${getStatusClassName(
+                    post.is_active ? "활성화" : "비활성화"
+                  )}`}
+                >
+                  {post.is_active ? "활성화" : "비활성화"}
+                </div>
+                <Dropdown 
+                  currentStatus={post.is_active ? "활성화" : "비활성화"}
+                  onStatusChange={(newStatus) => handleStatusChange(post.id, newStatus)}
+                />
+              </div>
+            ))
+          )}
+        </div>
+        <div className="service-pagination-footer">
+          <div className="service-pagination-count">
+            {services ? services.length : 0} results
+          </div>
+          <div className="service-pagination-buttons">
+            <button
+              className={`service-pagination-button ${
+                currentPage === 1 ? "disabled" : ""
+              }`}
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <img
+                className="img-11"
+                alt="Chevron left large"
+                src={leftArrowButton}
+              />
+            </button>
+            <div className="service-pagination-button-wrap">
+              {renderPageButtons()}
+            </div>
+            <button
+              className={`service-pagination-button ${
+                currentPage === Math.ceil(totalPosts / postsPerPage)
+                  ? "disabled"
+                  : ""
+              }`}
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === Math.ceil(totalPosts / postsPerPage)}
+            >
+              <img
+                className="img-11"
+                alt="Chevron right large"
+                src={rightArrowButton}
+              />
+            </button>
+          </div>
         </div>
       </div>
+    </>
+  );
+};
+
+const AccordionSection = ({ title, children }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="service-form-accordian service-form-category-accordion">
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          setIsOpen(!isOpen);
+        }}
+        className="service-form-accordian-header"
+      >
+        {title}
+        {isOpen ? (
+          <img src={arrowUpIcon} alt="" />
+        ) : (
+          <img src={arrowDownIcon} alt="" />
+        )}
+      </button>
+      {isOpen && (
+        <div className="service-form-accordian-content">{children}</div>
+      )}
     </div>
   );
 };
