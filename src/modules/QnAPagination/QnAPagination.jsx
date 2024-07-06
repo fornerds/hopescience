@@ -278,7 +278,7 @@ export const QnAPagination = () => {
                     </Link>
                     <div>{post.email}</div>
                     <div>{post.phone}</div>
-                    <div>{new Date(post.created_at).toLocaleDateString()}</div>
+                    <div>{`${new Date(post.created_at).toLocaleDateString("ko-KR")} ${new Date(post.created_at).toLocaleTimeString("ko-KR")}`}</div>
                   </div>
                 ))}
               </div>

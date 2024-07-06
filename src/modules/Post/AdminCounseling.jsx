@@ -38,9 +38,7 @@ export const AdminCounseling = () => {
                     {counseling?.name}
                   </span>
                   <span className="counseling-post-info-value">
-                    {new Date(
-                      counseling?.created_at
-                    ).toLocaleDateString("ko-KR")}
+                    {`${new Date(counseling.created_at).toLocaleDateString("ko-KR")} ${new Date(counseling.created_at).toLocaleTimeString("ko-KR")}`}
                   </span>
                   <span className="counseling-post-info-value">
                   {counseling?.email}
