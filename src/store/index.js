@@ -810,6 +810,43 @@ const useServiceStore = create((set) => ({
     }
   },
 
+  createCategory: async (name) => {
+    set({ isLoading: true });
+    try {
+      const response = await postApi({
+        path: "/courses/categories",
+        data: name,
+      });
+      if (response) {
+        set({ isLoading: false });
+        alert("카테고리가 성공적으로 생성되었습니다.");
+        return true;
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      alert("카테고리 생성 실패: " + error.message);
+      return false;
+    }
+  },
+  
+  deleteCategory: async (category_id_or_name) => {
+    set({ isLoading: true });
+    try {
+      const response = await deleteApi({
+        path: `/courses/categories/${encodeURIComponent(category_id_or_name)}`,
+      });
+      if (response) {
+        set({ isLoading: false });
+        alert("카테고리가 성공적으로 삭제되었습니다.");
+        return true;
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      alert("카테고리 삭제 실패: " + error.message);
+      return false;
+    }
+  },
+
   getGroups: async () => {
     set({ isLoading: true });
     try {
