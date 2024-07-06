@@ -3,8 +3,11 @@
   "builds": [
     {
       "src": "package.json",
-      "use": "@vercel/react",
-      "config": { "distDir": "build" }
+      "use": "@vercel/static-build",
+      "config": { 
+        "distDir": "build",
+        "buildCommand": "npm run build:prod"
+      }
     }
   ],
   "routes": [
