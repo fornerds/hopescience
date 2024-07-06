@@ -4,7 +4,7 @@
       {
         "src": "package.json",
         "use": "@vercel/node",
-        "config": { "buildCommand": "npm run build:prod" }
+        "config": { "buildCommand": "npm run build:prod", "distDir": "build" }
       }
     ],
     "routes": [
