@@ -1,28 +1,18 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "package.json",
-        "use": "@vercel/node",
-        "config": { "buildCommand": "npm run build:prod", "distDir": "build" }
-      }
-    ],
-    "routes": [
-      {
-        "src": "/static/(.*)",
-        "dest": "/static/$1"
-      },
-      {
-        "src": "/favicon.ico",
-        "dest": "/favicon.ico"
-      },
-      {
-        "src": "/manifest.json",
-        "dest": "/manifest.json"
-      },
-      {
-        "src": "/(.*)",
-        "dest": "/index.html"
-      }
-    ]
-  }
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/react",
+      "config": { "distDir": "build" }
+    }
+  ],
+  "routes": [
+    { "src": "^/static/(.*)", "dest": "/static/$1" },
+    { "src": "^/favicon.ico", "dest": "/favicon.ico" },
+    { "src": "^/manifest.json", "dest": "/manifest.json" },
+    { "src": "^/(.*).js", "dest": "/$1.js" },
+    { "src": "^/(.*).css", "dest": "/$1.css" },
+    { "src": "^/(.*)", "dest": "/index.html" }
+  ]
+}
