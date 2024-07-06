@@ -18,9 +18,9 @@ export const AdminCounseling = () => {
         deleteCounseling: state.deleteCounseling
     }))
 
-    // useEffect(()=>{
-    //     getCounseling();
-    // }, [])
+    useEffect(()=>{
+        getCounseling(counseling_id);
+    }, [])
 
     
     return (
@@ -28,29 +28,29 @@ export const AdminCounseling = () => {
             <div className="post-detail-page">
                 {isCounselingisLoading ? (<p>Loading...</p>):(<>
             <div className="post-header">
-              <div className="post-info-wrap">
+              <div className="counseling-post-info-wrap">
                 <div className="post-category">
                     문의하기
                 </div>
-                <div className="post-info">
-                  <span className="post-info-user">
+                <div className="counseling-post-info">
+                  <span className="counseling-post-info-user">
                     <img src={AvatorIcon} alt="사용자 이미지" />{" "}
                     {counseling?.name}
                   </span>
-                  <span>
+                  <span className="counseling-post-info-value">
                     {new Date(
                       counseling?.created_at
                     ).toLocaleDateString("ko-KR")}
                   </span>
-                  <span>
+                  <span className="counseling-post-info-value">
                   {counseling?.email}
                   </span>
-                  <span>
+                  <span className="counseling-post-info-value">
                   {counseling?.phone}
                   </span>
                 </div>
             </div>
-            <div className="post-actions">
+            <div className="counseling-post-actions">
                 <Button
                     label="삭제하기"
                     variant="danger"

@@ -1,5 +1,5 @@
-import { AdminSideBar } from "../../../../modules/AdminSideBar";
-import { AdminPost } from "../../../../modules/Post";
+import { AdminSideBar } from "../../../../../modules/AdminSideBar";
+import { AdminPost } from "../../../../../modules/Post";
 
 export const AdminCategoryDetail = () => {
   return (

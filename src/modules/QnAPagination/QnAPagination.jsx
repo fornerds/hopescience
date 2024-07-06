@@ -8,13 +8,15 @@ export const QnAPagination = () => {
   const [activeTab, setActiveTab] = useState("메인게시판");
   const [categories, setCategories] = useState([]);
 
-  const { getInquiries, inquiries, clearInquiries } = inquiry((state) => ({
+  const { isLoading: inquiriesLoading, getInquiries, inquiries, clearInquiries } = inquiry((state) => ({
+    isLoading: state.isLoading,
     getInquiries: state.getInquiries,
     inquiries: state.inquiries,
     clearInquiries: state.clearInquiries,
   }));
 
-  const { getCourseInquiriesByCategory, courseInquiries } = courseInquiry((state) => ({
+  const { isLoading: courseInquiriesLoading,  getCourseInquiriesByCategory, courseInquiries } = courseInquiry((state) => ({
+    isLoading: state.isLoading,
     getCourseInquiriesByCategory: state.getCourseInquiriesByCategory,
     courseInquiries: state.courseInquiries,
   }));
@@ -167,7 +169,8 @@ export const QnAPagination = () => {
                   <div>작성일자</div>
                   <div>조회수</div>
                 </div>
-                {currentPosts.map((post) => (
+                {inquiriesLoading ? (<div className="user-qna-item">Loading...</div>) :
+                currentPosts.map((post) => (
                   <div key={post.id} className="user-qna-item">
                     <div>{post.id}</div>
                     <Link
@@ -249,7 +252,8 @@ export const QnAPagination = () => {
                   <div>연락처</div>
                   <div>작성일자</div>
                 </div>
-                {currentPosts.map((post) => (
+                {counselingLoading ? (<div className="user-counseling-item">Loading...</div>) :
+                currentPosts.map((post) => (
                   <div key={post.id} className="user-counseling-item">
                     <div>{post.id}</div>
                     <Link
@@ -333,11 +337,12 @@ export const QnAPagination = () => {
                       <div>작성일자</div>
                       <div>조회수</div>
                     </div>
-                    {currentPosts.map((inquiry) => (
+                    {courseInquiriesLoading ? (<div className="user-qna-item">Loading...</div>) :
+                    currentPosts.map((inquiry) => (
                       <div key={inquiry.id} className="user-qna-item">
                         <div>{inquiry.id}</div>
                         <Link
-                          to={`/admin/Category/${inquiry.id}`}
+                          to={`/admin/Category/${inquiry.category}/${inquiry.id}`}
                           className="post-item-link"
                           style={{
                             backgroundColor: "transparent",

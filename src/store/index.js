@@ -1489,6 +1489,41 @@ const useCourseInquiryStore = create((set) => ({
       alert(`${category} 카테고리의 질문 리스트를 가져오는 중 오류가 발생했습니다: ` + error.message);
     }
   },
+
+  getCourseInquiryByCategory: async (category_name, qna_id) => {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({
+        path: `/category/${category_name}/qna/${qna_id}`,
+      });
+      if (response) {
+        set({
+          courseQnA: {
+            id: response.id,
+            course_id: response.course_id,
+            user_id: response.user_id,
+            lecture_id: response.lecture_id,
+            title: response.title,
+            content: response.content,
+            created_at: response.created_at,
+            updated_at: response.updated_at,
+            view_count: response.view_count,
+            user_name: response.user_name,
+            comments: response.comments,
+            category: response.category,
+            comment_count: response.comment_count,
+          },
+          isLoading: false,
+        });
+        console.log(`${category_name} 카테고리의 질문을 성공적으로 가져왔습니다.`);
+      } else {
+        throw new Error(`Failed to fetch inquiry: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      alert(`${category_name} 카테고리의 질문을 가져오는 중 오류가 발생했습니다: ` + error.message);
+    }
+  },
 }));
 
 const useEnrollmentStore = create((set) => ({
@@ -1873,24 +1908,24 @@ const useCounselingStore = create((set) => ({
   counselings: [],
   counseling: null,
 
-  // getCounselings: async(counseling_id)=> {
-  //   set({ isLoading: true });
-  //   try {
-  //     const response = await getApi({
-  //       path: `/counselings/${counseling_id}`
-  //     });
+  getCounseling: async(counseling_id)=> {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({
+        path: `/counselings/${counseling_id}`
+      });
   
-  //     if (response) {
-  //       set({ counseling: response, isLoading: false });
-  //       console.log("문의를 성공적으로 가져왔습니다.");
-  //     } else {
-  //       throw new Error(`Failed to fetch counselings: Status ${response.status}`);
-  //     }
-  //   } catch (error) {
-  //     set({ error: error.message, isLoading: false });
-  //     console.error("문의를 가져오는 중 오류가 발생했습니다:", error.message);
-  //   }
-  // },
+      if (response) {
+        set({ counseling: response, isLoading: false });
+        console.log("문의를 성공적으로 가져왔습니다.");
+      } else {
+        throw new Error(`Failed to fetch counselings: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      console.error("문의를 가져오는 중 오류가 발생했습니다:", error.message);
+    }
+  },
 
   getCounselings: async()=> {
     set({ isLoading: true });

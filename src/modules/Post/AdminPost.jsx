@@ -23,7 +23,7 @@ const createCommentSchema = yup
   .required();
 
 export const AdminPost = () => {
-    let { inquiry_id, course_inquiry_id } = useParams();
+    let { inquiry_id, category_name, course_inquiry_id } = useParams();
     const location = useLocation();
     const {
       isLoading,
@@ -46,7 +46,7 @@ export const AdminPost = () => {
     }));
     const {
       isCourseInquiryLoading,
-      getCourseInquiry,
+      getCourseInquiryByCategory,
       deleteCourseInquiry,
       createCourseComment,
       updateCourseComment,
@@ -55,7 +55,7 @@ export const AdminPost = () => {
       clearCourseQnA,
     } = courseInquiry((state) => ({
       isCourseInquiryLoading: state.isLoading,
-      getCourseInquiry: state.getCourseInquiry,
+      getCourseInquiryByCategory: state.getCourseInquiryByCategory,
       deleteCourseInquiry: state.deleteCourseInquiry,
       createCourseComment: state.createCourseComment,
       updateCourseComment: state.updateCourseComment,
@@ -91,11 +91,11 @@ export const AdminPost = () => {
       if (inquiry_id) {
         clearCourseQnA();
         getInquiry(inquiry_id);
-      } else if (course_inquiry_id) {
+      } else if (category_name && course_inquiry_id) {
         clearQnA();
-        getCourseInquiry(course_inquiry_id);
+        getCourseInquiryByCategory(category_name , course_inquiry_id);
       }
-    }, [getInquiry, clearCourseQnA, getCourseInquiry, clearQnA]);
+    }, [getInquiry, clearCourseQnA, getCourseInquiryByCategory, clearQnA]);
   
     const onSubmit = async (data) => {
       const { accessToken, refreshToken } = auth.getState();
@@ -114,7 +114,7 @@ export const AdminPost = () => {
         )
           .then(() => {
             clearQnA();
-            getCourseInquiry(course_inquiry_id);
+            getCourseInquiryByCategory(category_name , course_inquiry_id);
           })
           .catch(async (error) => {
             if (error.response.status === 401) {
@@ -155,7 +155,7 @@ export const AdminPost = () => {
             updatedContent
           );
           clearQnA();
-          getCourseInquiry(course_inquiry_id);
+          getCourseInquiryByCategory(category_name , course_inquiry_id);
         }
         setEditMode(null);
       }
@@ -169,7 +169,7 @@ export const AdminPost = () => {
       } else {
         await deleteCourseComment(course_inquiry_id, comment_id);
         clearQnA();
-        getCourseInquiry(course_inquiry_id);
+        getCourseInquiryByCategory(category_name , course_inquiry_id);
       }
     };
   
