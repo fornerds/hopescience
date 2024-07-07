@@ -4,11 +4,11 @@ import { Link } from "../../components/Link";
 import { Button } from "../../components/Button";
 import { Input } from "../../components/Input";
 import { service } from "../../store";
-import searchIcon from "../../icons/search.svg"
-import leftArrowButton from "../../icons/chevron-left-large.svg"
-import rightArrowButton from "../../icons/chevron-right-large.svg"
-import arrowUpIcon from "../../icons/chevron-up-large.svg"
-import arrowDownIcon from "../../icons/chevron-down-large-4.svg"
+import searchIcon from "../../icons/search.svg";
+import leftArrowButton from "../../icons/chevron-left-large.svg";
+import rightArrowButton from "../../icons/chevron-right-large.svg";
+import arrowUpIcon from "../../icons/chevron-up-large.svg";
+import arrowDownIcon from "../../icons/chevron-down-large-4.svg";
 
 export const ServicePagination = () => {
   const isLoading = service((state) => state.isLoading);
@@ -22,10 +22,13 @@ export const ServicePagination = () => {
   const services = service((state) => state.services || []);
   const categories = service((state) => state.categories || []);
   const getCategories = service((state) => state.getCategories);
+  const createCategory = service((state) => state.createCategory);
+  const deleteCategory = service((state) => state.deleteCategory);
   const updateServiceActive = service((state) => state.updateServiceActive);
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 7;
   const totalPosts = services.length;
+  const [newCategory, setNewCategory] = useState("");
 
   useEffect(() => {
     getServices();
@@ -55,7 +58,7 @@ export const ServicePagination = () => {
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value);
   };
-  
+
   const handleStatusChange = async (serviceId, newStatus) => {
     const isActive = newStatus === "활성화";
     const success = await updateServiceActive(serviceId, isActive);
@@ -127,77 +130,111 @@ export const ServicePagination = () => {
     setSelectedIds([]); // 선택 초기화
   };
 
+  const handleCategoryInputChange = (e) => {
+    setNewCategory(e.target.value);
+  };
+
+  const handleAddCategory = async () => {
+    if (newCategory.trim() !== "") {
+      const success = await createCategory(newCategory);
+      if (success) {
+        getCategories();
+        setNewCategory("");
+      }
+    }
+  };
+
+  const handleDeleteCategory = async (categoryName) => {
+    const success = await deleteCategory(categoryName);
+    if (success) {
+      getCategories();
+    }
+  };
+
   return (
     <>
       <AccordionSection title="카테고리 관리">
         <div className="service-category-container">
           <div className="service-category-list">
             <ol className="service-category-list-contents">
-                {categories && categories.length > 0 ? 
-                categories.map((category)=> (
-                <li className="service-category-list-item" key={category.id}>
-                  <p className="service-category-list-item-name">{category.name}</p>
-                  <Button
-                    label="삭제"
-                    variant="danger"
-                    style={{
-                      fontSize: "14px",
-                      padding: "7px 20px",
-                      width: "fit-content",
-                      height: "fit-content",
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16px"
-                      height="14px"
-                      viewBox="0 0 24 22"
-                      fill="none"
-                    >
-                      <path
-                        d="M10 12V17"
-                        stroke="#ffffff"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M14 12V17"
-                        stroke="#ffffff"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M4 7H20"
-                        stroke="#ffffff"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M6 10V18C6 19.6569 7.34315 21 9 21H15C16.6569 21 18 19.6569 18 18V10"
-                        stroke="#ffffff"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z"
-                        stroke="#ffffff"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </Button>
-              </li>)
-            ): (<div className="service-category-list-item">생성된 카테고리가 없습니다.</div>)}
+              {categories && categories.length > 0 ? (
+                categories.map((category) => (
+                  <li className="service-category-list-item" key={category.id}>
+                    <p className="service-category-list-item-name">{category.name}</p>
+                    <Button
+                      label="삭제"
+                      variant="danger"
+                      style={{
+                        fontSize: "14px",
+                        padding: "7px 20px",
+                        width: "fit-content",
+                        height: "fit-content",
+                      }}
+                      onClick={() => handleDeleteCategory(category.name)}
+                      >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16px"
+                        height="14px"
+                        viewBox="0 0 24 22"
+                        fill="none"
+                      >
+                        <path
+                          d="M10 12V17"
+                          stroke="#ffffff"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M14 12V17"
+                          stroke="#ffffff"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M4 7H20"
+                          stroke="#ffffff"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M6 10V18C6 19.6569 7.34315 21 9 21H15C16.6569 21 18 19.6569 18 18V10"
+                          stroke="#ffffff"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z"
+                          stroke="#ffffff"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </Button>
+                  </li>
+                ))
+              ) : (
+                <div className="service-category-list-item">생성된 카테고리가 없습니다.</div>
+              )}
             </ol>
           </div>
           <div className="service-category-create-input-wrap">
-            <Input className="service-category-create-input"></Input>
-            <Button className="service-category-create-button" label="카테고리 추가" variant="default" />
+            <Input
+              className="service-category-create-input"
+              value={newCategory}
+              onChange={handleCategoryInputChange}
+            />
+            <Button
+              className="service-category-create-button"
+              label="카테고리 추가"
+              variant="default"
+              onClick={handleAddCategory}
+            />
           </div>
         </div>
       </AccordionSection>
@@ -215,16 +252,19 @@ export const ServicePagination = () => {
               />
             </div>
             <div className="service-category">
-              <select 
-                id="service-category-select"
-                name="service-category-select"
-                value={selectedCategory}
-                onChange={handleCategoryChange}
-              >
-                <option defaultValue="">전체 카테고리</option>
-                <option value="양형교육">양형교육</option>
-                <option value="디지털 장의사">디지털 장의사</option>
-              </select>
+            <select
+              id="service-category-select"
+              name="service-category-select"
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+            >
+              <option value="">전체 카테고리</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.name}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="15"
@@ -370,7 +410,7 @@ export const ServicePagination = () => {
                 >
                   <div>{post.title}</div>
                 </Link>
-                <div>{post.category.name}</div>
+                <div>{post.category ? post.category.name : ''}</div>
                 <div>₩ {post.price}</div>
                 <div>₩ {post.discounted_price}</div>
                 <div>{new Date(post.created_at).toLocaleDateString("ko-KR")}</div>
