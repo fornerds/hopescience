@@ -50,7 +50,6 @@ export const Cart = () => {
   const course = service((state) => state.course) || null;
   const myUserId = data ? JSON.parse(data).state?.user?.userId : null;
   const [isPopupBlockedModalOpen, setIsPopupBlockedModalOpen] = useState(false);
-  const [simulatePopupBlocked, setSimulatePopupBlocked] = useState(false); // 팝업 차단 시뮬레이터 코드
   const orderNumberGenerated = useRef(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   
@@ -159,12 +158,6 @@ export const Cart = () => {
     try {
       if (!course?.category?.name) {
         throw new Error("카테고리 정보가 없습니다. 관리자에게 문의해주세요.");
-      }
-
-      // 팝업 차단 시뮬레이션
-      if (simulatePopupBlocked) {
-        setIsPopupBlockedModalOpen(true);
-        return;
       }
 
       // 팝업 차단 여부 확인
@@ -437,16 +430,6 @@ export const Cart = () => {
             </section>
           :
           <section className="cart-info-course">
-            {/* // 팝업 차단 시뮬레이터 코드 */}
-            <Button
-              label={simulatePopupBlocked ? "팝업 차단 시뮬레이션 중" : "팝업 차단 시뮬레이션"}
-              onClick={() => setSimulatePopupBlocked(!simulatePopupBlocked)}
-              style={{
-                marginBottom: "10px",
-                backgroundColor: simulatePopupBlocked ? "red" : "blue",
-              }}
-            />
-            {/* // 팝업 차단 시뮬레이터 코드 끝*/}
             <h3 className="cart-label">주문상품 정보</h3>
             <div className="cart-info-course-content-wrap">
               <div className="cart-course-image-wrap">
