@@ -21,7 +21,7 @@ const Card = ({ name, rating, date, review }) => {
           <div className="card-user-date">{date}</div>
         </div>
       </div>
-      <div className="review-card-body">{review}</div>
+      <pre className="review-card-body">{review}</pre>
     </div>
   );
 };
