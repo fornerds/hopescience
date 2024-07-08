@@ -34,7 +34,14 @@ export const ResetPassword = () => {
       const onSubmit = async (data) => {
         const token = searchParams.get("token");
         const {password} = data;
-        resetPasswordConfirm(token, password);
+        try {
+            const success = await resetPasswordConfirm(token, password);
+            if(success){
+                alert(success.message)
+            }
+        } catch (error) {
+            alert("비밀번호 변경 API에서 오류가 발생했습니다.")
+        }
       };
 
     return (
