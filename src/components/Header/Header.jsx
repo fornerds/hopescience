@@ -60,7 +60,7 @@ export const Header = () => {
           <Link
             className="header-link"
             to="/courses"
-            label="수강신청하기"
+            label="서비스 목록"
             color="white"
           />
           <Link
