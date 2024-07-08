@@ -76,7 +76,7 @@ export const OrdersPagination = () => {
 
   const getStateClassName = (state) => {
     const stateClassMap = {
-      CANCEL: "결제취소",
+      CANCELED: "결제취소",
       READY: "결제중",
       DONE: "결제완료",
       COMPLETED: "결제확인",

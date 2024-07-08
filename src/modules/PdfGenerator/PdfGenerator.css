@@ -225,7 +225,7 @@
   align-items: center;
 }
 
-.admin-order-item-state.cancel {
+.admin-order-item-state.canceled {
   background-color: #cd7a7d;
 }
 

@@ -333,7 +333,7 @@ export const AdminReceiptPdfGenerator = () => {
 
   const getStateClassName = (state) => {
     const stateClassMap = {
-      결제취소: "cancel",
+      결제취소: "canceled",
       결제중: "paying",
       결제완료: "paid",
     };

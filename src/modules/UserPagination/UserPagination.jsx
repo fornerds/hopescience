@@ -96,7 +96,7 @@ export const UserPagination = () => {
 
   const getStateClassName = (state) => {
     const stateClassMap = {
-      CANCEL: "결제취소",
+      CANCELED: "결제취소",
       READY: "결제중",
       DONE: "결제완료",
       COMPLETED: "결제확인",
@@ -136,7 +136,7 @@ export const UserPagination = () => {
 
   const getPaymentStatusClassName = (status) => {
     const statusClassMap = {
-      결제취소: "cancel",
+      결제취소: "canceled",
       결제중: "paying",
       DONE: "paid",
     };

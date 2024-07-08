@@ -5,6 +5,8 @@ import { Carousel, FaqAccordion } from "../../modules";
 import mainImage from "../../images/main.png";
 import coursesImage from "../../images/courses.png";
 import certificationImage from "../../images/certification.jpg";
+import certificationImage02 from "../../images/certification02.png";
+import certificationImage03 from "../../images/certification03.png";
 import articleImage01 from "../../images/article01.png";
 import articleImage02 from "../../images/article02.png";
 import locationPinIcon from "../../icons/location-pin.svg";
@@ -20,58 +22,69 @@ const reviews = [
     name: "김○수",
     rating: 4.5,
     date: "2024-04-20",
-    review: `
-이 교육 프로그램은 빠르게 이수증을 받을 수 있어 너무 좋았습니다. 
-바쁜 일정 속에서도 단기간에 수료할 수 있어서 큰 도움이 되었어요.
-상담도 친절하게 해주셔서 궁금한 점을 바로 해결할 수 있었습니다.`,
+    review: 
+`  이 교육 프로그램은 빠르게 이수증을 받을 수 있어 너무 좋았습니다.
+
+  바쁜 일정 속에서도 단기간에 수료할 수 있어서 큰 도움이 되었어요.`,
   },
   {
     name: "박○연",
     rating: 4.5,
     date: "2024-04-17",
-    review: "단기간에 이수증을 받을 수 있다는 점이 정말 만족스러웠습니다. 교육 과정 중 상담도 매우 친절하게 이루어져서 편안한 마음으로 수강할 수 있었습니다. 양형에 큰 도움이 되었습니다.",
+    review: 
+`  단기간에 이수증을 받을 수 있다는 점이 정말 만족스러웠습니다. 교육 과정 중 상담도 매우 친절하게 이루어져서 편안한 마음으로 수강할 수 있었습니다.`,
   },
   {
     name: "이○훈",
     rating: 4.5,
     date: "2024-04-16",
-    review: "빠른 이수증 발급이 가능한 프로그램이라 시간 효율적으로 학습할 수 있었습니다. 상담 과정도 세심하게 배려해 주셔서 문제 없이 수료할 수 있었고, 실제 업무에서도 많은 도움이 되었습니다.",
+    review: 
+` 빠른 이수증 발급이 가능한 프로그램이라 시간 효율적으로 학습할 수 있었습니다. 
+    
+  상담 과정도 세심하게 배려해 주셔서 문제 없이 수료할 수 있었고, 실제 업무에서도 많은 도움이 되었습니다.`,
   },
   {
     name: "윤○희",
     rating: 4.5,
     date: "2024-04-13",
-    review: "짧은 시간 안에 이수증을 받을 수 있어서 바쁜 일정을 소화하기에 딱 좋았습니다. 상담이 친절하고 상세해서 교육 과정 내내 만족스러웠습니다. 교육 덕분에 양형에 도움이 되어 큰 걱정을 덜 수 있었습니다.",
+    review: 
+` 짧은 시간 안에 이수증을 받을 수 있어서 바쁜 일정을 소화하기에 딱 좋았습니다. 
+
+  상담이 친절하고 상세해서 교육 과정 내내 만족스러웠습니다. 교육 덕분에 양형에 도움이 되어 큰 걱정을 덜 수 있었습니다.`,
   },
   {
     name: "최○호",
     rating: 4.5,
     date: "2024-04-12",
-    review: "단기간에 이수증을 취득할 수 있어 매우 효율적이었습니다. 상담 또한 매우 친절하고 정확하게 해주셔서 수강 중에도 불편함이 없었습니다. 이 교육 덕분에 양형 문제도 해결할 수 있었어요.",
+    review: `  단기간에 이수증을 취득할 수 있어 매우 효율적이었습니다. 상담 또한 매우 친절하고 정확하게 해주셔서 수강 중에도 불편함이 없었습니다. 이 교육 덕분에 양형 문제도 해결할 수 있었어요.`,
   },
   {
     name: "박○준",
     rating: 4.5,
     date: "2024-04-10",
-    review: "반성의 시간을 가지며 잘못된 행동을 되돌아보는 계기가 되었습니다. 희망과학심리상담센터의 교육이 많은 사람에게 도움이 되었으면 좋겠습니다.",
+    review: `  상담을 친절하게 해주셔서 궁금한 점을 바로 해결할 수 있었습니다. 
+    
+  희망과학심리상담센터의 상담이 많은 사람에게 도움이 되었으면 좋겠습니다.`,
   },
   {
     name: "이○은",
     rating: 4.5,
     date: "2024-04-06",
-    review: "강의가 매우 체계적이고 이해하기 쉽게 구성되어 있어 많은 도움이 되었습니다.",
+    review: `  강의가 매우 체계적이고 이해하기 쉽게 구성되어 있어 많은 도움이 되었습니다.`,
   },
   {
     name: "오○현",
     rating: 4.5,
     date: "2024-04-04",
-    review: "직접 대면해야 하는 불편함없이 간단하게 영상으로 교육을 받고 이수할 수 있어서 좋았습니다.",
+    review: `  직접 대면해야 하는 불편함없이 간단하게 영상으로 교육을 받고 이수할 수 있어서 좋았습니다.`,
   },
   {
     name: "서○빈",
     rating: 4.5,
     date: "2024-04-01",
-    review: "희망과학심리상담센터의 재범 방지 교육이 정말 유익했습니다. 단기간에 이수증을 받을 수 있어 좋았고, 많은 것을 배울 수 있었습니다.",
+    review: `  희망과학심리상담센터의 재범 방지 교육이 정말 유익했습니다. 
+    
+  단기간에 이수증을 받을 수 있어 좋았고, 많은 것을 배울 수 있었습니다.`,
   },
 ];
 
@@ -250,7 +263,7 @@ export const Home = () => {
             <h4>음주폐혜 예방 심리교육&#40;준비중&#41;</h4>
             <img
               className="home-certificate-image"
-              src={certificationImage}
+              src={certificationImage03}
               alt="이수증서 예시 이미지"
             />
           </figure>
@@ -258,7 +271,7 @@ export const Home = () => {
             <h4>중독범죄 예방 심리교육&#40;준비중&#41;</h4>
             <img
               className="home-certificate-image"
-              src={certificationImage}
+              src={certificationImage02}
               alt="이수증서 예시 이미지"
             />
           </figure>

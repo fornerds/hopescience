@@ -1,5 +1,5 @@
 import { Button, Footer, Header, Input } from "../../components"
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { auth } from "../../store";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -18,6 +18,7 @@ const schema = yup
 
 export const ResetPassword = () => {
     const resetPasswordConfirm = auth((state) => state.resetPasswordConfirm);
+    const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const {
         handleSubmit,
@@ -38,6 +39,9 @@ export const ResetPassword = () => {
             const success = await resetPasswordConfirm(token, password);
             if(success){
                 alert(success.message)
+                if(success.message === "비밀번호가 성공적으로 재설정되었습니다."){
+                    navigate("/signin")
+                }
             }
         } catch (error) {
             alert("비밀번호 변경 API에서 오류가 발생했습니다.")

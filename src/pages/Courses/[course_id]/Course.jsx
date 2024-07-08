@@ -154,9 +154,9 @@ export const Course = () => {
                 />
                 <div className="course-detail-wrap">
                   <h3 className="course-index-text">상세설명</h3>
-                  <div className="course-detail-desc">
+                  <pre className="course-detail-desc">
                     {course?.description}
-                  </div>
+                  </pre>
                 </div>
               </div>
               <div className="course-lecture-list">

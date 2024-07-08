@@ -22,7 +22,7 @@ export const SummaryWithShowMore = ({ summary }) => {
         ref={summaryRef}
         style={{
           width: "100%",
-          height: "78px",
+          height: isExpanded ? "fit-content" : "50px",
           marginTop: "16px",
           fontFamily: '"Manrope", Helvetica',
           fontSize: "15px",
@@ -32,6 +32,7 @@ export const SummaryWithShowMore = ({ summary }) => {
           display: "-webkit-box",
           WebkitLineClamp: isExpanded ? "unset" : 2,
           WebkitBoxOrient: "vertical",
+          whiteSpace: "pre-wrap"
         }}
       >
         {summary}

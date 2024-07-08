@@ -191,7 +191,7 @@ select::-ms-expand {
   align-items: center;
 }
 
-.order-item-state.CANCEL {
+.order-item-state.CANCELED {
   background-color: #de3b40;
 }
 
