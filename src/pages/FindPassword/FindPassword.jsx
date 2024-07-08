@@ -33,7 +33,7 @@ export const FindPassword = () => {
             <main className="signup-background">
                 <div className="find-password-box">
                 <h3 className="signup-title">비밀번호 찾기</h3>
-                <div>
+                <div className="find-password-content">
                     <form className="signin-form" onSubmit={handleSubmit()}>
                         <div className="signin-input">
                             <label htmlFor="email" className="signin-input-label">
