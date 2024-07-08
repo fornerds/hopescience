@@ -226,6 +226,8 @@ const useAuthStore = create(
           alert("계정 삭제 실패: " + error.message);
         }
       },
+
+      
     }),
     {
       name: "auth-storage",

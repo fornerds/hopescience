@@ -195,7 +195,7 @@ export const UserPagination = () => {
       <div key={post.id} className="user-qna-item">
         <div>{startIndex + index + 1}</div>
         <Link
-          to={`/admin/QnA/${post.id}`}
+          to={`/admin/Category/${post.category}/${post.id}`}
           className="post-item-link"
           style={{
             backgroundColor: "transparent",

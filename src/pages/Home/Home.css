@@ -17,6 +17,8 @@
     align-items: center;
     text-align: center;
     gap: 62px;
+    min-width: 220px;
+    word-break: keep-all;
   }
   
   .main-title {
@@ -491,11 +493,15 @@
     .home-section-title-large {
       font-size: 18px;
       line-height: 22px;
+      min-width: 220px;
+      word-break: keep-all;
     }
   
     .home-section-desc {
       font-size: 16px;
       line-height: 20px;
+      min-width: 220px;
+      word-break: keep-all;
     }
   
     .home-certificate-table h4 {

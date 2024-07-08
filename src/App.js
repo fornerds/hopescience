@@ -36,6 +36,7 @@ import { AdminOrders } from "./pages/Admin/AdminOrders";
 import { AdminOrder } from "./pages/Admin/AdminOrders/[payment_id]";
 import { AdminCategoryDetail } from "./pages/Admin/Category/[category_name]/[course_inquiry_id]";
 import { AdminCounselingDetail } from "./pages/Admin/Counseling/[counseling_id]";
+import { FindPassword } from "./pages/FindPassword";
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
         <Route path="/policy" element={<Policy />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/findpassword" element={<FindPassword />} />
         <Route path="/signin/naver/callback" element={<NaverSignIn />} />
         <Route path="/courses" element={<Courses />} />
         <Route path="/courses/:course_id" element={<Course />} />

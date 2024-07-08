@@ -158,7 +158,7 @@ export const SignIn = () => {
                   )}
                 />
                 <Link
-                  to="/"
+                  to="/findpassword"
                   label="Forgot password?"
                   color="#bd9a31"
                   buttonStyle="transparent"
