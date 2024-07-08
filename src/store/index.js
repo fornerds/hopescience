@@ -227,7 +227,53 @@ const useAuthStore = create(
         }
       },
 
-      
+      checkEmail: async (email) => {
+        set({ isLoading: true });
+        try {
+          const result = await postApi({
+            path: `/users/check-email`,
+            data: email
+          });
+          if(result){
+            return result
+          }
+        } catch (error) {
+          set({ error: error.message, isLoading: false });
+          alert("이메일 확인 API 실패: " + error.message);
+        }
+      },
+
+      resetPassword: async (email) => {
+        set({ isLoading: true });
+        try {
+          const result = await postApi({
+            path: `/users/reset-password`,
+            data: email
+          });
+          if(result){
+            return result
+          }
+        } catch (error) {
+          set({ error: error.message, isLoading: false });
+          alert("비밀번호 재설정 링크 이메일 전송 API 실패: " + error.message);
+        }
+      },
+
+      resetPasswordConfirm: async (token, password) => {
+        set({ isLoading: true });
+        try {
+          const result = await postApi({
+            path: `/users/reset-password/confirm`,
+            data: {token: token, new_password: password}
+          });
+          if(result){
+            return result
+          }
+        } catch (error) {
+          set({ error: error.message, isLoading: false });
+          alert("비밀번호 재설정 링크 이메일 전송 API 실패: " + error.message);
+        }
+      },
     }),
     {
       name: "auth-storage",

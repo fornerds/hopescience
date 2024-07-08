@@ -1,54 +1,39 @@
 import { Button, Footer, Header, Input } from "../../components"
+import { useSearchParams } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { auth } from "../../store";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import "./FindPassword.css"
 
 const schema = yup
   .object({
-    email: yup
+    password: yup
       .string()
-      .required("이메일 주소를 입력하세요")
-      .email("유효한 이메일 주소를 입력하세요"),
+      .required("비밀번호를 입력해주세요.")
+      .min(8, "비밀번호는 8자 이상이어야 합니다.")
+      .matches(/[a-zA-Z]/, "비밀번호에는 문자가 포함되어야 합니다.")
+      .matches(/[0-9]/, "비밀번호에는 숫자가 포함되어야 합니다."),
   })
   .required();
 
-export const FindPassword = () => {
-    const checkEmail = auth((state) => state.checkEmail);
-    const resetPassword = auth((state) => state.resetPassword);
+export const ResetPassword = () => {
+    const resetPasswordConfirm = auth((state) => state.resetPasswordConfirm);
+    const [searchParams] = useSearchParams();
     const {
         handleSubmit,
         control,
-        setError,
         formState: { errors, isSubmitting },
       } = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
-          email: "",
+          password: "",
         },
         mode: 'onSubmit',
       });
 
       const onSubmit = async (data) => {
-        const res = await checkEmail(data)
-        if(res){
-            if(res.exists === true){
-                try {
-                    const sendEmail = await resetPassword(data);
-                    if(sendEmail){
-                        console.log(sendEmail)
-                    }
-                } catch (error) {
-                    alert("이메일 전송이 정상적으로 이뤄지지 않았습니다.")
-                }
-            }else{
-                setError("email", {
-                    type: "manual",
-                    message: "희망과학심리상담센터에 가입한 이메일이 아닙니다.",
-                });
-            }
-        }
+        const token = searchParams.get("token");
+        console.log(token, data)
       };
 
     return (
@@ -56,33 +41,33 @@ export const FindPassword = () => {
             <Header />
             <main className="signup-background">
                 <div className="find-password-box">
-                <h3 className="signup-title">비밀번호 찾기</h3>
+                <h3 className="signup-title">비밀번호 재설정</h3>
                 <div className="find-password-content">
                     <form className="signin-form" onSubmit={handleSubmit(onSubmit)}>
                         <div className="signin-input">
-                            <label htmlFor="email" className="signin-input-label">
-                            아이디(가입한 계정 이메일)
+                            <label htmlFor="password" className="signin-input-label">
+                            새로운 비밀번호
                             </label>
                             <Controller
-                            name="email"
+                            name="password"
                             control={control}
                             render={({ field }) => (
                                 <Input
                                 {...field}
-                                type="email"
-                                placeholder="이메일주소를 입력하세요"
+                                type="password"
+                                placeholder="새로운 비밀번호를 입력하세요"
                                 />
                             )}
                             />
-                            {errors.email && (
-                            <p className="input-error-message">{errors.email.message}</p>
+                            {errors.password && (
+                            <p className="input-error-message">{errors.password.message}</p>
                             )}
                         </div>
                         <Button
                             variant="default"
                             size="full"
                             type="submit"
-                            label={isSubmitting ? "전송 중.." : "비밀번호 재설정 링크 보내기"}
+                            label={isSubmitting ? "전송 중.." : "비밀번호 변경하기"}
                             disabled={isSubmitting}
                         />
                     </form>
