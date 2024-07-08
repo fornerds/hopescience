@@ -33,7 +33,8 @@ export const ResetPassword = () => {
 
       const onSubmit = async (data) => {
         const token = searchParams.get("token");
-        console.log(token, data)
+        const {password} = data;
+        resetPasswordConfirm(token, password);
       };
 
     return (

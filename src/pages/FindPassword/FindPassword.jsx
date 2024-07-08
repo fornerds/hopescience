@@ -37,7 +37,7 @@ export const FindPassword = () => {
                 try {
                     const sendEmail = await resetPassword(data);
                     if(sendEmail){
-                        console.log(sendEmail)
+                        alert(sendEmail.message)
                     }
                 } catch (error) {
                     alert("이메일 전송이 정상적으로 이뤄지지 않았습니다.")
