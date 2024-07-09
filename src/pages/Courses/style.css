@@ -43,6 +43,25 @@
 .courses-section-pagenation {
   margin-top: 23px;
   display: flex;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.courses-section-title-wrap {
+  display: flex;
+  gap: 8px;
+  align-items: end;
+}
+
+.courses-section-title {
+  color: #dee1e6;
+  font-size: 20px;
+  font-weight: 700;
+  align-self: end;
+}
+
+.courses-section-icon-button-wrap {
+  display: flex;
   justify-content: end;
   gap: 14px;
 }

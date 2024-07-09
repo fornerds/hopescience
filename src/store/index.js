@@ -263,7 +263,7 @@ const useAuthStore = create(
         set({ isLoading: true });
         try {
           const result = await postApi({
-            path: `/users/reset-password/confirm`,
+            path: `/users/reset-password`,
             data: {token: token, new_password: password}
           });
           if(result){
@@ -724,6 +724,34 @@ const useServiceStore = create((set) => ({
           isLoading: false,
         });
         console.log("서비스 리스트를 성공적으로 가져왔습니다.");
+      } else {
+        throw new Error(`Failed to fetch services: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      alert(
+        "서비스 리스트를 가져오는 중 오류가 발생했습니다: " + error.message
+      );
+    }
+  },
+
+  getServicesbyGroup: async(group_id) => {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({ path: `/courses/group/${group_id}` });
+      if (response) {
+        set({ isLoading: false });
+        return response.map((service) => ({
+          id: service.id,
+          title: service.title,
+          category: service.category,
+          group: service.group,
+          price: service.price,
+          thumbnail: service.thumbnail_image,
+          discounted_price: service.discounted_price,
+          created_at: service.created_at,
+          is_active: service.is_active,
+        }))
       } else {
         throw new Error(`Failed to fetch services: Status ${response.status}`);
       }
