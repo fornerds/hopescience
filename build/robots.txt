@@ -1,2 +1,12 @@
 User-agent: Yeti
 Allow: /
+Disallow: /admin/
+Disallow: /signin
+Disallow: /signup
+Disallow: /findpassword
+Disallow: /reset-password
+Disallow: /mypage/
+Disallow: /cart/
+
+# 사이트맵 위치 지정
+Sitemap: https://www.xn--vb0b67vepvv2b.com/sitemap.xml
