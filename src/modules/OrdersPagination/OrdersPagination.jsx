@@ -19,10 +19,30 @@ export const OrdersPagination = () => {
   const totalPosts = payments?.length || 0;
   const categories = service((state) => state.categories || []);
   const getCategories = service((state) => state.getCategories);
+  const searchPayments = payment((state)=>state.searchPayments);
+  const sortbyCategoryPayments = payment((state)=>state.sortbyCategoryPayments);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+
+  useEffect(() => {
+    if (searchKeyword) {
+      searchPayments(searchKeyword);
+    } else {
+      getPayments();
+    }
+  }, [searchKeyword]);
+
+  useEffect(() => {
+    if (selectedCategory) {
+      sortbyCategoryPayments(selectedCategory);
+    } else {
+      getPayments();
+    }
+  }, [selectedCategory]);
 
   const location = useLocation();
 
@@ -45,6 +65,10 @@ export const OrdersPagination = () => {
   useEffect(()=>{
     getCategories();
   }, [])
+
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+  };
 
   const renderPageButtons = () => {
     const pageButtons = [];
@@ -99,10 +123,17 @@ export const OrdersPagination = () => {
             type="search"
             className="order-pagination-search-input"
             placeholder="Search..."
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
           />
         </div>
         <div className="order-category">
-          <select id="order-category-select" name="order-category-select">
+          <select
+            id="order-category-select"
+            name="order-category-select" 
+            value={selectedCategory}
+            onChange={handleCategoryChange}  
+          >
             <option value="">전체 카테고리</option>
             {categories.map((category) => (
               <option key={category.id} value={category.name}>

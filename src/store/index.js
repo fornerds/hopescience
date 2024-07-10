@@ -367,6 +367,48 @@ const usePaymentStore = create((set) => ({
     }
   },
 
+  sortbyCategoryPayments: async (category) => {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({ path: `/payments/?skip=0&limit=100&category=${category}` });
+      if (response) {
+        set({
+          payments: response,
+          isLoading: false,
+        });
+        console.log("결제 데이터를 성공적으로 가져왔습니다.");
+      } else {
+        throw new Error(`Failed to fetch users: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      alert(
+        "결제 데이터를 가져오는 중 오류가 발생했습니다: " + error.message
+      );
+    }
+  },
+
+  searchPayments: async (keyword) => {
+    set({ isLoading: true });
+    try {
+      const response = await getApi({ path: `/payments/?skip=0&limit=100&keyword=${keyword}`});
+      if (response) {
+        set({
+          payments: response,
+          isLoading: false,
+        });
+        console.log("결제 데이터를 성공적으로 가져왔습니다.");
+      } else {
+        throw new Error(`Failed to fetch users: Status ${response.status}`);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      alert(
+        "결제 데이터를 가져오는 중 오류가 발생했습니다: " + error.message
+      );
+    }
+  },
+
   
   getPaymentByUser: async (userId) => {
     set({ isLoading: true });
@@ -492,7 +534,7 @@ const useUserStore = create((set) => ({
   searchUsers: async (keyword) => {
     set({ isLoading: true });
     try {
-      const response = await getApi({ path: "/users/?skip=0&limit=100&keyword=" + keyword });
+      const response = await getApi({ path: `/users/?skip=0&limit=100&keyword=${keyword}` });
       if (response) {
         set({
           users: response.map((user) => ({
@@ -1200,7 +1242,7 @@ const useInquiryStore = create((set) => ({
   searchInquiries: async (keyword) => {
     set({ isLoading: true });
     try {
-      const response = await getApi({ path: "/inquiries/?skip=0&limit=100&keyword=" + keyword });
+      const response = await getApi({ path: `/inquiries/?skip=0&limit=100&keyword=${keyword}`});
       if (response) {
         set({
           inquiries: response
