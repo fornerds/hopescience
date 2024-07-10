@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import "./OrdersPagination.css";
 import { Link } from "../../components/Link";
 import { useLocation } from "react-router-dom";
-import { payment } from "../../store";
+import { payment, service } from "../../store";
 import searchIcon from "../../icons/search.svg"
 import leftArrowButton from "../../icons/chevron-left-large.svg"
 import rightArrowButton from "../../icons/chevron-right-large.svg"
@@ -17,6 +17,8 @@ export const OrdersPagination = () => {
   const getPaymentByUser = payment((state)=>state.getPaymentByUser)
   const clearPayments = payment((state)=>state.clearPayments)
   const totalPosts = payments?.length || 0;
+  const categories = service((state) => state.categories || []);
+  const getCategories = service((state) => state.getCategories);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -39,6 +41,10 @@ export const OrdersPagination = () => {
       // getPayments();
     }
   }, [location]);
+
+  useEffect(()=>{
+    getCategories();
+  }, [])
 
   const renderPageButtons = () => {
     const pageButtons = [];
@@ -97,9 +103,12 @@ export const OrdersPagination = () => {
         </div>
         <div className="order-category">
           <select id="order-category-select" name="order-category-select">
-            <option defaultValue="">카테고리</option>
-            <option value="양형교육">양형교육</option>
-            <option value="디지털 장의사">디지털 장의사</option>
+            <option value="">전체 카테고리</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.name}>
+                {category.name}
+              </option>
+            ))}
           </select>
           <svg
             xmlns="http://www.w3.org/2000/svg"

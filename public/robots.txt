@@ -1,4 +1,16 @@
+# 네이버 검색로봇
 User-agent: Yeti
+Allow: /
+Disallow: /admin/
+Disallow: /signin
+Disallow: /signup
+Disallow: /findpassword
+Disallow: /reset-password
+Disallow: /mypage/
+Disallow: /cart/
+
+# 구글 검색로봇
+User-agent: Googlebot
 Allow: /
 Disallow: /admin/
 Disallow: /signin
