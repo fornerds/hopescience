@@ -24,6 +24,9 @@ const schema = yup
   })
   .required();
 
+const isDevelopment = process.env.REACT_APP_ENV === 'development';
+const commonUrl = isDevelopment ? process.env.REACT_APP_API_URL_DEV : process.env.REACT_APP_API_URL_PROD;
+
 export const ServiceForm = () => {
   const [buttonLabel, setButtonLabel] = useState("서비스 수정");
   const [showModal, setShowModal] = useState(false);
@@ -112,11 +115,11 @@ export const ServiceForm = () => {
         ],
       });
     }
-  }, [course_id, getService, clearCourse, reset]);
+  }, [course_id]);
 
-  if(course){
-    console.log(course)
-  }
+  // if(course){
+  //   console.log(course)
+  // }
 
   // const onSubmit = async (data) => {
 
@@ -274,7 +277,7 @@ export const ServiceForm = () => {
       });
 
       setTotalUploadProgress(0); // 업로드 시작 시 진행률 초기화
-      const response = await axios.post('https://nike-c5ae6242356b.herokuapp.com/courses/video', videoFormData, {
+      const response = await axios.post(`${commonUrl}/courses/video`, videoFormData, {
         headers: { 
           'Content-Type': 'multipart/form-data',
           'Accept': 'application/json'
@@ -301,9 +304,11 @@ export const ServiceForm = () => {
   
     // 서비스 생성/수정
     if (course_id) {
+      console.log(data)
       await updateService(course_id, formData);
       console.log('Course updated successfully');
       alert('서비스가 성공적으로 수정되었습니다.');
+      getService(course_id);
     } else {
       await createService(formData);
       console.log('Course created successfully');
@@ -403,7 +408,7 @@ export const ServiceForm = () => {
         courseCategory: course.category.name || "양형교육",
         courseGroup: course.group.name || "강의",
         courseStatus: course.is_active ? "활성화" : "비활성화",
-        thumbnail: course.thumbnail_image || "",
+        thumbnail: course.thumbnail_image || null,
         sections: course.sections.map((section) => ({
           title: section.title,
           description: section.description,
@@ -678,10 +683,9 @@ const ThumbnailUploader = ({ register, setValue, course_id, getValues }) => {
     try {
       setIsVideoUploading(true)
       // Axios 요청 설정
-      const response = await axios.post(`https://nike-c5ae6242356b.herokuapp.com/courses/${course_id}/thumbnail`, formData, {
+      const response = await axios.post(`${commonUrl}/courses/${course_id}/thumbnail`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-  
       if (response.status === 200) {
         // 업로드 성공 후 처리할 로직
         alert("썸네일이 성공적으로 업로드되었습니다.");
