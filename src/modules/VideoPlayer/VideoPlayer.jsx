@@ -24,7 +24,8 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
 
   const videoId = useMemo(() => {
     if (!videoUrl) return null;
-    return videoUrl.split('/').pop().split('?')[0];
+    const id = videoUrl.split('/').pop().split('?')[0];
+    return id && id.length > 0 ? id : null;
   }, [videoUrl]);
 
   const calculateTotalWatchedTime = useCallback(() => {
@@ -46,18 +47,15 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
       try {
         const existingProgress = await getEnrollmentProgress(Number(enrollmentData.id));
         const progressArray = Array.isArray(existingProgress) ? existingProgress : [];
-        const existingLectureProgress = progressArray?.find(p => Number(p.lecture_id) === Number(lectureId));
-        let isCompleted = currentIsCompleted;
-  
-        if (existingLectureProgress && existingLectureProgress.is_completed) {
-          isCompleted = true;
-        }
+        const existingLectureProgress = progressArray.find(p => Number(p.lecture_id) === Number(lectureId));
+        
+        const isNewlyCompleted = currentIsCompleted && (!existingLectureProgress || !existingLectureProgress.is_completed);
   
         const progressData = {
           enrollment_id: enrollmentData.id,
           lecture_id: lectureId,
           video_progress_time: Math.min(totalWatchedTime, duration),
-          is_completed: isCompleted
+          is_completed: currentIsCompleted
         };
   
         if (existingLectureProgress) {
@@ -66,43 +64,47 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
           await createEnrollmentProgress(enrollmentData.id, progressData);
         }
   
-        if (isCompleted) {
-          const completedLecturesCount = progressArray.filter(p => p.is_completed).length + (existingLectureProgress ? 0 : 1);
+        // 새로 완료되었거나 기존에 실패했던 강의가 완료된 경우에만 전체 진도 업데이트
+        if (isNewlyCompleted) {
+          const updatedProgressArray = existingLectureProgress 
+            ? progressArray.map(p => p.lecture_id === lectureId ? progressData : p)
+            : [...progressArray, progressData];
+  
+          const completedLecturesCount = updatedProgressArray.filter(p => p.is_completed).length;
           await updateEnrollmentCompletedCount(enrollmentData.id, completedLecturesCount);
   
           const courseData = await getService(course_id);
-          if(courseData){
-            const processRate = Math.round((Number(completedLecturesCount) / Number(courseData.total_lecture_count)) * 100);
+          if (courseData) {
+            const processRate = Math.round((completedLecturesCount / Number(courseData.total_lecture_count)) * 100);
             await updateEnrollmentTotalProcess(enrollmentData.id, processRate);
-          }
   
-          if (courseData && Number(courseData.total_lecture_count) === Number(completedLecturesCount)) {
-            await updateEnrollmentIsCompleted(enrollmentData.id);
+            if (Number(courseData.total_lecture_count) === completedLecturesCount) {
+              await updateEnrollmentIsCompleted(enrollmentData.id);
   
-            const generateCertificateNumber = () => {
-              const today = new Date();
-              const yyyy = String(today.getFullYear()).slice(4);
-              const mm = String(today.getMonth() + 1).padStart(2, '0');
-              const dd = String(today.getDate()).padStart(2, '0');
-              const dateStr = `${yyyy}${mm}${dd}`;
-          
-              const randomNum = String(Math.floor(Math.random() * 10000)).padStart(4, '0');
-              
-              return `${dateStr}${randomNum}`;
-            };
+              const generateCertificateNumber = () => {
+                const today = new Date();
+                const yyyy = String(today.getFullYear());
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                const dateStr = `${yyyy}${mm}${dd}`;
+                const randomNum = String(Math.floor(Math.random() * 10000)).padStart(4, '0');
+                
+                return `${dateStr}${randomNum}`;
+              };
   
-            const certificateId = generateCertificateNumber();
-            const userName = enrollmentData.user_name;
-            const completionDate = new Date().toISOString();
-            const certificateData = { certificate_id: certificateId, user_name: userName, completion_date: completionDate, is_issued: false };
+              const certificateId = generateCertificateNumber();
+              const userName = enrollmentData.user_name;
+              const completionDate = new Date().toISOString();
+              const certificateData = { certificate_id: certificateId, user_name: userName, completion_date: completionDate, is_issued: false };
   
-            await createCertificate(enrollmentData.user_id, course_id, certificateData);
+              await createCertificate(enrollmentData.user_id, course_id, certificateData);
+            }
           }
         }
       } catch (error) {
         console.error("Error saving progress:", error);
       }
-    }, 1000),
+    }, 2000),
     [enrollmentData?.id, lectureId, duration, calculateTotalWatchedTime, getEnrollmentProgress, updateEnrollmentProgress, createEnrollmentProgress, updateEnrollmentCompletedCount, getService, course_id, updateEnrollmentIsCompleted, createCertificate]
   );
 
@@ -143,74 +145,82 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
     }, []);
   }, []);
 
-  useEffect(() => {
+  const initializePlayer = useCallback(async () => {
     if (!videoId || !iframeRef.current || playerRef.current || !enrollmentData?.id) return;
-  
-    setIsLoading(true);
-    const player = new Player(iframeRef.current, {
-      id: videoId,
-      width: 1150,
-      height: 600,
-      autopause: false,
-      autoplay: false,
-      loop: false,
-      controls: true,
-    });
-  
-    playerRef.current = player;
-  
-    const handleTimeUpdate = (data) => {
-      setCurrentTime(data.seconds);
-      localStorage.setItem(`watchedTime-${lectureId}`, calculateTotalWatchedTime().toString());
-      updateWatchedIntervals(data.seconds);
-      saveProgress();
-    };
-  
-    const handleEnded = () => {
-      console.log("Video ended");
-      saveProgress.flush();
-    };
-  
-    const handleLoaded = () => {
-      setIsLoading(false);
-    };
-  
-    player.on('timeupdate', handleTimeUpdate, { passive: true });
-    player.on('ended', handleEnded);
-    player.on('loaded', handleLoaded);
-  
-    player.ready().then(() => {
-      player.getDuration().then((duration) => setDuration(duration));
+
+    try {
+      const player = new Player(iframeRef.current, {
+        id: videoId,
+        width: '100%',
+        height: '100%',
+        autopause: false,
+        autoplay: false,
+        loop: false,
+        controls: true,
+        responsive: true,
+      });
+
+      playerRef.current = player;
+
+      const handleTimeUpdate = (data) => {
+        setCurrentTime(data.seconds);
+        updateWatchedIntervals(data.seconds);
+        saveProgress();
+      };
+
+      const handleEnded = () => {
+        console.log("Video ended");
+        saveProgress.flush();
+      };
+
+      player.on('timeupdate', handleTimeUpdate);
+      player.on('ended', handleEnded);
+      player.on('loaded', () => setIsLoading(false));
+
+      await player.ready();
+      const videoDuration = await player.getDuration();
+      setDuration(videoDuration);
+
       const savedTime = localStorage.getItem(`watchedTime-${lectureId}`);
       if (savedTime) {
         const parsedTime = parseFloat(savedTime);
-        if (parsedTime < duration) {
-          player.setCurrentTime(parsedTime);
+        if (parsedTime < videoDuration) {
+          await player.setCurrentTime(parsedTime);
         } else {
           localStorage.removeItem(`watchedTime-${lectureId}`);
         }
       }
-    }).catch(error => console.error("Error initializing Vimeo player:", error));
-  
+    } catch (error) {
+      console.error("Error initializing Vimeo player:", error);
+      setIsLoading(false);
+    }
+  }, [videoId, lectureId, enrollmentData?.id, saveProgress, updateWatchedIntervals]);
+
+  useEffect(() => {
+    initializePlayer();
+
     return () => {
-      player.off('timeupdate', handleTimeUpdate);
-      player.off('ended', handleEnded);
-      player.off('loaded', handleLoaded);
-      player.destroy();
+      if (playerRef.current) {
+        playerRef.current.off('timeupdate');
+        playerRef.current.off('ended');
+        playerRef.current.off('loaded');
+        playerRef.current.destroy();
+      }
       playerRef.current = null;
     };
-  }, [videoId, lectureId, saveProgress, updateWatchedIntervals, enrollmentData?.id, calculateTotalWatchedTime]);
+  }, [initializePlayer]);
+
 
   useEffect(() => {
     const handleBeforeUnload = () => {
-      saveProgress.flush(); // 디바운스된 함수를 즉시 실행
+      saveProgress.flush();
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
-      saveProgress.flush(); // 컴포넌트 언마운트 시 디바운스된 함수를 즉시 실행
+      saveProgress.flush();
     };
   }, [saveProgress]);
 
@@ -224,14 +234,18 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
     return <div>영상이 정상적으로 처리되지 않았습니다. 관리자에게 문의해주세요.</div>;
   }
 
+  if (!videoUrl) {
+    return <div>영상이 정상적으로 처리되지 않았습니다. 관리자에게 문의해주세요.</div>;
+  }
+
   return (
-    <div className="video-player-container">
+    <div className="video-player-container" style={{ width: '100%', maxWidth: '1150px', margin: '0 auto' }}>
       {isLoading && (
         <div className="video-player-loading">
           <div className="video-player-loader"></div>
         </div>
       )}
-      <div ref={iframeRef} className={isLoading ? 'hidden' : ''}></div>
+      <div ref={iframeRef} style={{ aspectRatio: '16 / 9' }}></div>
       {/* <p>Current Time: {formatTime(currentTime)} / {formatTime(duration)}</p>
       <p>Total Watched Time: {formatTime(calculateTotalWatchedTime())}</p> */}
     </div>

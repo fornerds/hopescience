@@ -88,7 +88,7 @@ export const Lecture = () => {
             ) : (
               <>
                 <h2 className="lecture-title">
-                  {lecture?.course_section_id}-{lecture?.id}. {lecture?.title}
+                  {lecture?.title}
                 </h2>
                 <VideoPlayer videoUrl={lecture?.video_url} enrollmentData={enrollmentData} lectureId={lecture_id} course_id={course_id}/>
                 <div className="lecture-link-wrap">

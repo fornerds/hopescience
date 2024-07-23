@@ -30,7 +30,7 @@ export const Accordion = ({ section, enrollmentData, enrollmentProgress }) => {
       >
         <div className="accordion-header">
           <h3>
-            {section.order}. {section.title}
+            {section.title}
           </h3>
           <span className="accordion-icon">
             {activeIndex === section.id ? (
@@ -62,7 +62,7 @@ export const Accordion = ({ section, enrollmentData, enrollmentProgress }) => {
                   alt="Play media"
                   src={videoIcon}
                 />{" "}
-                {section.order}-{lecture.order}. {lecture.title} &#40;
+                {lecture.title} &#40;
                 {lecture.video_duration}&#41;
               </div>
               {enrollmentProgress.some(progress => progress.lecture_id === lecture.id) ? (
