@@ -5,7 +5,7 @@ import "./PdfGenerator.css";
 import downloadIcon from "../../icons/move-layer-down.svg";
 import pdfIndexIcon01 from "../../icons/container-156.svg";
 import pdfIndexIcon02 from "../../icons/container-157.svg";
-import { payment } from "../../store";
+import { payment, enrollment } from "../../store";
 import stampImage from "../../images/stamp.png";
 import { certificate } from "../../store";
 import { useEffect } from "react";
@@ -171,7 +171,10 @@ export const ReceiptPdfGenerator = () => {
   const getPaymentByOrderId = payment((state) => state.getPaymentByOrderId);
   const paymentData = payment((state) => state.payment);
   const isLoading = payment((state) => state.isLoading);
-  const cancelPayment = payment((state) => state.cancelPayment);
+  // const cancelPayment = payment((state) => state.cancelPayment);
+  // const deleteEnrollment = enrollment((state) => state.deleteEnrollment)
+  // const getIsEnrolled = enrollment((state)=> state.getIsEnrolled)
+  // const enrollmentData = enrollment((state)=> state.enrollment)
 
   useEffect(() => {
     const fetchPayment = async () => {
@@ -180,23 +183,43 @@ export const ReceiptPdfGenerator = () => {
     fetchPayment();
   }, [getPaymentByOrderId, order_id]);
 
-  const handleCancel = async () => {
-    const paymentKey = paymentData?.payment_key;
-    if (paymentKey) {
-      const confirmCancel = window.confirm("정말로 결제를 취소하시겠습니까?");
-      if (confirmCancel) {
-        try {
-          await cancelPayment(paymentKey, "관리자에 의한 결제 취소", paymentData?.amount);
-        } catch (error) {
-          if (error.status === 404) {
-            alert("결제 정보를 찾을 수 없습니다.");
-          } else {
-            alert("결제 취소 중 오류가 발생했습니다.");
-          }
-        }
-      }
-    }
-  };
+  // const handleCancel = async () => {
+  //   const paymentKey = paymentData?.payment_key;
+  //   const purchaserUserId = paymentData?.user_id;
+  //   const purchaserCourseId = paymentData?.course_id;
+  
+  //   if (paymentKey) {
+  //     const confirmCancel = window.confirm("정말로 결제를 취소하시겠습니까?");
+  //     if (confirmCancel) {
+  //       try {
+  //         // 결제 취소
+  //         await cancelPayment(paymentKey, "관리자에 의한 결제 취소", paymentData?.amount);
+          
+  //         // 등록 정보 확인
+  //         const enrollmentInfo = await getIsEnrolled(purchaserUserId, purchaserCourseId);
+          
+  //         if (enrollmentInfo && enrollmentInfo.id) {
+  //           // 등록 삭제
+  //           await deleteEnrollment(enrollmentInfo.id);
+  //           alert("결제가 취소되고 수강 등록이 삭제되었습니다.");
+  //         } else {
+  //           alert("결제는 취소되었지만, 수강 등록 정보를 찾을 수 없습니다.");
+  //         }
+  //       } catch (error) {
+  //         console.error("Error during cancellation process:", error);
+  //         if (error.response && error.response.status === 404) {
+  //           alert("결제 정보를 찾을 수 없습니다.");
+  //         } else if (error.message === "ALREADY_CANCELED_PAYMENT") {
+  //           alert("이미 취소된 결제입니다.");
+  //         } else {
+  //           alert("결제 취소 중 오류가 발생했습니다. 관리자에게 문의해주세요.");
+  //         }
+  //       }
+  //     }
+  //   } else {
+  //     alert("결제 키 정보가 없습니다. 관리자에게 문의해주세요.");
+  //   }
+  // };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -222,11 +245,11 @@ export const ReceiptPdfGenerator = () => {
               src={downloadIcon}
             />
           </Button>
-          <Button
+          {/* <Button
             label="결제 취소하기"
             style={{ height: "36px", padding: "auto 16px", fontSize: "14px" }}
             onClick={handleCancel}
-          ></Button>
+          ></Button> */}
         </div>
       </div>
       <div className="order-receipt-wrap">
@@ -303,6 +326,8 @@ export const AdminReceiptPdfGenerator = () => {
   const paymentData = payment((state) => state.payment);
   const isLoading = payment((state) => state.isLoading);
   const cancelPayment = payment((state) => state.cancelPayment);
+  const deleteEnrollment = enrollment((state) => state.deleteEnrollment)
+  const getIsEnrolled = enrollment((state)=> state.getIsEnrolled)
 
   useEffect(() => {
     const fetchPayment = async () => {
@@ -315,19 +340,39 @@ export const AdminReceiptPdfGenerator = () => {
 
   const handleCancel = async () => {
     const paymentKey = paymentData?.payment_key;
+    const purchaserUserId = paymentData?.user_id;
+    const purchaserCourseId = paymentData?.course_id;
+  
     if (paymentKey) {
       const confirmCancel = window.confirm("정말로 결제를 취소하시겠습니까?");
       if (confirmCancel) {
         try {
+          // 결제 취소
           await cancelPayment(paymentKey, "관리자에 의한 결제 취소", paymentData?.amount);
-        } catch (error) {
-          if (error.status === 404) {
-            alert("결제 정보를 찾을 수 없습니다.");
+          
+          // 등록 정보 확인
+          const enrollmentInfo = await getIsEnrolled(purchaserUserId, purchaserCourseId);
+          
+          if (enrollmentInfo && enrollmentInfo.id) {
+            // 등록 삭제
+            await deleteEnrollment(enrollmentInfo.id);
+            alert("결제가 취소되고 수강 등록이 삭제되었습니다.");
           } else {
-            alert("결제 취소 중 오류가 발생했습니다.");
+            alert("결제는 취소되었지만, 수강 등록 정보를 찾을 수 없습니다.");
+          }
+        } catch (error) {
+          console.error("Error during cancellation process:", error);
+          if (error.response && error.response.status === 404) {
+            alert("결제 정보를 찾을 수 없습니다.");
+          } else if (error.message === "ALREADY_CANCELED_PAYMENT") {
+            alert("이미 취소된 결제입니다.");
+          } else {
+            alert("결제 취소 중 오류가 발생했습니다. 관리자에게 문의해주세요.");
           }
         }
       }
+    } else {
+      alert("결제 키 정보가 없습니다. 관리자에게 문의해주세요.");
     }
   };
 

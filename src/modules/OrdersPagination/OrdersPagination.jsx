@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import "./OrdersPagination.css";
 import { Link } from "../../components/Link";
 import { useLocation } from "react-router-dom";
@@ -10,39 +10,21 @@ import rightArrowButton from "../../icons/chevron-right-large.svg"
 export const OrdersPagination = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLink, setCurrentLink] = useState("/mypage/orders/");
-  const postsPerPage = 7; // 한 페이지당 보여줄 데이터 수를 7로 변경
-  const getPayments = payment((state)=>state.getPayments);
-  const payments = payment((state)=>state.payments);
-  const isLoading = payment((state)=>state.isLoading);
-  const getPaymentByUser = payment((state)=>state.getPaymentByUser)
-  const clearPayments = payment((state)=>state.clearPayments)
-  const totalPosts = payments?.length || 0;
+  const postsPerPage = 7;
+  const getPayments = payment((state) => state.getPayments);
+  const payments = payment((state) => state.payments);
+  const isLoading = payment((state) => state.isLoading);
+  const getPaymentByUser = payment((state) => state.getPaymentByUser);
+  const clearPayments = payment((state) => state.clearPayments);
   const categories = service((state) => state.categories || []);
   const getCategories = service((state) => state.getCategories);
-  const searchPayments = payment((state)=>state.searchPayments);
-  const sortbyCategoryPayments = payment((state)=>state.sortbyCategoryPayments);
+  const searchPayments = payment((state) => state.searchPayments);
+  const searchUserPayments = payment((state) => state.searchUserPayments);
+  const sortbyCategoryPayments = payment((state) => state.sortbyCategoryPayments);
+  const sortUserPaymentsByCategory = payment((state) => state.sortUserPaymentsByCategory);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  useEffect(() => {
-    if (searchKeyword) {
-      searchPayments(searchKeyword);
-    } else {
-      getPayments();
-    }
-  }, [searchKeyword]);
-
-  useEffect(() => {
-    if (selectedCategory) {
-      sortbyCategoryPayments(selectedCategory);
-    } else {
-      getPayments();
-    }
-  }, [selectedCategory]);
+  const [error, setError] = useState(null);
 
   const location = useLocation();
 
@@ -51,32 +33,71 @@ export const OrdersPagination = () => {
     return data ? JSON.parse(data).state?.user?.userId : null;
   }, []);
 
-  useEffect(() => {
-    clearPayments()
-    if (location.pathname === "/admin/orders") {
-      setCurrentLink("/admin/orders/");
-      getPayments();
-    }else {
-      getPaymentByUser(myUserId)
-      // getPayments();
-    }
-  }, [location]);
+  const handlePageChange = useCallback((page) => {
+    setCurrentPage(page);
+  }, []);
 
-  useEffect(()=>{
-    getCategories();
-  }, [])
-
-  const handleCategoryChange = (e) => {
+  const handleCategoryChange = useCallback((e) => {
     setSelectedCategory(e.target.value);
-  };
+    setCurrentPage(1);
+  }, []);
 
-  const renderPageButtons = () => {
+  const handleSearchChange = useCallback((e) => {
+    setSearchKeyword(e.target.value);
+    setCurrentPage(1);
+  }, []);
+
+  useEffect(() => {
+    getCategories();
+  }, [getCategories]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setError(null);
+        clearPayments();
+        if (location.pathname === "/admin/orders") {
+          setCurrentLink("/admin/orders/");
+          if (searchKeyword) {
+            await searchPayments(searchKeyword);
+          } else if (selectedCategory) {
+            await sortbyCategoryPayments(selectedCategory);
+          } else {
+            await getPayments();
+          }
+        } else if (location.pathname === "/mypage/orders" && myUserId) {
+          setCurrentLink("/mypage/orders/");
+          if (searchKeyword) {
+            await searchUserPayments(myUserId, searchKeyword);
+          } else if (selectedCategory) {
+            await sortUserPaymentsByCategory(myUserId, selectedCategory);
+          } else {
+            await getPaymentByUser(myUserId);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError("데이터를 불러오는 중 오류가 발생했습니다.");
+      }
+    };
+
+    fetchData();
+  }, [location.pathname, myUserId, searchKeyword, selectedCategory, clearPayments, searchPayments, sortbyCategoryPayments, getPayments, searchUserPayments, sortUserPaymentsByCategory, getPaymentByUser]);
+
+  const totalPosts = payments?.length || 0;
+
+  const currentPosts = useMemo(() => {
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    return payments.slice(indexOfFirstPost, indexOfLastPost);
+  }, [payments, currentPage, postsPerPage]);
+
+  const renderPageButtons = useCallback(() => {
     const pageButtons = [];
     const totalPages = Math.ceil(totalPosts / postsPerPage);
     let startPage = Math.max(currentPage - 2, 1);
     let endPage = Math.min(startPage + 4, totalPages);
 
-    // 현재 페이지가 첫 번째 페이지에 가까워서 페이지 버튼이 충분하지 않은 경우
     if (endPage - startPage < 4) {
       startPage = Math.max(endPage - 4, 1);
     }
@@ -98,13 +119,9 @@ export const OrdersPagination = () => {
     }
 
     return pageButtons;
-  };
+  }, [currentPage, totalPosts, postsPerPage, handlePageChange]);
 
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = payments.slice(indexOfFirstPost, indexOfLastPost);
-
-  const getStateClassName = (state) => {
+  const getStateClassName = useCallback((state) => {
     const stateClassMap = {
       CANCELED: "결제취소",
       READY: "결제중",
@@ -112,7 +129,11 @@ export const OrdersPagination = () => {
       COMPLETED: "결제확인",
     };
     return stateClassMap[state] || "";
-  };
+  }, []);
+
+  if (error) {
+    return <div className="error-message">{error}</div>;
+  }
 
   return (
     <div className="order-pagination-container">
@@ -124,7 +145,7 @@ export const OrdersPagination = () => {
             className="order-pagination-search-input"
             placeholder="Search..."
             value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
+            onChange={handleSearchChange}
           />
         </div>
         <div className="order-category">

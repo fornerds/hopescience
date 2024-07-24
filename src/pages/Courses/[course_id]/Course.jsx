@@ -57,7 +57,7 @@ export const Course = () => {
     }
   }, [enrollmentData]);
 
-  console.log("enrollmentProgress", enrollmentProgress);
+  // console.log("enrollmentProgress", enrollmentProgress);
   return (
     <>
       <Header />
