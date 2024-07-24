@@ -15,7 +15,19 @@ const widgetClientKey = process.env.REACT_APP_TOSS_PAYMENTS_CLIENT_KEY;
 
 const editUserSchema = yup
   .object({
-    name: yup.string().required("이름을 입력해주세요.").matches(/^[가-힣]{2,}$|^[a-zA-Z]{2,}$/, "유효한 이름형식으로 입력해주세요"),
+    name: yup.string().required("이름을 입력해주세요.").matches(
+      /^[가-힣]{2,}$|^[a-zA-Z]{2,}$/,
+      "유효한 이름형식으로 입력해주세요"
+    )
+    .test(
+      'no-consonant-vowel-only',
+      '자음이나 모음만으로 이루어진 이름은 허용되지 않습니다.',
+      function(value) {
+        if (typeof value !== 'string') return true;
+        return !/^[ㄱ-ㅎㅏ-ㅣ]+$/.test(value);
+      }
+    ),
+
     phone: yup
       .string()
       .required("연락처를 입력해주세요.")
