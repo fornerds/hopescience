@@ -135,7 +135,8 @@ export const Courses = () => {
                 </>
               ) : (
                 currentCourses.map(
-                  ({ id, title, thumbnail, price, discounted_price, created_at }) => (
+                  ({ id, title, thumbnail, price, discounted_price, created_at, is_active }) => (
+                    (is_active===true) ?
                     <li key={id}>
                       <CourseCard
                         id={id}
@@ -148,6 +149,7 @@ export const Courses = () => {
                         createdAt={created_at}
                       />
                     </li>
+                    :""
                   )
                 )
               )}
@@ -202,7 +204,8 @@ export const Courses = () => {
                 </>
               ) : (
                 currentCourses2.map(
-                  ({ id, title, thumbnail, price, discounted_price, created_at }) => (
+                  ({ id, title, thumbnail, price, discounted_price, created_at, is_active }) => (
+                    (is_active===true) ?
                     <li key={id}>
                       <CourseCard
                         id={id}
@@ -215,6 +218,7 @@ export const Courses = () => {
                         createdAt={created_at}
                       />
                     </li>
+                    : ""
                   )
                 )
               )}
