@@ -397,7 +397,8 @@
     padding: 0 auto;
     display: flex;
     flex-direction: column;
-    width: 456px;
+    max-width: 456px;
+    width: 90%;
   }
 
   .home-contact-form {
