@@ -9,7 +9,7 @@
     overflow: hidden;
     overflow-x: scroll;
     -ms-overflow-style: none;
-    width: calc(100% + 72px);
+    width: 100%;
     gap: 24px;
   }
 

@@ -392,12 +392,16 @@
     height: auto;
   }
   
-  .home-contact-form {
+  .home-contact-form-wrapper {
     align-self: center;
     padding: 0 auto;
     display: flex;
     flex-direction: column;
     width: 456px;
+  }
+
+  .home-contact-form {
+    width: 100%;
   }
   
   #contact-content {

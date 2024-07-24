@@ -393,43 +393,43 @@ export const Home = () => {
             src={contactImage}
           />
         </div>
-        <div className="home-contact-form">
-        <form onSubmit={handleCounselingSubmit}>
-      <Input
-        mode="underline"
-        type="text"
-        placeholder="이름"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        style={{ width: "90%", height: "44px", padding: "0", maxWidth: "456px", display: "flex" }}
-      />
-      <Input
-        mode="underline"
-        type="email"
-        placeholder="이메일"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        style={{ width: "90%", height: "44px", padding: "0", maxWidth: "456px", display: "flex" }}
-      />
-      <Input
-        mode="underline"
-        type="tel"
-        placeholder="연락처"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        style={{ width: "90%", height: "44px", padding: "0", maxWidth: "456px", display: "flex" }}
-      />
-      <textarea
-        id="contact-content"
-        placeholder="문의 내용"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-      ></textarea>
-        {isSubmitting ? (
-          <Button type="submit" label="문의 접수 중..." style={{ marginTop: "25px" }} disabled />
-        ) : (
-          <Button type="submit" label="문의하기" style={{ marginTop: "25px" }} />
-        )}
+        <div className="home-contact-form-wrapper">
+        <form className="home-contact-form" onSubmit={handleCounselingSubmit}>
+          <Input
+            mode="underline"
+            type="text"
+            placeholder="이름"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            style={{ width: "90%", height: "44px", padding: "0", maxWidth: "456px", display: "flex" }}
+          />
+          <Input
+            mode="underline"
+            type="email"
+            placeholder="이메일"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            style={{ width: "90%", height: "44px", padding: "0", maxWidth: "456px", display: "flex" }}
+          />
+          <Input
+            mode="underline"
+            type="tel"
+            placeholder="연락처"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            style={{ width: "90%", height: "44px", padding: "0", maxWidth: "456px", display: "flex" }}
+          />
+          <textarea
+            id="contact-content"
+            placeholder="문의 내용"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          ></textarea>
+            {isSubmitting ? (
+              <Button type="submit" label="문의 접수 중..." style={{ marginTop: "25px" }} disabled />
+            ) : (
+              <Button type="submit" label="문의하기" style={{ marginTop: "25px" }} />
+            )}
         </form>
         </div>
       </section>
