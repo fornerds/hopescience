@@ -225,18 +225,48 @@
   align-items: center;
 }
 
-.admin-order-item-state.canceled {
-  background-color: #cd7a7d;
+.admin-order-item-state.CANCELED {
+  background-color: #de3b40;
 }
 
-.admin-order-item-state.paying {
-  background-color: #edd39e;
+.admin-order-item-state.READY {
+  background-color: #efb034;
   color: #5d4108;
 }
 
-.admin-order-item-state.paid {
-  background-color: #eefdf3;
-  color: #117b34;
+.admin-order-item-state.DONE {
+  background-color: #1dd75b;
+  color: #0a4d20;
+}
+
+.admin-order-item-state.COMPLETED {
+  background-color: #1d58d7;
+  color: #dee1e6;
+}
+
+.admin-order-item-state.WAITING_FOR_DEPOSIT {
+  background-color: #9c27b0;
+  color: #dee1e6;
+}
+
+.admin-order-item-state.IN_PROGRESS {
+  background-color: #2196f3;
+  color: #dee1e6;
+}
+
+.admin-order-item-state.PARTIAL_CANCELED {
+  background-color: #ff9800;
+  color: #dee1e6;
+}
+
+.admin-order-item-state.ABORTED {
+  background-color: #f44336;
+  color: #dee1e6;
+}
+
+.admin-order-item-state.EXPIRED {
+  background-color: #9e9e9e;
+  color: #dee1e6;
 }
 
 @media (max-width: 862px){

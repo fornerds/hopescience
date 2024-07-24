@@ -210,6 +210,31 @@ select::-ms-expand {
   color: #dee1e6;
 }
 
+.order-item-state.WAITING_FOR_DEPOSIT {
+  background-color: #9c27b0;
+  color: #dee1e6;
+}
+
+.order-item-state.IN_PROGRESS {
+  background-color: #2196f3;
+  color: #dee1e6;
+}
+
+.order-item-state.PARTIAL_CANCELED {
+  background-color: #ff9800;
+  color: #dee1e6;
+}
+
+.order-item-state.ABORTED {
+  background-color: #f44336;
+  color: #dee1e6;
+}
+
+.order-item-state.EXPIRED {
+  background-color: #9e9e9e;
+  color: #dee1e6;
+}
+
 .order-pagination-count {
   color: #dee1e6;
 }

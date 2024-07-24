@@ -8,7 +8,7 @@ import pdfIndexIcon02 from "../../icons/container-157.svg";
 import { payment, enrollment } from "../../store";
 import stampImage from "../../images/stamp.png";
 import { certificate } from "../../store";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 
 const generateAndDownloadPDF = async (certificate_id) => {
@@ -376,14 +376,20 @@ export const AdminReceiptPdfGenerator = () => {
     }
   };
 
-  const getStateClassName = (state) => {
+  const getStateClassName = useCallback((state) => {
     const stateClassMap = {
-      결제취소: "canceled",
-      결제중: "paying",
-      결제완료: "paid",
+      CANCELED: "결제취소",
+      READY: "결제중",
+      DONE: "결제완료",
+      WAITING_FOR_DEPOSIT: "입금대기",
+      COMPLETED: "결제확인",
+      IN_PROGRESS: "처리중",
+      PARTIAL_CANCELED: "부분취소",
+      ABORTED: "실패",
+      EXPIRED: "만료"
     };
     return stateClassMap[state] || "";
-  };
+  }, []);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -395,9 +401,7 @@ export const AdminReceiptPdfGenerator = () => {
         <div className="admin-order-price-state">
           <h2 className="admin-order-title">{paymentData?.amount}원</h2>
           <div
-            className={`admin-order-item-state ${getStateClassName(
-              paymentData?.status
-            )}`}
+            className={`admin-order-item-state ${paymentData?.status}`}
           >
             {paymentData?.status}
           </div>

@@ -99,7 +99,12 @@ export const UserPagination = () => {
       CANCELED: "결제취소",
       READY: "결제중",
       DONE: "결제완료",
+      WAITING_FOR_DEPOSIT: "입금대기",
       COMPLETED: "결제확인",
+      IN_PROGRESS: "처리중",
+      PARTIAL_CANCELED: "부분취소",
+      ABORTED: "실패",
+      EXPIRED: "만료"
     };
     return stateClassMap[state] || "";
   };
@@ -132,15 +137,6 @@ export const UserPagination = () => {
         <div>{enrollment.progress}%</div>
       </div>
     ));
-  };
-
-  const getPaymentStatusClassName = (status) => {
-    const statusClassMap = {
-      결제취소: "canceled",
-      결제중: "paying",
-      DONE: "paid",
-    };
-    return statusClassMap[status] || "";
   };
 
   const renderPayments = (payments, currentPage) => {
