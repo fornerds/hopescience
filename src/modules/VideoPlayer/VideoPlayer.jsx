@@ -20,7 +20,7 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
     updateEnrollmentTotalProcess: state.updateEnrollmentTotalProcess
   }));
   const { getService } = service((state) => ({getService: state.getService}))
-  const { createCertificate } =  certificate((state)=> ({createCertificate: state.createCertificate}))
+  const { createCertificate, checkCertificate } =  certificate((state)=> ({createCertificate: state.createCertificate, checkCertificate: state.checkCertificate}))
 
   const videoId = useMemo(() => {
     if (!videoUrl) return null;
@@ -38,66 +38,89 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
     debounce(async () => {
       const totalWatchedTime = calculateTotalWatchedTime();
       const currentIsCompleted = (totalWatchedTime / duration) >= 0.9;
-  
+
       if (!enrollmentData?.id) {
         console.error("Enrollment ID is undefined");
         return;
       }
-  
+
       try {
         const existingProgress = await getEnrollmentProgress(Number(enrollmentData.id));
         const progressArray = Array.isArray(existingProgress) ? existingProgress : [];
         const existingLectureProgress = progressArray.find(p => Number(p.lecture_id) === Number(lectureId));
-        
-        const isNewlyCompleted = currentIsCompleted && (!existingLectureProgress || !existingLectureProgress.is_completed);
-  
+
         const progressData = {
           enrollment_id: enrollmentData.id,
           lecture_id: lectureId,
           video_progress_time: Math.min(totalWatchedTime, duration),
           is_completed: currentIsCompleted
         };
-  
+
+        let isNewlyCompleted = false;
+
         if (existingLectureProgress) {
-          await updateEnrollmentProgress(enrollmentData.id, lectureId, progressData);
+          if (!existingLectureProgress.is_completed) {
+            // 기존에 완료되지 않은 강의의 경우 업데이트
+            await updateEnrollmentProgress(enrollmentData.id, lectureId, progressData);
+            isNewlyCompleted = currentIsCompleted;
+          } else {
+            console.log("Lecture already completed. Skipping update.");
+          }
         } else {
+          // 새로운 수강 기록 생성
           await createEnrollmentProgress(enrollmentData.id, progressData);
+          isNewlyCompleted = currentIsCompleted;
         }
-  
-        // 새로 완료되었거나 기존에 실패했던 강의가 완료된 경우에만 전체 진도 업데이트
-        if (isNewlyCompleted) {
+
+        // 진도율 업데이트 (새로 완료되었거나 아직 완료되지 않은 경우)
+        if (isNewlyCompleted || !currentIsCompleted) {
           const updatedProgressArray = existingLectureProgress 
             ? progressArray.map(p => p.lecture_id === lectureId ? progressData : p)
             : [...progressArray, progressData];
-  
+
           const completedLecturesCount = updatedProgressArray.filter(p => p.is_completed).length;
           await updateEnrollmentCompletedCount(enrollmentData.id, completedLecturesCount);
-  
+
           const courseData = await getService(course_id);
           if (courseData) {
             const processRate = Math.round((completedLecturesCount / Number(courseData.total_lecture_count)) * 100);
             await updateEnrollmentTotalProcess(enrollmentData.id, processRate);
-  
-            if (Number(courseData.total_lecture_count) === completedLecturesCount) {
+
+            if (completedLecturesCount >= Number(courseData.total_lecture_count)) {
               await updateEnrollmentIsCompleted(enrollmentData.id);
-  
-              const generateCertificateNumber = () => {
-                const today = new Date();
-                const yyyy = String(today.getFullYear());
-                const mm = String(today.getMonth() + 1).padStart(2, '0');
-                const dd = String(today.getDate()).padStart(2, '0');
-                const dateStr = `${yyyy}${mm}${dd}`;
-                const randomNum = String(Math.floor(Math.random() * 10000)).padStart(4, '0');
+
+              const userId = enrollmentData.user_id;
+              const courseId = enrollmentData.course_id;
+              
+              try {
+                const certificateExists = await checkCertificate(userId, courseId);
                 
-                return `${dateStr}${randomNum}`;
-              };
-  
-              const certificateId = generateCertificateNumber();
-              const userName = enrollmentData.user_name;
-              const completionDate = new Date().toISOString();
-              const certificateData = { certificate_id: certificateId, user_name: userName, completion_date: completionDate, is_issued: false };
-  
-              await createCertificate(enrollmentData.user_id, course_id, certificateData);
+                if (!certificateExists) {
+                  // 인증서가 존재하지 않는 경우에만 새 인증서 생성
+                  const generateCertificateNumber = () => {
+                    const today = new Date();
+                    const yyyy = String(today.getFullYear());
+                    const mm = String(today.getMonth() + 1).padStart(2, '0');
+                    const dd = String(today.getDate()).padStart(2, '0');
+                    const dateStr = `${yyyy}${mm}${dd}`;
+                    const randomNum = String(Math.floor(Math.random() * 10000)).padStart(4, '0');
+                    
+                    return `${dateStr}${randomNum}`;
+                  };
+              
+                  const certificateId = generateCertificateNumber();
+                  const userName = enrollmentData.user_name;
+                  const completionDate = new Date().toISOString();
+                  const certificateData = { certificate_id: certificateId, user_name: userName, completion_date: completionDate, is_issued: false };
+              
+                  await createCertificate(userId, courseId, certificateData);
+                  console.log("새로운 이수증서가 발급되었습니다.");
+                } else {
+                  console.log("회원의 해당 강의 이수증서가 이미 발급된 상태입니다.");
+                }
+              } catch (error) {
+                console.error("이미 발급된 이수증서 확인과 새로운 이수증서를 발급하는 과정에서 에러가 발생했습니다:", error);
+              }
             }
           }
         }
@@ -105,7 +128,7 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
         console.error("Error saving progress:", error);
       }
     }, 2000),
-    [enrollmentData?.id, lectureId, duration, calculateTotalWatchedTime, getEnrollmentProgress, updateEnrollmentProgress, createEnrollmentProgress, updateEnrollmentCompletedCount, getService, course_id, updateEnrollmentIsCompleted, createCertificate]
+    [enrollmentData?.id, lectureId, duration, calculateTotalWatchedTime, getEnrollmentProgress, updateEnrollmentProgress, createEnrollmentProgress, updateEnrollmentCompletedCount, getService, course_id, updateEnrollmentIsCompleted, createCertificate, checkCertificate]
   );
 
   const updateWatchedIntervals = useCallback((newTime) => {
@@ -210,7 +233,6 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
     };
   }, [initializePlayer]);
 
-
   useEffect(() => {
     const handleBeforeUnload = () => {
       saveProgress.flush();
@@ -224,16 +246,6 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
     };
   }, [saveProgress]);
 
-  // const formatTime = (time) => {
-  //   const minutes = Math.floor(time / 60);
-  //   const seconds = Math.floor(time % 60);
-  //   return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  // };
-
-  if (!videoUrl) {
-    return <div>영상이 정상적으로 처리되지 않았습니다. 관리자에게 문의해주세요.</div>;
-  }
-
   if (!videoUrl) {
     return <div>영상이 정상적으로 처리되지 않았습니다. 관리자에게 문의해주세요.</div>;
   }
@@ -246,8 +258,6 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
         </div>
       )}
       <div ref={iframeRef} style={{ aspectRatio: '16 / 9' }}></div>
-      {/* <p>Current Time: {formatTime(currentTime)} / {formatTime(duration)}</p>
-      <p>Total Watched Time: {formatTime(calculateTotalWatchedTime())}</p> */}
     </div>
   );
 };

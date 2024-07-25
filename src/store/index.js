@@ -943,10 +943,14 @@ const useServiceStore = create((set) => ({
     }
   },
 
-  getCategories: async () => {
+  getCategories: async (skip = 0, limit = 100, sort = null) => {
     set({ isLoading: true });
     try {
-      const response = await getApi({ path: "/courses/categories" });
+      let path = `/courses/categories/?skip=${skip}&limit=${limit}`;
+      if (sort) {
+        path += `&sort=${sort}`;
+      }
+      const response = await getApi({ path });
       if (response) {
         const categories = response.map((category) => ({
           id: category.id,
@@ -1250,25 +1254,29 @@ const useInquiryStore = create((set) => ({
   inquiries: [],
   QnA: null,
 
-  getInquiries: async () => {
+  getInquiries: async (skip = 0, limit = 100, sort = null) => {
     set({ isLoading: true });
     try {
-      const response = await getApi({ path: "/inquiries" });
+      let path = `/inquiries/?skip=${skip}&limit=${limit}`;
+      if (sort) {
+        path += `&sort=${sort}`;
+      }
+      
+      const response = await getApi({ path });
       if (response) {
         set({
-          inquiries: response
-            .map((inquiry) => ({
-              id: inquiry.id,
-              title: inquiry.title,
-              category: inquiry.category,
-              created_at: inquiry.created_at,
-              updated_at: inquiry.updated_at,
-              content: inquiry.content,
-              user_id: inquiry.user_id,
-              user_name: inquiry.user_name,
-              view_count: inquiry.view_count,
-              comments: inquiry.comments,
-            })),
+          inquiries: response.map((inquiry) => ({
+            id: inquiry.id,
+            title: inquiry.title,
+            category: inquiry.category,
+            created_at: inquiry.created_at,
+            updated_at: inquiry.updated_at,
+            content: inquiry.content,
+            user_id: inquiry.user_id,
+            user_name: inquiry.user_name,
+            view_count: inquiry.view_count,
+            comments: inquiry.comments,
+          })),
           isLoading: false,
         });
         console.log("질문 리스트를 성공적으로 가져왔습니다.");
@@ -1653,10 +1661,15 @@ const useCourseInquiryStore = create((set) => ({
     set({ courseQnA: null });
   },
 
-  getCourseInquiriesByCategory: async (category) => {
+  getCourseInquiriesByCategory: async (category, skip = 0, limit = 100, sort = null) => {
     set({ isLoading: true });
     try {
-      const response = await getApi({ path: `/category/${category}/qna/` });
+      let path = `/category/${category}/qna/?skip=${skip}&limit=${limit}`;
+      if (sort) {
+        path += `&sort=${sort}`;
+      }
+
+      const response = await getApi({ path });
       if (response) {
         const sortedInquiries = response
           .map((inquiry) => ({
@@ -2090,6 +2103,38 @@ const useCertificateStore = create((set) => ({
     }
   },
 
+  checkCertificate: async (userId, courseId) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await getApi({ path: `/certificates/check/${userId}/${courseId}` });
+      if (response && response.certificate_id) {  // 인증서가 실제로 존재하는지 확인
+        set({
+          certificateInfo: {
+            certificateId: response.certificate_id,
+            userName: response.user_name,
+            completionDate: new Date(response.completion_date),
+            isIssued: response.is_issued,
+            id: response.id,
+            userId: response.user_id,
+            courseId: response.course_id,
+            courseName: response.course_name
+          },
+          isLoading: false
+        });
+        console.log("Certificate information successfully fetched.");
+        return true;  // 인증서가 존재함을 나타냄
+      } else {
+        set({ certificateInfo: null, isLoading: false });
+        console.log("Certificate not found.");
+        return false;  // 인증서가 존재하지 않음을 나타냄
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false, certificateInfo: null });
+      console.error("Error checking certificate:", error.message);
+      return false;  // 에러 발생 시 인증서가 없다고 간주
+    }
+  },
+
   clearCertificate: () => {
     set({ certificate: null });
   },
@@ -2124,12 +2169,15 @@ const useCounselingStore = create((set) => ({
     }
   },
 
-  getCounselings: async()=> {
+  getCounselings: async (skip = 0, limit = 100, sort = null) => {
     set({ isLoading: true });
     try {
-      const response = await getApi({
-        path: `/counselings/?skip=0&limit=100`
-      });
+      let path = `/counselings/?skip=${skip}&limit=${limit}`;
+      if (sort) {
+        path += `&sort=${sort}`;
+      }
+
+      const response = await getApi({ path });
   
       if (response) {
         set({ counselings: response, isLoading: false });

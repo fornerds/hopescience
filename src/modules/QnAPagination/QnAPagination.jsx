@@ -38,9 +38,9 @@ export const QnAPagination = () => {
   useEffect(() => {
     if (activeTab === "메인게시판") {
       clearInquiries();
-      getInquiries();
+      getInquiries(0, 100, 'desc');
     } else{
-      getCourseInquiriesByCategory(activeTab);
+      getCourseInquiriesByCategory(activeTab, 0, 100, 'desc');
     }
   }, [activeTab]);
 
@@ -49,13 +49,13 @@ export const QnAPagination = () => {
   }, []);
 
   useEffect(()=> {
-    getCounselings();
+    getCounselings(0, 100, 'desc');
   }, [])
 
   const fetchCategories = async () => {
     try {
       const categories = await getCategories();
-      console.log(categories);
+      console.log(categories, "카테고리입니다.");
       setCategories(categories);
     } catch (error) {
       console.error("Failed to fetch categories:", error);
