@@ -60,19 +60,16 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
 
         if (existingLectureProgress) {
           if (!existingLectureProgress.is_completed) {
-            // 기존에 완료되지 않은 강의의 경우 업데이트
             await updateEnrollmentProgress(enrollmentData.id, lectureId, progressData);
             isNewlyCompleted = currentIsCompleted;
           } else {
             console.log("Lecture already completed. Skipping update.");
           }
         } else {
-          // 새로운 수강 기록 생성
           await createEnrollmentProgress(enrollmentData.id, progressData);
           isNewlyCompleted = currentIsCompleted;
         }
 
-        // 진도율 업데이트 (새로 완료되었거나 아직 완료되지 않은 경우)
         if (isNewlyCompleted || !currentIsCompleted) {
           const updatedProgressArray = existingLectureProgress 
             ? progressArray.map(p => p.lecture_id === lectureId ? progressData : p)
@@ -96,7 +93,6 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
                 const certificateExists = await checkCertificate(userId, courseId);
                 
                 if (!certificateExists) {
-                  // 인증서가 존재하지 않는 경우에만 새 인증서 생성
                   const generateCertificateNumber = () => {
                     const today = new Date();
                     const yyyy = String(today.getFullYear());
@@ -119,13 +115,13 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
                   console.log("회원의 해당 강의 이수증서가 이미 발급된 상태입니다.");
                 }
               } catch (error) {
-                console.error("이미 발급된 이수증서 확인과 새로운 이수증서를 발급하는 과정에서 에러가 발생했습니다:", error);
+                console.error("이수증서 처리 중 오류 발생:", error);
               }
             }
           }
         }
       } catch (error) {
-        console.error("Error saving progress:", error);
+        console.error("진도 저장 중 오류 발생:", error);
       }
     }, 2000),
     [enrollmentData?.id, lectureId, duration, calculateTotalWatchedTime, getEnrollmentProgress, updateEnrollmentProgress, createEnrollmentProgress, updateEnrollmentCompletedCount, getService, course_id, updateEnrollmentIsCompleted, createCertificate, checkCertificate]
@@ -191,9 +187,9 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
         saveProgress();
       };
 
-      const handleEnded = () => {
+      const handleEnded = async () => {
         console.log("Video ended");
-        saveProgress.flush();
+        await saveProgress.flush();  // 영상이 끝났을 때 진도 저장을 기다림
       };
 
       player.on('timeupdate', handleTimeUpdate);
@@ -230,8 +226,9 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
         playerRef.current.destroy();
       }
       playerRef.current = null;
+      saveProgress.flush();  // 컴포넌트 언마운트 시 진도 저장
     };
-  }, [initializePlayer]);
+  }, [initializePlayer, saveProgress]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
