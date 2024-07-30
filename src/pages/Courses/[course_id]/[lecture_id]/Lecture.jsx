@@ -1,16 +1,33 @@
 import "./style.css";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Header, Footer, Link } from "../../../../components";
 import { Pagination } from "../../../../modules/Pagination";
 import { VideoPlayer } from "../../../../modules/VideoPlayer";
 import { service, courseInquiry, enrollment } from "../../../../store";
 import playIcon from "../../../../icons/button-play-1.svg"
+import { Modal } from "../../../../modules/Modal";
 
 export const Lecture = () => {
   let { course_id, lecture_id } = useParams();
   const [nextLecture, setNextLecture] = useState([])
   const navigate = useNavigate();
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
+
+  const handleVideoComplete = useCallback(() => {
+    console.log("비디오 완료 처리");
+    setShowCompletionModal(true);
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+    setShowCompletionModal(false);
+  }, []);
+
+  // lecture_id가 변경될 때마다 모달 상태를 리셋
+  useEffect(() => {
+    setShowCompletionModal(false);
+  }, [lecture_id]);
+
   const { isLoading, getLecture, lecture, getNextLecture } = service((state) => ({
     isLoading: state.isLoading,
     getLecture: state.getLecture,
@@ -88,9 +105,15 @@ export const Lecture = () => {
             ) : (
               <>
                 <h2 className="lecture-title">
-                  {lecture?.title}
+                  {lecture?.course_section_id}-{lecture?.id}. {lecture?.title}
                 </h2>
-                <VideoPlayer videoUrl={lecture?.video_url} enrollmentData={enrollmentData} lectureId={lecture_id} course_id={course_id}/>
+                <VideoPlayer
+                  videoUrl={lecture?.video_url}
+                  enrollmentData={enrollmentData}
+                  lectureId={lecture_id}
+                  course_id={course_id}
+                  onVideoComplete={handleVideoComplete}
+                />
                 <div className="lecture-link-wrap">
                   {nextLecture?.previous ? (
                     <Link
@@ -140,6 +163,16 @@ export const Lecture = () => {
           </div>
         </section>
       </main>
+      <Modal
+        isOpen={showCompletionModal}
+        onClose={handleCloseModal}
+        onConfirm={handleCloseModal}
+        modalTitle="강의 수강 완료"
+        confirmLabel="확인"
+        debug={true}
+      >
+        <p>강의를 정상적으로 수강하셨습니다.</p>
+      </Modal>
       <Footer />
     </>
   );

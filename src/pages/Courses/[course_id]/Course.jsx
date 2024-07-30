@@ -14,6 +14,7 @@ export const Course = () => {
   let { course_id } = useParams();
 
   const [isOpen, setIsOpen] = useState(false);
+  const [isCourseCompleted, setIsCourseCompleted] = useState(false);
   
   const { isLoading, getService, course, clearCourse } = service(state => ({
     isLoading: state.isLoading,
@@ -57,7 +58,15 @@ export const Course = () => {
     }
   }, [enrollmentData]);
 
-  // console.log("enrollmentProgress", enrollmentProgress);
+  useEffect(() => {
+    if (enrollmentProgress && course) {
+      const completedLectures = enrollmentProgress.filter(progress => progress.is_completed).length;
+      setIsCourseCompleted(completedLectures === course.total_lecture_count);
+    }
+  }, [enrollmentProgress, course]);
+
+
+  console.log("enrollmentProgress", enrollmentProgress);
   return (
     <>
       <Header />
@@ -105,12 +114,12 @@ export const Course = () => {
                         {enrollmentData?.progress}%
                       </div>
                     </div>
-                    {enrollmentData?.is_completed ? (<>
+                    {isCourseCompleted && (
                       <div className="enrolled-course-certification-wrap">
                         <h3 className="course-index-text">이수증서</h3>
                         <Link to="/mypage/certificates" buttonStyle="default" label="이수증 발급하기" color="white" fontSize="16px"/>
                       </div>
-                    </>): <></>}
+                    )}
                    </>
                    )
                    : (

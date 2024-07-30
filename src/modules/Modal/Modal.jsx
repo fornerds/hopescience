@@ -2,8 +2,13 @@ import React from "react";
 import "./Modal.css"; // 모달에 대한 스타일 지정
 import { Button } from "../../components/Button";
 
-export const Modal = ({ modalTitle, isOpen, children, onClose, onConfirm, confirmLabel, cancelLabel }) => {
-  if (!isOpen) return null;
+export const Modal = ({ modalTitle, isOpen, children, onClose, onConfirm, confirmLabel, cancelLabel, debug }) => {
+  console.log("Modal render. isOpen:", isOpen);
+  
+  if (!isOpen) {
+    if (debug) console.log("Modal not rendered because isOpen is false");
+    return null;
+  }
 
   return (
     <div className="modal-overlay" onClick={onClose}>

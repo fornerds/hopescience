@@ -4,20 +4,24 @@ import "./style.css";
 import { enrollment, service, certificate } from "../../store";
 import { debounce } from 'lodash';
 
-export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) => {
+export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id, onVideoComplete }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const watchedIntervalsRef = useRef([]);
   const iframeRef = useRef(null);
   const playerRef = useRef(null);
-  const { createEnrollmentProgress, updateEnrollmentProgress, getEnrollmentProgress, updateEnrollmentCompletedCount, updateEnrollmentIsCompleted, updateEnrollmentTotalProcess } = enrollment((state) => ({
+
+  const { createEnrollmentProgress, updateEnrollmentProgress, getEnrollmentProgress, updateEnrollmentCompletedCount, updateEnrollmentIsCompleted, updateEnrollmentTotalProcess, getEnrollment } = enrollment((state) => ({
     createEnrollmentProgress: state.createEnrollmentProgress,
     updateEnrollmentProgress: state.updateEnrollmentProgress,
     getEnrollmentProgress: state.getEnrollmentProgress,
     updateEnrollmentCompletedCount: state.updateEnrollmentCompletedCount,
     updateEnrollmentIsCompleted: state.updateEnrollmentIsCompleted,
-    updateEnrollmentTotalProcess: state.updateEnrollmentTotalProcess
+    updateEnrollmentTotalProcess: state.updateEnrollmentTotalProcess,
+    getEnrollment: state.getEnrollment
   }));
   const { getService } = service((state) => ({getService: state.getService}))
   const { createCertificate, checkCertificate } =  certificate((state)=> ({createCertificate: state.createCertificate, checkCertificate: state.checkCertificate}))
@@ -34,98 +38,124 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
     }, 0);
   }, []);
 
-  const saveProgress = useCallback(
-    debounce(async () => {
-      const totalWatchedTime = calculateTotalWatchedTime();
-      const currentIsCompleted = (totalWatchedTime / duration) >= 0.9;
-
-      if (!enrollmentData?.id) {
-        console.error("Enrollment ID is undefined");
-        return;
-      }
-
-      try {
-        const existingProgress = await getEnrollmentProgress(Number(enrollmentData.id));
-        const progressArray = Array.isArray(existingProgress) ? existingProgress : [];
-        const existingLectureProgress = progressArray.find(p => Number(p.lecture_id) === Number(lectureId));
-
-        const progressData = {
-          enrollment_id: enrollmentData.id,
-          lecture_id: lectureId,
-          video_progress_time: Math.min(totalWatchedTime, duration),
-          is_completed: currentIsCompleted
-        };
-
-        let isNewlyCompleted = false;
-
-        if (existingLectureProgress) {
-          if (!existingLectureProgress.is_completed) {
-            await updateEnrollmentProgress(enrollmentData.id, lectureId, progressData);
-            isNewlyCompleted = currentIsCompleted;
-          } else {
-            console.log("Lecture already completed. Skipping update.");
-          }
-        } else {
-          await createEnrollmentProgress(enrollmentData.id, progressData);
-          isNewlyCompleted = currentIsCompleted;
+  const saveProgress = useCallback(async () => {
+    console.log("saveProgress 함수 시작");
+    const totalWatchedTime = calculateTotalWatchedTime();
+    const currentIsCompleted = (totalWatchedTime / duration) >= 0.9;
+  
+    if (!enrollmentData?.id) {
+      console.error("Enrollment ID is undefined");
+      return;
+    }
+  
+    try {
+      console.log("기존 진도 조회 중...");
+      const existingProgress = await getEnrollmentProgress(Number(enrollmentData.id));
+      console.log("기존 진도:", existingProgress);
+  
+      const progressArray = Array.isArray(existingProgress) ? existingProgress : [];
+      const existingLectureProgress = progressArray.find(p => Number(p.lecture_id) === Number(lectureId));
+  
+      const progressData = {
+        enrollment_id: enrollmentData.id,
+        lecture_id: lectureId,
+        video_progress_time: Math.min(totalWatchedTime, duration),
+        is_completed: currentIsCompleted
+      };
+  
+      let isNewlyCompleted = false;
+  
+      if (!existingLectureProgress || !existingLectureProgress.is_completed) {
+        if (currentIsCompleted) {
+          console.log("새로운 진도 생성 중...");
+          const result = await createEnrollmentProgress(enrollmentData.id, progressData);
+          console.log("새로운 진도 생성 결과:", result);
+          isNewlyCompleted = true;
         }
-
-        if (isNewlyCompleted || !currentIsCompleted) {
-          const updatedProgressArray = existingLectureProgress 
-            ? progressArray.map(p => p.lecture_id === lectureId ? progressData : p)
-            : [...progressArray, progressData];
-
-          const completedLecturesCount = updatedProgressArray.filter(p => p.is_completed).length;
-          await updateEnrollmentCompletedCount(enrollmentData.id, completedLecturesCount);
-
-          const courseData = await getService(course_id);
-          if (courseData) {
-            const processRate = Math.round((completedLecturesCount / Number(courseData.total_lecture_count)) * 100);
-            await updateEnrollmentTotalProcess(enrollmentData.id, processRate);
-
-            if (completedLecturesCount >= Number(courseData.total_lecture_count)) {
-              await updateEnrollmentIsCompleted(enrollmentData.id);
-
-              const userId = enrollmentData.user_id;
-              const courseId = enrollmentData.course_id;
-              
-              try {
-                const certificateExists = await checkCertificate(userId, courseId);
+      } else {
+        console.log("이미 완료된 강의입니다. 업데이트 생략.");
+      }
+  
+      if (isNewlyCompleted) {
+        console.log("수강 완료 수 및 전체 진도 업데이트 중...");
+        const courseData = await getService(course_id);
+        console.log("강좌 데이터:", courseData);
+        
+        if (courseData) {
+          try {
+            console.log("getEnrollment 호출, enrollmentId:", enrollmentData.id);
+            const currentEnrollment = await getEnrollment(enrollmentData.id);
+            console.log("현재 enrollment 정보:", currentEnrollment);
+  
+            if (currentEnrollment) {
+              const currentCompletedCount = currentEnrollment.completed_lecture_count || 0;
+              const newCompletedCount = currentCompletedCount + 1;
+  
+              console.log("updateEnrollmentCompletedCount 호출 전");
+              const updatedCompletedCount = await updateEnrollmentCompletedCount(enrollmentData.id, newCompletedCount);
+              console.log("updateEnrollmentCompletedCount 호출 후, 결과:", updatedCompletedCount);
+  
+              const completedCount = updatedCompletedCount.completed_lecture_count || newCompletedCount;
+              console.log("업데이트된 수강 완료 수:", completedCount);
+  
+              const totalLectureCount = Number(courseData.total_lecture_count) || 1;
+              const processRate = Math.round((completedCount / totalLectureCount) * 100);
+              console.log("계산된 진행률:", processRate);
+  
+              console.log("updateEnrollmentTotalProcess 호출 전");
+              const updateResult = await updateEnrollmentTotalProcess(enrollmentData.id, processRate);
+              console.log("updateEnrollmentTotalProcess 호출 후, 결과:", updateResult);
+  
+              if (completedCount >= totalLectureCount) {
+                console.log("모든 강의 완료. updateEnrollmentIsCompleted 호출 전");
+                const completionResult = await updateEnrollmentIsCompleted(enrollmentData.id);
+                console.log("updateEnrollmentIsCompleted 호출 후, 결과:", completionResult);
+    
+                const userId = enrollmentData.user_id;
+                const courseId = enrollmentData.course_id;
                 
-                if (!certificateExists) {
-                  const generateCertificateNumber = () => {
-                    const today = new Date();
-                    const yyyy = String(today.getFullYear());
-                    const mm = String(today.getMonth() + 1).padStart(2, '0');
-                    const dd = String(today.getDate()).padStart(2, '0');
-                    const dateStr = `${yyyy}${mm}${dd}`;
-                    const randomNum = String(Math.floor(Math.random() * 10000)).padStart(4, '0');
-                    
-                    return `${dateStr}${randomNum}`;
-                  };
-              
-                  const certificateId = generateCertificateNumber();
-                  const userName = enrollmentData.user_name;
-                  const completionDate = new Date().toISOString();
-                  const certificateData = { certificate_id: certificateId, user_name: userName, completion_date: completionDate, is_issued: false };
-              
-                  await createCertificate(userId, courseId, certificateData);
-                  console.log("새로운 이수증서가 발급되었습니다.");
-                } else {
-                  console.log("회원의 해당 강의 이수증서가 이미 발급된 상태입니다.");
+                try {
+                  const certificateExists = await checkCertificate(userId, courseId);
+                  
+                  if (!certificateExists) {
+                    const generateCertificateNumber = () => {
+                      const today = new Date();
+                      const yyyy = String(today.getFullYear());
+                      const mm = String(today.getMonth() + 1).padStart(2, '0');
+                      const dd = String(today.getDate()).padStart(2, '0');
+                      const dateStr = `${yyyy}${mm}${dd}`;
+                      const randomNum = String(Math.floor(Math.random() * 10000)).padStart(4, '0');
+                      
+                      return `${dateStr}${randomNum}`;
+                    };
+                
+                    const certificateId = generateCertificateNumber();
+                    const userName = enrollmentData.user_name;
+                    const completionDate = new Date().toISOString();
+                    const certificateData = { certificate_id: certificateId, user_name: userName, completion_date: completionDate, is_issued: false };
+                
+                    await createCertificate(userId, courseId, certificateData);
+                    console.log("새로운 이수증서가 발급되었습니다.");
+                  } else {
+                    console.log("회원의 해당 강의 이수증서가 이미 발급된 상태입니다.");
+                  }
+                } catch (error) {
+                  console.error("이수증서 처리 중 오류 발생:", error);
                 }
-              } catch (error) {
-                console.error("이수증서 처리 중 오류 발생:", error);
               }
+            } else {
+              console.error("현재 enrollment 정보를 가져오는데 실패했습니다.");
             }
+          } catch (error) {
+            console.error("getEnrollment 호출 중 오류 발생:", error);
           }
         }
-      } catch (error) {
-        console.error("진도 저장 중 오류 발생:", error);
       }
-    }, 2000),
-    [enrollmentData?.id, lectureId, duration, calculateTotalWatchedTime, getEnrollmentProgress, updateEnrollmentProgress, createEnrollmentProgress, updateEnrollmentCompletedCount, getService, course_id, updateEnrollmentIsCompleted, createCertificate, checkCertificate]
-  );
+      console.log("진도 저장 완료");
+    } catch (error) {
+      console.error("진도 저장 중 오류 발생:", error);
+    }
+  }, [enrollmentData?.id, lectureId, duration, calculateTotalWatchedTime, getEnrollmentProgress, createEnrollmentProgress, updateEnrollmentCompletedCount, getService, course_id, updateEnrollmentIsCompleted, createCertificate, checkCertificate, updateEnrollmentTotalProcess, getEnrollment]);
 
   const updateWatchedIntervals = useCallback((newTime) => {
     const intervals = watchedIntervalsRef.current;
@@ -164,58 +194,79 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
     }, []);
   }, []);
 
-  const initializePlayer = useCallback(async () => {
-    if (!videoId || !iframeRef.current || playerRef.current || !enrollmentData?.id) return;
-
-    try {
-      const player = new Player(iframeRef.current, {
-        id: videoId,
-        width: '100%',
-        height: '100%',
-        autopause: false,
-        autoplay: false,
-        loop: false,
-        controls: true,
-        responsive: true,
-      });
-
-      playerRef.current = player;
-
-      const handleTimeUpdate = (data) => {
-        setCurrentTime(data.seconds);
-        updateWatchedIntervals(data.seconds);
-        saveProgress();
-      };
-
-      const handleEnded = async () => {
-        console.log("Video ended");
-        await saveProgress.flush();  // 영상이 끝났을 때 진도 저장을 기다림
-      };
-
-      player.on('timeupdate', handleTimeUpdate);
-      player.on('ended', handleEnded);
-      player.on('loaded', () => setIsLoading(false));
-
-      await player.ready();
-      const videoDuration = await player.getDuration();
-      setDuration(videoDuration);
-
-      const savedTime = localStorage.getItem(`watchedTime-${lectureId}`);
-      if (savedTime) {
-        const parsedTime = parseFloat(savedTime);
-        if (parsedTime < videoDuration) {
-          await player.setCurrentTime(parsedTime);
-        } else {
-          localStorage.removeItem(`watchedTime-${lectureId}`);
-        }
-      }
-    } catch (error) {
-      console.error("Error initializing Vimeo player:", error);
-      setIsLoading(false);
-    }
-  }, [videoId, lectureId, enrollmentData?.id, saveProgress, updateWatchedIntervals]);
+  const handleVideoEnded = useCallback(async () => {
+    console.log("비디오 종료. 진도 저장 및 완료 모달 표시");
+    setIsSaving(true);
+    await saveProgress();
+    setIsSaving(false);
+    console.log("모달 표시 직전");
+    onVideoComplete(); // 부모 컴포넌트에 비디오 완료 알림
+    console.log("모달 표시 직후");
+  }, [saveProgress, onVideoComplete]);
 
   useEffect(() => {
+    console.log("showCompletionModal 상태 변경:", showCompletionModal);
+  }, [showCompletionModal]);
+
+  const handleConfirmCompletion = useCallback(async () => {
+    if (isSaving) return;
+    console.log("완료 확인 및 진도 저장");
+    setIsSaving(true);
+    await saveProgress();
+    setIsSaving(false);
+    console.log("진도 저장 완료, 모달 닫기");
+    setShowCompletionModal(false);
+  }, [isSaving, saveProgress]);
+
+  useEffect(() => {
+    const initializePlayer = async () => {
+      if (!videoId || !iframeRef.current || playerRef.current || !enrollmentData?.id) return;
+  
+      try {
+        const player = new Player(iframeRef.current, {
+          id: videoId,
+          width: '100%',
+          height: '100%',
+          autopause: false,
+          autoplay: false,
+          loop: false,
+          controls: true,
+          responsive: true,
+        });
+  
+        playerRef.current = player;
+  
+        const handleTimeUpdate = (data) => {
+          setCurrentTime(data.seconds);
+          updateWatchedIntervals(data.seconds);
+        };
+  
+        player.on('timeupdate', handleTimeUpdate);
+        player.on('ended', () => {
+          console.log("Vimeo 'ended' event triggered");
+          handleVideoEnded();
+        });
+        player.on('loaded', () => setIsLoading(false));
+  
+        await player.ready();
+        const videoDuration = await player.getDuration();
+        setDuration(videoDuration);
+
+        const savedTime = localStorage.getItem(`watchedTime-${lectureId}`);
+        if (savedTime) {
+          const parsedTime = parseFloat(savedTime);
+          if (parsedTime < videoDuration) {
+            await player.setCurrentTime(parsedTime);
+          } else {
+            localStorage.removeItem(`watchedTime-${lectureId}`);
+          }
+        }
+      } catch (error) {
+        console.error("Error initializing Vimeo player:", error);
+        setIsLoading(false);
+      }
+    };
+
     initializePlayer();
 
     return () => {
@@ -223,23 +274,21 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id }) 
         playerRef.current.off('timeupdate');
         playerRef.current.off('ended');
         playerRef.current.off('loaded');
-        playerRef.current.destroy();
+        playerRef.current.destroy().catch(error => console.error("Error destroying Vimeo player:", error));
       }
       playerRef.current = null;
-      saveProgress.flush();  // 컴포넌트 언마운트 시 진도 저장
     };
-  }, [initializePlayer, saveProgress]);
+  }, [videoId, lectureId, enrollmentData?.id, handleVideoEnded]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
-      saveProgress.flush();
+      saveProgress();
     };
-
+  
     window.addEventListener('beforeunload', handleBeforeUnload);
-
+  
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
-      saveProgress.flush();
     };
   }, [saveProgress]);
 

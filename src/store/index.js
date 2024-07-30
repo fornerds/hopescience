@@ -1811,18 +1811,21 @@ const useEnrollmentStore = create((set) => ({
   },
 
   getEnrollment: async (enrollmentId) => {
-    set({ enrollment: null, isLoading: true });
+    set({ isLoading: true });
     try {
+      console.log("getEnrollment 호출, enrollmentId:", enrollmentId);
       const response = await getApi({ path: `/enrollments/${enrollmentId}` });
       if (response) {
         set({ enrollment: response, isLoading: false });
-        console.log("수강 정보를 성공적으로 가져왔습니다.");
+        console.log("수강 정보를 성공적으로 가져왔습니다:", response);
+        return response;
       } else {
-        throw new Error(`Failed to fetch enrollment: Status ${response.status}`);
+        throw new Error(`Failed to fetch enrollment: Response is ${response}`);
       }
     } catch (error) {
       set({ error: error.message, isLoading: false });
-      console.error("수강 정보를 가져오는 중 오류가 발생했습니다:", error.message);
+      console.error("수강 정보를 가져오는 중 오류 발생:", error);
+      throw error;
     }
   },
 

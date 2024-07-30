@@ -65,7 +65,7 @@ export const Accordion = ({ section, enrollmentData, enrollmentProgress }) => {
                 {lecture.title} &#40;
                 {lecture.video_duration}&#41;
               </div>
-              {enrollmentProgress.some(progress => progress.lecture_id === lecture.id) ? (
+              {enrollmentProgress.filter(videoProcess => videoProcess.is_completed === true).some(progress => progress.lecture_id === lecture.id) ? (
                 <img
                   className="img-9"
                   alt="checkIcon"
