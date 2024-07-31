@@ -88,7 +88,7 @@ export const Post = () => {
     formState: { errors: errorsEdit },
   } = useForm({});
 
-  console.log(myUserId, !!myUserId)
+  // console.log(myUserId, !!myUserId)
 
   useEffect(() => {
     if (inquiry_id) {
