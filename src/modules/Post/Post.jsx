@@ -88,6 +88,8 @@ export const Post = () => {
     formState: { errors: errorsEdit },
   } = useForm({});
 
+  console.log(myUserId, !!myUserId)
+
   useEffect(() => {
     if (inquiry_id) {
       clearCourseQnA();
@@ -223,7 +225,7 @@ export const Post = () => {
                   label="목록으로"
                   style={{ width: "105px", height: "36px", fontSize: "14px" }}
                 />
-                {(myUserId === QnA?.user_id ||
+                {myUserId && (myUserId === QnA?.user_id ||
                   myUserId === courseQnA?.user_id) && (
                   <>
                     <Link
@@ -329,7 +331,7 @@ export const Post = () => {
                               <p className="comment-content">
                                 {comment.content}
                               </p>
-                              {myUserId === comment.user_id && (
+                              {myUserId && myUserId === comment.user_id && (
                                 <div className="comment-buttons">
                                   <Button
                                     onClick={() => handleEditComment(comment)}
