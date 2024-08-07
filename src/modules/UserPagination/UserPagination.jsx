@@ -38,6 +38,8 @@ export const UserPagination = () => {
     fetchEnrollments();
   }, [getEnrollments, user_id]);
 
+  console.log("enrollments", enrollments)
+
   useEffect(() => {
     clearPayments();
     getPaymentByUser(user_id);
@@ -124,7 +126,7 @@ export const UserPagination = () => {
     };
 
     const formatCompletionDate = (dateString) => {
-      if (!dateString) return "미완료";
+      if (!dateString) return "미발급";
       return formatDate(dateString);
     };
 
@@ -133,7 +135,7 @@ export const UserPagination = () => {
         <div>{startIndex + index + 1}</div>
         <div>{enrollment.course_title}</div>
         <div>{formatDate(enrollment.enrolled_at)}</div>
-        <div>{formatCompletionDate(enrollment.completed_at)}</div>
+        <div>{formatCompletionDate(enrollment.certificate_issued_date)}</div>
         <div>{enrollment.progress}%</div>
       </div>
     ));
@@ -242,7 +244,7 @@ export const UserPagination = () => {
                 <div>No</div>
                 <div>강의명</div>
                 <div>등록일</div>
-                <div>수강완료일</div>
+                <div>수료증 발급일</div>
                 <div>진도율</div>
               </div>
               {renderEnrollments(enrollments, currentPageInProgress)}

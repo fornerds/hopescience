@@ -95,10 +95,10 @@ export const PdfGenerator = () => {
   const handleGenerateAndDownload = async () => {
     await generateAndDownloadPDF(certificate_id);
     
-    if (certificateData && certificateData.user_name && certificateData.completion_date && !certificateData.is_issued) {
+    if (certificateData && certificateData.user_name && !certificateData.issued_date && !certificateData.is_issued) {
       const updateData = {
         user_name: certificateData.user_name,
-        completion_date: certificateData.completion_date,
+        issued_date: certificateData.issued_date,
         is_issued: true
       };
       

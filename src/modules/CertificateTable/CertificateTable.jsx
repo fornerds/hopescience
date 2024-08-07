@@ -16,14 +16,16 @@ export const CertificateTable = () => {
     getCertificatesByUser(myUserId);
   },[])
 
+  console.log("certificate", certificates)
+
   return (
     <div className="certificate-table-container">
       <div className="certificate-table">
         <div className="certificate-table-header">
           <div className="certificate-table-mobile-hide">발급번호</div>
           <div className="certificate-table-title">강의명</div>
-          <div className="certificate-table-mobile-hide">수강완료일</div>
-          <div>이수증서발급</div>
+          <div className="certificate-table-mobile-hide">수료증 발급일</div>
+          <div>수료증발급</div>
         </div>
         <ol className="certificate-table-list">
           {
@@ -37,7 +39,7 @@ export const CertificateTable = () => {
             <li className="certificate-table-item" key={certificate.id}>
               <div className="certificate-table-mobile-hide">{certificate.certificate_id}</div>
               <h3>{certificate.course_name}</h3>
-              <div className="certificate-table-mobile-hide">{new Date(certificate.completion_date).toLocaleDateString("ko-KR")}</div>
+              <div className="certificate-table-mobile-hide">{certificate.issued_date ? new Date(certificate.issued_date).toLocaleDateString("ko-KR") : "미발급"}</div>
               <Link
                 to={`/mypage/certificates/${certificate.certificate_id}`}
                 label="발급하기"

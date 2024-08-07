@@ -1,17 +1,16 @@
 import "./style.css"
-import { useEffect } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import { useSearchParams, useParams } from "react-router-dom";
 import { Header, Footer, Link } from "../../../../../components";
 import { payment, enrollment } from "../../../../../store";
 
-
 export function SuccessPage() {
   const [searchParams] = useSearchParams();
   const confirmPayment = payment((state) => state.confirmPayment);
-  const createEnrollment = enrollment((state)=> state.createEnrollment);
+  const createEnrollment = enrollment((state) => state.createEnrollment);
   let { course_id, user_id } = useParams();
-  // const data = sessionStorage.getItem("auth-storage");
-  // const accessToken = data ? JSON.parse(data).state?.accessToken : null;
+  
+  const hasRunEffect = useRef(false);
 
   const today = new Date();
   const yyyy = String(today.getFullYear());
@@ -19,35 +18,63 @@ export function SuccessPage() {
   const dd = String(today.getDate()).padStart(2, '0');
   const dateStr = `${yyyy}.${mm}.${dd}`;
 
-  useEffect(() => {
-    handlePaymentConfirm();
-  }, []);
+  const handlePaymentConfirm = useCallback(async () => {
+    if (hasRunEffect.current) return;
+    hasRunEffect.current = true;
 
-  const handlePaymentConfirm = async () => {
     try {
       const orderId = searchParams.get("orderId");
       const paymentKey = searchParams.get("paymentKey");
       const amount = parseInt(searchParams.get("amount"));
+
+      // console.log("결제 확인 시도:", { orderId, paymentKey, amount });
       
-      const success = await confirmPayment(orderId, paymentKey, amount);
-      if (success) {
-        alert("결제 완료!");
-        const enrollmentData = {
-          user_id: parseInt(user_id),
-          course_id: parseInt(course_id)
-        };
-        
-        const enrollmentResponse = await createEnrollment(enrollmentData);
-        if (enrollmentResponse) {
-          console.log("강의 등록이 정상적으로 완료되었습니다.");
-        } else {
-          alert("결제는 성공했으나 강의 등록이 정상적으로 처리되지 않았습니다. 해당 내용을 문의해주시면, 강의 등록을 도와드리겠습니다.");
-        }
+      const paymentSuccess = await confirmPayment(orderId, paymentKey, amount);
+
+      console.log("결제 확인 결과:", paymentSuccess);
+      if (!paymentSuccess) {
+        throw new Error("결제 확인에 실패했습니다.");
       }
+      
+      console.log("결제가 성공적으로 완료되었습니다.");
+  
+      const enrollmentData = {
+        user_id: parseInt(user_id),
+        course_id: parseInt(course_id)
+      };
+      
+      console.log("강의 등록 시도:", enrollmentData);
+
+      const enrollmentSuccess = await createEnrollment(enrollmentData);
+
+      console.log("강의 등록 결과:", enrollmentSuccess);
+
+      if (!enrollmentSuccess) {
+        throw new Error("강의 등록에 실패했습니다.");
+      }
+  
+      console.log("강의 등록이 정상적으로 완료되었습니다.");
+      alert("결제 및 강의 등록이 성공적으로 완료되었습니다!");
+  
     } catch (error) {
-      alert(`결제 오류 ${error}`);
+      console.error("처리 중 오류 발생:", error);
+      
+      if (error.response) {
+        console.error("서버 응답:", error.response.data);
+        console.error("상태 코드:", error.response.status);
+      } else if (error.request) {
+        console.error("요청 오류:", error.request);
+      } else {
+        console.error("오류 메시지:", error.message);
+      }
+  
+      alert(`처리 중 오류가 발생했습니다: ${error.message}\n자세한 내용은 콘솔을 확인하고 관리자에게 문의해주세요.`);
     }
-  };
+  }, [searchParams, confirmPayment, createEnrollment, course_id, user_id]);
+
+  useEffect(() => {
+    handlePaymentConfirm();
+  }, [handlePaymentConfirm]);
 
   return (
     <>
