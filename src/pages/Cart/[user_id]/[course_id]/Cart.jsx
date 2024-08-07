@@ -166,6 +166,8 @@ export const Cart = () => {
         // 팝업이 차단된 경우
         popupWindow?.close(); // 빈 팝업 창을 닫습니다.
         setIsPopupBlockedModalOpen(true);
+        setErrorMessage("팝업 차단 활성화때문에 결제가 취소되었습니다. 팝업 허용과 새로고침 이후, 다시 결제해주세요.");
+        setIsModalOpen(true);
         return; // 여기서 함수 실행을 종료합니다.
       }
       popupWindow.close(); // 테스트용 팝업 창을 닫습니다.
