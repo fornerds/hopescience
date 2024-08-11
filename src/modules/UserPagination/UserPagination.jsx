@@ -3,7 +3,7 @@ import "./UserPagination.css";
 import { Link } from "../../components/Link";
 import leftArrowButton from "../../icons/chevron-left-large.svg";
 import rightArrowButton from "../../icons/chevron-right-large.svg";
-import { user, payment } from "../../store";
+import { user, payment, certificate } from "../../store";
 import { useParams } from "react-router-dom";
 
 const TAB_BUTTONS = [
@@ -14,7 +14,7 @@ const TAB_BUTTONS = [
 
 const POSTS_PER_PAGE = 7;
 
-export const UserPagination = () => {
+export const UserPagination = ({userId}) => {
   const [activeTab, setActiveTab] = useState("inProgress");
   const [currentPageInProgress, setCurrentPageInProgress] = useState(1);
   const [currentPagePurchases, setCurrentPagePurchases] = useState(1);
@@ -22,6 +22,9 @@ export const UserPagination = () => {
   const { user_id } = useParams();
   const getEnrollments = user((state) => state.getEnrollments);
   const enrollments = user((state) => state.enrollments);
+  const getCertificatesByUser = certificate((state) => state.getCertificatesByUser)
+  const userCertificates = certificate((state) => state.certificates)
+  const clearCertificates = certificate((state) => state.clearCertificates)
   const isEnrollmentsLoading = user((state) => state.isLoading);
   const getPaymentByUser = payment((state) => state.getPaymentByUser);
   const clearPayments = payment((state)=>state.clearPayments)
@@ -38,7 +41,17 @@ export const UserPagination = () => {
     fetchEnrollments();
   }, [getEnrollments, user_id]);
 
-  console.log("enrollments", enrollments)
+  // console.log("enrollments", enrollments)
+
+  useEffect(() => {
+    const fetchCertificates = async () => {
+      await getCertificatesByUser(user_id);
+    };
+    fetchCertificates();
+    return () => clearCertificates(); // 컴포넌트 언마운트 시 인증서 정보 초기화
+  }, [user_id, getCertificatesByUser, clearCertificates]);
+
+  // console.log("userCertificates", userCertificates)
 
   useEffect(() => {
     clearPayments();
@@ -125,17 +138,20 @@ export const UserPagination = () => {
       )}-${String(date.getDate()).padStart(2, "0")}`;
     };
 
-    const formatCompletionDate = (dateString) => {
-      if (!dateString) return "미발급";
-      return formatDate(dateString);
+    const formatCompletionDate = (enrollment) => {
+      const certificate = userCertificates.find(
+        cert => cert.user_id === parseInt(user_id) && cert.course_id === enrollment.course_id
+      );
+      return certificate ? formatDate(certificate.issued_date) : "미발급";
     };
+
 
     return currentEnrollments?.map((enrollment, index) => (
       <div key={enrollment.id} className="user-lecture-item">
         <div>{startIndex + index + 1}</div>
         <div>{enrollment.course_title}</div>
         <div>{formatDate(enrollment.enrolled_at)}</div>
-        <div>{formatCompletionDate(enrollment.certificate_issued_date)}</div>
+        <div>{formatCompletionDate(enrollment)}</div>
         <div>{enrollment.progress}%</div>
       </div>
     ));
