@@ -155,145 +155,147 @@ export const Cart = () => {
   }, [course]);
 
   const handlePaymentRequest = async (orderId, serviceName, name, email, phone, amount, userId, courseId) => {
-    try {
-      if (!course?.category?.name) {
-        throw new Error("카테고리 정보가 없습니다. 관리자에게 문의해주세요.");
-      }
+    setErrorMessage(`희망과학심리상담센터 결제시스템 업데이트 중입니다. 업데이트 진행 중에는 결제되지 않습니다. 업데이트 완료 예상시간: 2024/08/12 16:00`);
+    setIsModalOpen(true);
+    // try {
+    //   if (!course?.category?.name) {
+    //     throw new Error("카테고리 정보가 없습니다. 관리자에게 문의해주세요.");
+    //   }
 
-      // 팝업 차단 여부 확인
-      const popupWindow = window.open('about:blank', 'TossPayments');
-      if (!popupWindow || popupWindow.closed || typeof popupWindow.closed === 'undefined') {
-        // 팝업이 차단된 경우
-        popupWindow?.close(); // 빈 팝업 창을 닫습니다.
-        setIsPopupBlockedModalOpen(true);
-        setErrorMessage("팝업 차단 활성화때문에 결제가 취소되었습니다. 팝업 허용과 새로고침 이후, 다시 결제해주세요.");
-        setIsModalOpen(true);
-        return; // 여기서 함수 실행을 종료합니다.
-      }
-      popupWindow.close(); // 테스트용 팝업 창을 닫습니다.
+    //   // 팝업 차단 여부 확인
+    //   const popupWindow = window.open('about:blank', 'TossPayments');
+    //   if (!popupWindow || popupWindow.closed || typeof popupWindow.closed === 'undefined') {
+    //     // 팝업이 차단된 경우
+    //     popupWindow?.close(); // 빈 팝업 창을 닫습니다.
+    //     setIsPopupBlockedModalOpen(true);
+    //     setErrorMessage("팝업 차단 활성화때문에 결제가 취소되었습니다. 팝업 허용과 새로고침 이후, 다시 결제해주세요.");
+    //     setIsModalOpen(true);
+    //     return; // 여기서 함수 실행을 종료합니다.
+    //   }
+    //   popupWindow.close(); // 테스트용 팝업 창을 닫습니다.
   
-      const success = await createPayment(
-        orderId, 
-        amount, 
-        Number(userId), 
-        Number(courseId), 
-        serviceName, 
-        course.category.name
-      );
+    //   const success = await createPayment(
+    //     orderId, 
+    //     amount, 
+    //     Number(userId), 
+    //     Number(courseId), 
+    //     serviceName, 
+    //     course.category.name
+    //   );
       
-      if (success) {
-        try{
-          await paymentWidget?.requestPayment({
-            orderId: orderId,
-            orderName: serviceName,
-            customerName: name,
-            customerEmail: email,
-            customerMobilePhone: removeHyphensFromPhoneNumber(phone),
-            successUrl: `${process.env.REACT_APP_CLIENT_URL}/cart/${userId}/${courseId}/success`,
-            failUrl: `${process.env.REACT_APP_CLIENT_URL}/cart/${userId}/${courseId}/fail`,
-          });
-        } catch (error) {
-          let errorMessage = "결제 중 오류가 발생했습니다.";
-          switch (error.code) {
-            case "AGREEMENT_WIDGET_ALREADY_RENDERED":
-              errorMessage = "하나의 약관 위젯만을 사용할 수 있어요.";
-              break;
-            case "BELOW_ZERO_AMOUNT":
-              errorMessage = "금액은 0보다 커야 합니다.";
-              break;
-            case "CUSTOM_PAYMENT_METHOD_UNABLE_TO_PAY":
-              errorMessage = "커스텀 결제수단으로 결제할 수 없습니다.";
-              break;
-            case "EXCEED_DEPOSIT_AMOUNT_LIMIT":
-              errorMessage = "가상계좌 입금 제한 금액을 초과했어요. 다른 결제수단을 이용해주세요.";
-              break;
-            case "EXCEED_MAX_DUE_DATE":
-              errorMessage = "가상 계좌의 최대 유효만료 기간을 초과했습니다.";
-              break;
-            case "INCORRECT_FAIL_URL_FORMAT":
-              errorMessage = "잘못된 failUrl 입니다.";
-              break;
-            case "INCORRECT_SUCCESS_URL_FORMAT":
-              errorMessage = "잘못된 successUrl 입니다.";
-              break;
-            case "INVALID_AMOUNT_CURRENCY":
-              errorMessage = "잘못된 통화 값입니다.";
-              break;
-            case "INVALID_AMOUNT_VALUE":
-              errorMessage = "결제금액이 올바르지 않습니다.";
-              break;
-            case "INVALID_PARAMETER":
-              errorMessage = "파라미터가 올바르지 않습니다.";
-              break;
-            case "INVALID_CLIENT_KEY":
-              errorMessage = "ClientKey 형태가 올바르지 않습니다.";
-              break;
-            case "INVALID_CUSTOMER_KEY":
-              errorMessage = "고객키 형식이 올바르지 않습니다.";
-              break;
-            case "INVALID_METHOD_TRANSACTION":
-              errorMessage = "이미 다른 요청을 수행하고 있어요.";
-              break;
-            case "INVALID_PARAMETERS":
-              errorMessage = "필수 파라미터를 누락하거나, 정의되지 않은 파라미터를 추가하거나, 파라미터의 타입이 올바르지 않습니다.";
-              break;
-            case "INVALID_SELECTOR":
-              errorMessage = "selector에 해당하는 HTML 요소를 찾을 수 없습니다. selector 값을 다시 확인해주세요.";
-              break;
-            case "INVALID_VARIANT_KEY":
-              errorMessage = "variantKey 에 해당하는 위젯을 찾을 수 없습니다. variantKey 값을 다시 확인해주세요.";
-              break;
-            case "NEED_AGREEMENT_WITH_REQUIRED_TERMS":
-              errorMessage = "필수 약관에 동의해주세요.";
-              break;
-            case "NEED_CARD_PAYMENT_DETAIL":
-              errorMessage = "카드 결제 정보를 선택해주세요.";
-              break;
-            case "NEED_REFUND_ACCOUNT_DETAIL":
-              errorMessage = "환불계좌 정보를 모두 입력해주세요.";
-              break;
-            case "NOT_SELECTED_PAYMENT_METHOD":
-              errorMessage = "결제수단이 아직 선택되지 않았어요. 결제수단을 선택해 주세요.";
-              break;
-            case "NOT_SETUP_AMOUNT":
-              errorMessage = "결제금액이 설정되지 않았습니다. setAmount를 호출해주세요.";
-              break;
-            case "NOT_SUPPORTED_PROMISE":
-              errorMessage = "Promise 방식을 지원하지 않습니다. successUrl, failUrl을 사용해주세요.";
-              break;
-            case "PAYMENT_METHODS_WIDGET_ALREADY_RENDERED":
-              errorMessage = "하나의 결제수단 위젯만을 사용할 수 있어요.";
-              break;
-            case "PROVIDER_STATUS_UNHEALTHY":
-              errorMessage = "결제 기관(카드사, 은행, 국세청 등) 오류입니다. 다른 결제수단을 선택해 주세요.";
-              break;
-            case "UNSUPPORTED_TEST_PHASE_PAYMENT_METHOD":
-              errorMessage = "테스트 환경을 지원하지 않는 결제수단입니다.";
-              break;
-            case "USER_CANCEL":
-              errorMessage = "취소되었습니다.";
-              break;
-            case "V1_METHOD_NOT_SUPPORTED":
-              errorMessage = "해당 API 는 v1 에서만 제공됩니다.";
-              break;
-            case "WIDGETS_SDK_INITIALIZE_CONFLICT":
-              errorMessage = "widgets는 payment 또는 brandpay와 같이 사용할 수 없습니다.";
-              break;
-            case "UNKNOWN":
-            default:
-              errorMessage = "알 수 없는 에러가 발생했습니다.";
-          }
-          setErrorMessage(errorMessage);
-          setIsModalOpen(true);
-        } 
-      }else {
-        setErrorMessage("결제 생성에 실패했습니다.");
-        setIsModalOpen(true);
-      }
-    } catch (error) {
-      setErrorMessage(`결제 오류 ${error}`);
-      setIsModalOpen(true);
-    }
+    //   if (success) {
+    //     try{
+    //       await paymentWidget?.requestPayment({
+    //         orderId: orderId,
+    //         orderName: serviceName,
+    //         customerName: name,
+    //         customerEmail: email,
+    //         customerMobilePhone: removeHyphensFromPhoneNumber(phone),
+    //         successUrl: `${process.env.REACT_APP_CLIENT_URL}/cart/${userId}/${courseId}/success`,
+    //         failUrl: `${process.env.REACT_APP_CLIENT_URL}/cart/${userId}/${courseId}/fail`,
+    //       });
+    //     } catch (error) {
+    //       let errorMessage = "결제 중 오류가 발생했습니다.";
+    //       switch (error.code) {
+    //         case "AGREEMENT_WIDGET_ALREADY_RENDERED":
+    //           errorMessage = "하나의 약관 위젯만을 사용할 수 있어요.";
+    //           break;
+    //         case "BELOW_ZERO_AMOUNT":
+    //           errorMessage = "금액은 0보다 커야 합니다.";
+    //           break;
+    //         case "CUSTOM_PAYMENT_METHOD_UNABLE_TO_PAY":
+    //           errorMessage = "커스텀 결제수단으로 결제할 수 없습니다.";
+    //           break;
+    //         case "EXCEED_DEPOSIT_AMOUNT_LIMIT":
+    //           errorMessage = "가상계좌 입금 제한 금액을 초과했어요. 다른 결제수단을 이용해주세요.";
+    //           break;
+    //         case "EXCEED_MAX_DUE_DATE":
+    //           errorMessage = "가상 계좌의 최대 유효만료 기간을 초과했습니다.";
+    //           break;
+    //         case "INCORRECT_FAIL_URL_FORMAT":
+    //           errorMessage = "잘못된 failUrl 입니다.";
+    //           break;
+    //         case "INCORRECT_SUCCESS_URL_FORMAT":
+    //           errorMessage = "잘못된 successUrl 입니다.";
+    //           break;
+    //         case "INVALID_AMOUNT_CURRENCY":
+    //           errorMessage = "잘못된 통화 값입니다.";
+    //           break;
+    //         case "INVALID_AMOUNT_VALUE":
+    //           errorMessage = "결제금액이 올바르지 않습니다.";
+    //           break;
+    //         case "INVALID_PARAMETER":
+    //           errorMessage = "파라미터가 올바르지 않습니다.";
+    //           break;
+    //         case "INVALID_CLIENT_KEY":
+    //           errorMessage = "ClientKey 형태가 올바르지 않습니다.";
+    //           break;
+    //         case "INVALID_CUSTOMER_KEY":
+    //           errorMessage = "고객키 형식이 올바르지 않습니다.";
+    //           break;
+    //         case "INVALID_METHOD_TRANSACTION":
+    //           errorMessage = "이미 다른 요청을 수행하고 있어요.";
+    //           break;
+    //         case "INVALID_PARAMETERS":
+    //           errorMessage = "필수 파라미터를 누락하거나, 정의되지 않은 파라미터를 추가하거나, 파라미터의 타입이 올바르지 않습니다.";
+    //           break;
+    //         case "INVALID_SELECTOR":
+    //           errorMessage = "selector에 해당하는 HTML 요소를 찾을 수 없습니다. selector 값을 다시 확인해주세요.";
+    //           break;
+    //         case "INVALID_VARIANT_KEY":
+    //           errorMessage = "variantKey 에 해당하는 위젯을 찾을 수 없습니다. variantKey 값을 다시 확인해주세요.";
+    //           break;
+    //         case "NEED_AGREEMENT_WITH_REQUIRED_TERMS":
+    //           errorMessage = "필수 약관에 동의해주세요.";
+    //           break;
+    //         case "NEED_CARD_PAYMENT_DETAIL":
+    //           errorMessage = "카드 결제 정보를 선택해주세요.";
+    //           break;
+    //         case "NEED_REFUND_ACCOUNT_DETAIL":
+    //           errorMessage = "환불계좌 정보를 모두 입력해주세요.";
+    //           break;
+    //         case "NOT_SELECTED_PAYMENT_METHOD":
+    //           errorMessage = "결제수단이 아직 선택되지 않았어요. 결제수단을 선택해 주세요.";
+    //           break;
+    //         case "NOT_SETUP_AMOUNT":
+    //           errorMessage = "결제금액이 설정되지 않았습니다. setAmount를 호출해주세요.";
+    //           break;
+    //         case "NOT_SUPPORTED_PROMISE":
+    //           errorMessage = "Promise 방식을 지원하지 않습니다. successUrl, failUrl을 사용해주세요.";
+    //           break;
+    //         case "PAYMENT_METHODS_WIDGET_ALREADY_RENDERED":
+    //           errorMessage = "하나의 결제수단 위젯만을 사용할 수 있어요.";
+    //           break;
+    //         case "PROVIDER_STATUS_UNHEALTHY":
+    //           errorMessage = "결제 기관(카드사, 은행, 국세청 등) 오류입니다. 다른 결제수단을 선택해 주세요.";
+    //           break;
+    //         case "UNSUPPORTED_TEST_PHASE_PAYMENT_METHOD":
+    //           errorMessage = "테스트 환경을 지원하지 않는 결제수단입니다.";
+    //           break;
+    //         case "USER_CANCEL":
+    //           errorMessage = "취소되었습니다.";
+    //           break;
+    //         case "V1_METHOD_NOT_SUPPORTED":
+    //           errorMessage = "해당 API 는 v1 에서만 제공됩니다.";
+    //           break;
+    //         case "WIDGETS_SDK_INITIALIZE_CONFLICT":
+    //           errorMessage = "widgets는 payment 또는 brandpay와 같이 사용할 수 없습니다.";
+    //           break;
+    //         case "UNKNOWN":
+    //         default:
+    //           errorMessage = "알 수 없는 에러가 발생했습니다.";
+    //       }
+    //       setErrorMessage(errorMessage);
+    //       setIsModalOpen(true);
+    //     } 
+    //   }else {
+    //     setErrorMessage("결제 생성에 실패했습니다.");
+    //     setIsModalOpen(true);
+    //   }
+    // } catch (error) {
+    //   setErrorMessage(`결제 오류 ${error}`);
+    //   setIsModalOpen(true);
+    // }
   };
 
   useEffect(() => {
