@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import Player from "@vimeo/player";
 import "./style.css";
 import { enrollment, service, certificate } from "../../store";
-import { debounce } from 'lodash';
+// import { debounce } from 'lodash';
 
 export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id, onVideoComplete }) => {
   const [currentTime, setCurrentTime] = useState(0);
@@ -115,9 +115,22 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id, on
                 const courseId = enrollmentData.course_id;
                 
                 try {
-                  const { exists, certificateInfo } = await checkCertificate(userId, courseId);
+                  let certificateExists = false;
+                  let certificateInfo = null;
+
+                  try {
+                    const checkResult = await checkCertificate(userId, courseId);
+                    certificateExists = checkResult.exists;
+                    certificateInfo = checkResult.certificateInfo;
+                  } catch (checkError) {
+                    if (checkError.response && checkError.response.status === 404) {
+                      console.log("Certificate not found, proceeding to create one.");
+                    } else {
+                      throw checkError;
+                    }
+                  }
                   
-                  if (!exists) {
+                  if (!certificateExists && !certificateInfo) {
                     const generateCertificateNumber = () => {
                       const today = new Date();
                       const yyyy = String(today.getFullYear());
