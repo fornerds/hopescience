@@ -115,9 +115,9 @@ export const VideoPlayer = ({ videoUrl, enrollmentData, lectureId, course_id, on
                 const courseId = enrollmentData.course_id;
                 
                 try {
-                  const certificateExists = await checkCertificate(userId, courseId);
+                  const { exists, certificateInfo } = await checkCertificate(userId, courseId);
                   
-                  if (!certificateExists) {
+                  if (!exists) {
                     const generateCertificateNumber = () => {
                       const today = new Date();
                       const yyyy = String(today.getFullYear());

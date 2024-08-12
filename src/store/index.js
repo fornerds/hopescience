@@ -1987,6 +1987,8 @@ const useCertificateStore = create((set) => ({
   error: null,
   certificates: [],
   certificate: null,
+  exists: false,
+  certificateInfo: null,
 
   getCertificates: async (skip = 0, limit = 100) => {
     set({ isLoading: true });
@@ -2107,10 +2109,10 @@ const useCertificateStore = create((set) => ({
   },
 
   checkCertificate: async (userId, courseId) => {
-    set({ isLoading: true, error: null });
+    set({ isLoading: true, error: null, exists: false, certificateInfo: null });
     try {
       const response = await getApi({ path: `/certificates/check/${userId}/${courseId}` });
-      if (response && response.certificate_id) {  // 인증서가 실제로 존재하는지 확인
+      if (response && response.certificate_id) {
         set({
           certificateInfo: {
             certificateId: response.certificate_id,
@@ -2125,16 +2127,22 @@ const useCertificateStore = create((set) => ({
           isLoading: false
         });
         console.log("Certificate information successfully fetched.");
-        return true;  // 인증서가 존재함을 나타냄
+        return { exists: true, certificateInfo: response };
       } else {
         set({ certificateInfo: null, isLoading: false });
         console.log("Certificate not found.");
-        return false;  // 인증서가 존재하지 않음을 나타냄
+        return { exists: false };
       }
     } catch (error) {
-      set({ error: error.message, isLoading: false, certificateInfo: null });
-      console.error("Error checking certificate:", error.message);
-      return false;  // 에러 발생 시 인증서가 없다고 간주
+      if (error.response && error.response.status === 404) {
+        set({ certificateInfo: null, isLoading: false });
+        console.log("Certificate not found (404 error).");
+        return { exists: false };
+      } else {
+        set({ error: error.message, isLoading: false, certificateInfo: null });
+        console.error("Error checking certificate:", error.message);
+        throw error;
+      }
     }
   },
 
