@@ -83,11 +83,11 @@ export const PdfGenerator = () => {
     getCertificate(certificate_id);
   },[])
 
-  function formatISOToKoreanDate(isoString) {
-    const date = new Date(isoString);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1; // getMonth()는 0부터 시작하므로 1을 더합니다.
-    const day = date.getDate();
+  function formatISOToKoreanDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1; // getMonth()는 0부터 시작하므로 1을 더합니다.
+    const day = today.getDate();
   
     return `${year}년 ${month.toString().padStart(2, '0')}월 ${day.toString().padStart(2, '0')}일`;
   }
@@ -141,7 +141,7 @@ export const PdfGenerator = () => {
           </div>
           <div className="certificate-pdf-data">
             <div className="certificate-pdf-data-index">수 료 일:</div>
-            <div>{formatISOToKoreanDate(certificateData?.completion_date)}</div>
+            <div>{formatISOToKoreanDate()}</div>
           </div>
           <div className="certificate-pdf-desc">
             &nbsp;&nbsp;&nbsp;상기 사람은 본 센터에서 실시한 위 소정의 교육과정
