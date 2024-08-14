@@ -3,6 +3,7 @@
     position: relative;
     overflow: hidden;
     font-family: "Manrope", Helvetica;
+    min-height: 400px;
   }
   
   .main-section-figure {
