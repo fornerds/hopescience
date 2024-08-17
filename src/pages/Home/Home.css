@@ -4,13 +4,14 @@
     overflow: hidden;
     font-family: "Manrope", Helvetica;
     min-height: 400px;
+    display: flex;
   }
   
   .main-section-figure {
     position: absolute;
-    top: 50%;
+    /* top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); */
     overflow: hidden;
     color: #ffffff;
     display: flex;
@@ -20,6 +21,10 @@
     gap: 62px;
     min-width: 220px;
     word-break: keep-all;
+    margin: 60px 0px;
+    width: 100%;
+    align-self: center;
+    z-index: 2;
   }
   
   .main-title {
