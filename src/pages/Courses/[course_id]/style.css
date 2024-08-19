@@ -126,6 +126,7 @@
 
 .course-detail-desc {
   margin-top: 28px;
+  white-space: pre-wrap;
 }
 
 
