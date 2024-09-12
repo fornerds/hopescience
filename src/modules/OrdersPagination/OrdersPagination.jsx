@@ -126,7 +126,7 @@ export const OrdersPagination = () => {
       CANCELED: "결제취소",
       READY: "결제중",
       DONE: "결제완료",
-      WAITING_FOR_DEPOSIT: "입금대기",
+      WAITING_FOR_DEPOSIT: "결제확인", //"입금대기",
       COMPLETED: "결제확인",
       IN_PROGRESS: "처리중",
       PARTIAL_CANCELED: "부분취소",

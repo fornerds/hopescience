@@ -245,8 +245,10 @@
 }
 
 .admin-order-item-state.WAITING_FOR_DEPOSIT {
-  background-color: #9c27b0;
-  color: #dee1e6;
+  /* background-color: #9c27b0;
+  color: #dee1e6; */
+  background-color: #1dd75b;
+  color: #0a4d20;
 }
 
 .admin-order-item-state.IN_PROGRESS {
