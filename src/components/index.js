@@ -4,3 +4,4 @@ export { Header } from './Header';
 export { Input } from './Input';
 export { Link } from './Link';
 export { SearchInput } from './SearchInput';
+export { AdPopup } from './AdPopup';
