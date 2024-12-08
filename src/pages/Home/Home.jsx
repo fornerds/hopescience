@@ -1,6 +1,6 @@
 import React from "react";
 import "./Home.css";
-import { Header, Footer, Link, Input, Button } from "../../components";
+import { Header, Footer, Link, Input, Button, AdPopup } from "../../components";
 import { Carousel, FaqAccordion } from "../../modules";
 import mainImage from "../../images/main.png";
 import coursesImage from "../../images/courses.png";
@@ -13,9 +13,10 @@ import locationPinIcon from "../../icons/location-pin.svg";
 import phoneIcon from "../../icons/phone.svg";
 import mailIcon from "../../icons/mail.svg";
 import contactImage from "../../images/contact.png";
+import ad01Image from "../../images/ad-01.png";
+import ad02Image from "../../images/ad-02.png";
 import { useCounselingStore } from '../../store';
-import { useState } from 'react';
-
+import { useState, useEffect } from 'react';
 
 const reviews = [
   {
@@ -170,6 +171,11 @@ const faqData = [
   },
 ];
 
+const ads = [
+  { id: 1, title: '광고 1', imageUrl: ad01Image },
+  { id: 2, title: '광고 2', imageUrl: ad02Image }
+]
+
 export const Home = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -179,6 +185,26 @@ export const Home = () => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [content, setContent] = useState('');
+
+  const [visibleAds, setVisibleAds] = useState([]);
+
+  useEffect(() => {
+    const filteredAds = ads.filter(ad => {
+      const hideUntil = localStorage.getItem(`hideAd_${ad.id}`);
+      return !hideUntil || new Date(hideUntil) < new Date();
+    });
+    setVisibleAds(filteredAds);
+  }, []);
+
+  const closeAd = (adId) => {
+    setVisibleAds(visibleAds.filter(ad => ad.id !== adId));
+  };
+
+  const hideAdForWeek = (adId) => {
+    const hideUntil = new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000);
+    localStorage.setItem(`hideAd_${adId}`, hideUntil.toISOString());
+    closeAd(adId);
+  };
 
   const handleCounselingSubmit = async (e) => {
     e.preventDefault();
@@ -206,6 +232,15 @@ export const Home = () => {
 
   return (
     <>
+      {visibleAds.map((ad, index) => (
+        <AdPopup 
+          key={ad.id} 
+          ad={ad} 
+          position={ad.id}
+          onClose={() => closeAd(ad.id)}
+          onHideForWeek={() => hideAdForWeek(ad.id)}
+        />
+      ))}
       <Header />
       <section className="main-section">
         <figure className="main-section-figure">
