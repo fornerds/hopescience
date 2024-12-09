@@ -1,14 +1,13 @@
 .ad-popup {
   position: fixed;
-  top: 50%;
-  left: 15%;
-  transform: translate(-50%, -50%);
+  top: 92px;
+  left: 20px;
   width: 400px;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  z-index: 1000;
+  z-index: 899;
 }
 
 .ad-popup img {
@@ -49,37 +48,47 @@
 
 @media screen and (min-width: 1401px) {
   .ad-popup {
-    width: 450px;
+    width: 550px;
   }
   
   .ad-popup.position-2 {
-    top: 50%;
-    left: calc(16% + 400px);
+    left: 590px; /* 550px + 20px margin + 20px gap */
   }
 }
 
 @media screen and (min-width: 801px) and (max-width: 1400px) {
   .ad-popup {
-    width: 300px;
-    left: 20%;
+    width: 450px;
   }
   
   .ad-popup.position-2 {
-    top: 50%;
-    left: calc(21% + 300px);
+    left: 340px; /* 300px + 20px margin + 20px gap */
   }
 }
 
-@media screen and (min-width: 401px) and (max-width: 800px) {
+@media screen and (min-width: 601px) and (max-width: 800px) {
   .ad-popup {
-    width: 40%;
-    max-width: 300px;
-    left: 30%;
+    width: 80%;
+    max-width: 450px;
+    left: 50%;
+    transform: translateX(-50%);
   }
   
   .ad-popup.position-2 {
-    top: 50%;
-    left: 71%;
+    top: 312px;
+  }
+}
+
+@media screen and (min-width: 401px) and (max-width: 600px) {
+  .ad-popup {
+    width: 80%;
+    max-width: 400px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .ad-popup.position-2 {
+    top: 292px;
   }
   
   .checkbox-label {
@@ -94,13 +103,13 @@
 
 @media screen and (max-width: 400px) {
   .ad-popup {
-    width: 40%;
-    left: 30%;
+    width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
   }
   
   .ad-popup.position-2 {
-    top: 50%;
-    left: 71%;
+    top: 272px;
   }
   
   .checkbox-label {

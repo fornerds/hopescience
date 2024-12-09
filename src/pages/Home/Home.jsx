@@ -14,7 +14,6 @@ import phoneIcon from "../../icons/phone.svg";
 import mailIcon from "../../icons/mail.svg";
 import contactImage from "../../images/contact.png";
 import ad01Image from "../../images/ad-01.png";
-import ad02Image from "../../images/ad-02.png";
 import { useCounselingStore } from '../../store';
 import { useState, useEffect } from 'react';
 
