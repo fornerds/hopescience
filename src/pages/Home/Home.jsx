@@ -172,8 +172,8 @@ const faqData = [
 ];
 
 const ads = [
-  { id: 1, title: '광고 1', imageUrl: ad01Image },
-  { id: 2, title: '광고 2', imageUrl: ad02Image }
+  { id: 1, title: '광고 1', imageUrl: ad01Image, url: "http://lknike.com/crim1/"},
+  // { id: 2, title: '광고 2', imageUrl: ad02Image, url: "" }
 ]
 
 export const Home = () => {
@@ -239,6 +239,7 @@ export const Home = () => {
           position={ad.id}
           onClose={() => closeAd(ad.id)}
           onHideForWeek={() => hideAdForWeek(ad.id)}
+          url={ad.url}
         />
       ))}
       <Header />
