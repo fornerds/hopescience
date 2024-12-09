@@ -69,8 +69,6 @@
   .ad-popup {
     width: 80%;
     max-width: 450px;
-    left: 50%;
-    transform: translateX(-50%);
   }
   
   .ad-popup.position-2 {
@@ -82,8 +80,6 @@
   .ad-popup {
     width: 80%;
     max-width: 400px;
-    left: 50%;
-    transform: translateX(-50%);
   }
   
   .ad-popup.position-2 {
@@ -103,8 +99,6 @@
 @media screen and (max-width: 400px) {
   .ad-popup {
     width: 80%;
-    left: 50%;
-    transform: translateX(-50%);
   }
   
   .ad-popup.position-2 {
