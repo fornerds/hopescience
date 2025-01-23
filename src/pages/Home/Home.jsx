@@ -292,7 +292,7 @@ export const Home = () => {
         </div>
         <div className="home-certificate-table">
           <figure className="home-certificate-table-figure">
-            <h4>성범죄 예방 심리교육</h4>
+            <h4>성범죄 재범방지 교육</h4>
             <img
               className="home-certificate-image"
               src={certificationImage}
