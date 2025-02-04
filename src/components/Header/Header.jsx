@@ -69,6 +69,12 @@ export const Header = () => {
             label="문의게시판"
             color="white"
           />
+          <Link
+            className="header-link"
+            to="/mypage/courses"
+            label="내 강의목록"
+            color="white"
+          />
           {user && (
                 <div className="header-dropdown-menu-mobile">
                   <Link
