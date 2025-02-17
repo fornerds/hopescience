@@ -1,0 +1,43 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ "main" ]  # 또는 master
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Install Dependencies
+        run: npm install
+        
+      - name: Create env file
+        run: |
+          echo "REACT_APP_TOSS_PAYMENTS_SECRET_KEY=${{ secrets.REACT_APP_TOSS_PAYMENTS_SECRET_KEY }}" >> .env
+          echo "REACT_APP_TOSS_PAYMENTS_CLIENT_KEY=${{ secrets.REACT_APP_TOSS_PAYMENTS_CLIENT_KEY }}" >> .env
+          echo "REACT_APP_ENV=${{ secrets.REACT_APP_ENV }}" >> .env
+          echo "REACT_APP_API_URL_DEV=${{ secrets.REACT_APP_API_URL_DEV }}" >> .env
+          echo "REACT_APP_API_URL_PROD=${{ secrets.REACT_APP_API_URL_PROD }}" >> .env
+          echo "REACT_APP_CLIENT_URL=${{ secrets.REACT_APP_CLIENT_URL }}" >> .env
+          echo "REACT_APP_CALLBACK_URL=${{ secrets.REACT_APP_CALLBACK_URL }}" >> .env
+          echo "REACT_APP_CLIENT_ID=${{ secrets.REACT_APP_CLIENT_ID }}" >> .env
+          echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> .env
+        
+      - name: Build
+        run: npm run build
+        
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
