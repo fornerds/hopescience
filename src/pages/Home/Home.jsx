@@ -13,17 +13,16 @@ import locationPinIcon from "../../icons/location-pin.svg";
 import phoneIcon from "../../icons/phone.svg";
 import mailIcon from "../../icons/mail.svg";
 import contactImage from "../../images/contact.png";
-import ad01Image from "../../images/ad-01.png";
-import { useCounselingStore } from '../../store';
-import { useState, useEffect } from 'react';
+import ad01Image from "../../images/ad-02.png";
+import { useCounselingStore } from "../../store";
+import { useState, useEffect } from "react";
 
 const reviews = [
   {
     name: "김○수",
     rating: 4.5,
     date: "2025-01-20",
-    review: 
-`  이 교육 프로그램은 빠르게 이수증을 받을 수 있어 너무 좋았습니다.
+    review: `  이 교육 프로그램은 빠르게 이수증을 받을 수 있어 너무 좋았습니다.
 
   바쁜 일정 속에서도 단기간에 수료할 수 있어서 큰 도움이 되었어요.`,
   },
@@ -31,15 +30,13 @@ const reviews = [
     name: "박○연",
     rating: 4.5,
     date: "2025-01-17",
-    review: 
-`  단기간에 이수증을 받을 수 있다는 점이 정말 만족스러웠습니다. 교육 과정 중 상담도 매우 친절하게 이루어져서 편안한 마음으로 수강할 수 있었습니다.`,
+    review: `  단기간에 이수증을 받을 수 있다는 점이 정말 만족스러웠습니다. 교육 과정 중 상담도 매우 친절하게 이루어져서 편안한 마음으로 수강할 수 있었습니다.`,
   },
   {
     name: "이○훈",
     rating: 4.5,
     date: "2024-12-16",
-    review: 
-` 빠른 이수증 발급이 가능한 프로그램이라 시간 효율적으로 학습할 수 있었습니다. 
+    review: ` 빠른 이수증 발급이 가능한 프로그램이라 시간 효율적으로 학습할 수 있었습니다. 
     
   상담 과정도 세심하게 배려해 주셔서 문제 없이 수료할 수 있었고, 실제 업무에서도 많은 도움이 되었습니다.`,
   },
@@ -47,8 +44,7 @@ const reviews = [
     name: "윤○희",
     rating: 4.5,
     date: "2024-12-13",
-    review: 
-` 짧은 시간 안에 이수증을 받을 수 있어서 바쁜 일정을 소화하기에 딱 좋았습니다. 
+    review: ` 짧은 시간 안에 이수증을 받을 수 있어서 바쁜 일정을 소화하기에 딱 좋았습니다. 
 
   상담이 친절하고 상세해서 교육 과정 내내 만족스러웠습니다. 교육 덕분에 양형에 도움이 되어 큰 걱정을 덜 수 있었습니다.`,
   },
@@ -171,24 +167,29 @@ const faqData = [
 ];
 
 const ads = [
-  { id: 1, title: '광고 1', imageUrl: ad01Image, url: "http://lknike.com/crim1/"},
+  {
+    id: 1,
+    title: "광고 1",
+    imageUrl: ad02Image,
+    url: "http://lknike.com/crim1/",
+  },
   // { id: 2, title: '광고 2', imageUrl: ad02Image, url: "" }
-]
+];
 
 export const Home = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const counseling = useCounselingStore();
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [content, setContent] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [content, setContent] = useState("");
 
   const [visibleAds, setVisibleAds] = useState([]);
 
   useEffect(() => {
-    const filteredAds = ads.filter(ad => {
+    const filteredAds = ads.filter((ad) => {
       const hideUntil = localStorage.getItem(`hideAd_${ad.id}`);
       return !hideUntil || new Date(hideUntil) < new Date();
     });
@@ -196,7 +197,7 @@ export const Home = () => {
   }, []);
 
   const closeAd = (adId) => {
-    setVisibleAds(visibleAds.filter(ad => ad.id !== adId));
+    setVisibleAds(visibleAds.filter((ad) => ad.id !== adId));
   };
 
   const hideAdForWeek = (adId) => {
@@ -210,13 +211,18 @@ export const Home = () => {
     setIsSubmitting(true);
 
     try {
-      const success = await counseling.createCounseling(name, email, phone, content);
+      const success = await counseling.createCounseling(
+        name,
+        email,
+        phone,
+        content
+      );
       if (success) {
         alert("상담문의가 정상적으로 접수되었습니다.");
-        setName('');
-        setEmail('');
-        setPhone('');
-        setContent('');
+        setName("");
+        setEmail("");
+        setPhone("");
+        setContent("");
       } else {
         alert("상담문의 등록에 실패했습니다. 다시 시도해주세요.");
       }
@@ -228,13 +234,12 @@ export const Home = () => {
     setIsSubmitting(false);
   };
 
-
   return (
     <>
       {visibleAds.map((ad, index) => (
-        <AdPopup 
-          key={ad.id} 
-          ad={ad} 
+        <AdPopup
+          key={ad.id}
+          ad={ad}
           position={ad.id}
           onClose={() => closeAd(ad.id)}
           onHideForWeek={() => hideAdForWeek(ad.id)}
@@ -256,7 +261,13 @@ export const Home = () => {
             <br />
             당신은 더 나은 삶을 살 자격이 있습니다.
           </figcaption>
-          <Link buttonStyle="default" color="white" to="/courses" label="수강신청 바로가기" fontSize="16px" />
+          <Link
+            buttonStyle="default"
+            color="white"
+            to="/courses"
+            label="수강신청 바로가기"
+            fontSize="16px"
+          />
         </figure>
         <img
           className="main-section-image"
@@ -276,7 +287,13 @@ export const Home = () => {
           <br />
           저희는 여러분이 더 나은 삶을 영위하실 수 있도록 노력하고 있습니다.
         </div>
-        <Link buttonStyle="default" color="white" to="/courses" label="더 알아보기" fontSize="16px" />
+        <Link
+          buttonStyle="default"
+          color="white"
+          to="/courses"
+          label="더 알아보기"
+          fontSize="16px"
+        />
         <img
           className="home-about-image"
           src={coursesImage}
@@ -349,7 +366,11 @@ export const Home = () => {
               패스할 때까지 저희가 함께해드립니다.
             </div>
           </div>
-          <img className="home-feature-section-article-image01" alt="무제한 수강이 가능합니다." src={articleImage01} />
+          <img
+            className="home-feature-section-article-image01"
+            alt="무제한 수강이 가능합니다."
+            src={articleImage01}
+          />
         </div>
         <div className="home-feature-section-article-black">
           <div className="home-feature-section-article">
@@ -391,12 +412,12 @@ export const Home = () => {
           그 다음 주인공은 바로 여러분 입니다.
         </div>
         <Carousel items={reviews} />
-        </section>
+      </section>
       <section className="home-FAQ-section">
         <div className="home-FAQ-section-title">FAQ</div>
         <div className="home-section-title-large">자주 묻는 질문</div>
         <FaqAccordion faqs={faqData} />
-        </section>
+      </section>
       <section className="home-contact-section">
         <div className="home-contact-info">
           <h4 className="home-contact-info-title">상담문의</h4>
@@ -406,7 +427,9 @@ export const Home = () => {
                 <td>
                   <img alt="Location pin" src={locationPinIcon} />
                 </td>
-                <td>서울특별시 성동구 상원6길 8, 비 1층 이72호&#40;성수동1가&#41;</td>
+                <td>
+                  서울특별시 성동구 상원6길 8, 비 1층 이72호&#40;성수동1가&#41;
+                </td>
               </tr>
               <tr>
                 <td>
@@ -429,43 +452,70 @@ export const Home = () => {
           />
         </div>
         <div className="home-contact-form-wrapper">
-        <form className="home-contact-form" onSubmit={handleCounselingSubmit}>
-          <Input
-            mode="underline"
-            type="text"
-            placeholder="이름"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            style={{ width: "90%", height: "44px", padding: "0", maxWidth: "456px", display: "flex" }}
-          />
-          <Input
-            mode="underline"
-            type="email"
-            placeholder="이메일"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={{ width: "90%", height: "44px", padding: "0", maxWidth: "456px", display: "flex" }}
-          />
-          <Input
-            mode="underline"
-            type="tel"
-            placeholder="연락처"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            style={{ width: "90%", height: "44px", padding: "0", maxWidth: "456px", display: "flex" }}
-          />
-          <textarea
-            id="contact-content"
-            placeholder="문의 내용"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          ></textarea>
+          <form className="home-contact-form" onSubmit={handleCounselingSubmit}>
+            <Input
+              mode="underline"
+              type="text"
+              placeholder="이름"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              style={{
+                width: "90%",
+                height: "44px",
+                padding: "0",
+                maxWidth: "456px",
+                display: "flex",
+              }}
+            />
+            <Input
+              mode="underline"
+              type="email"
+              placeholder="이메일"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={{
+                width: "90%",
+                height: "44px",
+                padding: "0",
+                maxWidth: "456px",
+                display: "flex",
+              }}
+            />
+            <Input
+              mode="underline"
+              type="tel"
+              placeholder="연락처"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              style={{
+                width: "90%",
+                height: "44px",
+                padding: "0",
+                maxWidth: "456px",
+                display: "flex",
+              }}
+            />
+            <textarea
+              id="contact-content"
+              placeholder="문의 내용"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            ></textarea>
             {isSubmitting ? (
-              <Button type="submit" label="문의 접수 중..." style={{ marginTop: "25px" }} disabled />
+              <Button
+                type="submit"
+                label="문의 접수 중..."
+                style={{ marginTop: "25px" }}
+                disabled
+              />
             ) : (
-              <Button type="submit" label="문의하기" style={{ marginTop: "25px" }} />
+              <Button
+                type="submit"
+                label="문의하기"
+                style={{ marginTop: "25px" }}
+              />
             )}
-        </form>
+          </form>
         </div>
       </section>
       <Footer />
