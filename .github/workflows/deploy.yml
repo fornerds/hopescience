@@ -2,25 +2,33 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ "main" ]  # 또는 master
+    branches: ["main"] # 또는 master
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
+  workflow_dispatch: # 수동 실행 옵션 추가
+
+# GitHub Pages 배포에 필요한 권한 추가
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          
+          node-version: "18"
+          cache: "npm" # 캐싱 추가로 빌드 속도 향상
+
       - name: Install Dependencies
-        run: npm install
-        
+        run: npm ci # npm install 대신 ci 사용 (더 안정적)
+
       - name: Create env file
         run: |
           echo "REACT_APP_TOSS_PAYMENTS_SECRET_KEY=${{ secrets.REACT_APP_TOSS_PAYMENTS_SECRET_KEY }}" >> .env
@@ -32,12 +40,24 @@ jobs:
           echo "REACT_APP_CALLBACK_URL=${{ secrets.REACT_APP_CALLBACK_URL }}" >> .env
           echo "REACT_APP_CLIENT_ID=${{ secrets.REACT_APP_CLIENT_ID }}" >> .env
           echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> .env
-        
+
       - name: Build
         run: npm run build
-        
+
+      # SPA 라우팅을 위한 404.html 파일 복사
+      - name: Create 404.html for SPA routing
+        run: cp build/index.html build/404.html
+
+      # 선택 사항: 커스텀 도메인을 사용하는 경우 CNAME 파일 생성
+      # - name: Create CNAME file
+      #   run: echo "your-domain.com" > build/CNAME
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
+          # 기존 커밋 히스토리 유지
+          keep_files: false
+          # 커스텀 커밋 메시지 설정
+          commit_message: "Deploy: ${{ github.event.head_commit.message }}"
