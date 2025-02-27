@@ -41,7 +41,7 @@ import { ResetPassword } from "./pages/ResetPassword";
 
 function App() {
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <Routes>
         <Route path="/*" element={<Home />} />
         <Route path="/policy" element={<Policy />} />
@@ -53,12 +53,24 @@ function App() {
         <Route path="/courses" element={<Courses />} />
         <Route path="/courses/:course_id" element={<Course />} />
         <Route path="/cart/:user_id/:course_id" element={<Cart />} />
-        <Route path="/cart/:user_id/:course_id/success" element={<SuccessPage />} />          
+        <Route
+          path="/cart/:user_id/:course_id/success"
+          element={<SuccessPage />}
+        />
         <Route path="/cart/:user_id/:course_id/fail" element={<FailPage />} />
         <Route path="/courses/:course_id/:lecture_id" element={<Lecture />} />
-        <Route path="/courses/:course_id/:lecture_id/:course_inquiry_id" element={<LectureInquiry />} />
-        <Route path="/courses/:course_id/:lecture_id/:course_inquiry_id/edit" element={<LectureInquiryEdit />} />
-        <Route path="/courses/:course_id/:lecture_id/new" element={<NewLectureInquiry />} />
+        <Route
+          path="/courses/:course_id/:lecture_id/:course_inquiry_id"
+          element={<LectureInquiry />}
+        />
+        <Route
+          path="/courses/:course_id/:lecture_id/:course_inquiry_id/edit"
+          element={<LectureInquiryEdit />}
+        />
+        <Route
+          path="/courses/:course_id/:lecture_id/new"
+          element={<NewLectureInquiry />}
+        />
         <Route path="/QnA" element={<QnA />} />
         <Route path="/QnA/:inquiry_id" element={<QnADetail />} />
         <Route path="/QnA/:inquiry_id/edit" element={<QnAEdit />} />
@@ -68,15 +80,24 @@ function App() {
         <Route path="/mypage/orders/:payment_id" element={<Order />} />
         <Route path="/mypage/setting" element={<Setting />} />
         <Route path="/mypage/certificates" element={<Certificates />} />
-        <Route path="/mypage/certificates/:certificate_id" element={<Certificate />} />
+        <Route
+          path="/mypage/certificates/:certificate_id"
+          element={<Certificate />}
+        />
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/users" element={<Users />} />
         <Route path="/admin/users/:user_id" element={<User />} />
         <Route path="/admin/QnA" element={<AdminQnA />} />
         <Route path="/admin/QnA/:inquiry_id" element={<AdminQnADetail />} />
         <Route path="/admin/QnA/new" element={<NewAdminQnAInquiry />} />
-        <Route path="/admin/Category/:category_name/:course_inquiry_id" element={<AdminCategoryDetail />} />
-        <Route path="/admin/Counseling/:counseling_id" element={<AdminCounselingDetail />} />
+        <Route
+          path="/admin/Category/:category_name/:course_inquiry_id"
+          element={<AdminCategoryDetail />}
+        />
+        <Route
+          path="/admin/Counseling/:counseling_id"
+          element={<AdminCounselingDetail />}
+        />
         <Route path="/admin/service" element={<Service />} />
         <Route path="/admin/service/new" element={<NewService />} />
         <Route path="/admin/service/:course_id" element={<ServiceEdit />} />

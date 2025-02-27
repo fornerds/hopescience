@@ -5,9 +5,8 @@ on:
     branches: ["main"] # 또는 master
   pull_request:
     branches: ["main"]
-  workflow_dispatch: # 수동 실행 옵션 추가
+  workflow_dispatch:
 
-# GitHub Pages 배포에 필요한 권한 추가
 permissions:
   contents: write
   pages: write
@@ -24,10 +23,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18"
-          cache: "npm" # 캐싱 추가로 빌드 속도 향상
+          cache: "npm"
 
       - name: Install Dependencies
-        run: npm ci # npm install 대신 ci 사용 (더 안정적)
+        run: npm ci
 
       - name: Create env file
         run: |
@@ -44,20 +43,17 @@ jobs:
       - name: Build
         run: npm run build
 
-      # SPA 라우팅을 위한 404.html 파일 복사
+      # build 폴더에 404.html 파일 생성 (중요!)
       - name: Create 404.html for SPA routing
-        run: cp build/index.html build/404.html
-
-      # 선택 사항: 커스텀 도메인을 사용하는 경우 CNAME 파일 생성
-      # - name: Create CNAME file
-      #   run: echo "your-domain.com" > build/CNAME
+        run: |
+          if [ -f build/index.html ]; then
+            cp build/index.html build/404.html
+          fi
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
-          # 기존 커밋 히스토리 유지
-          keep_files: false
-          # 커스텀 커밋 메시지 설정
-          commit_message: "Deploy: ${{ github.event.head_commit.message }}"
+          # CNAME 파일 보존 설정
+          cname: www.xn--vb0b67vepvv2b.com

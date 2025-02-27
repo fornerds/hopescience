@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>희망과학심리상담센터</title>
+    <script type="text/javascript">
+      // 커스텀 도메인을 사용하는 경우 pathSegmentsToKeep은 0으로 설정
+      var pathSegmentsToKeep = 0;
+
+      var l = window.location;
+      l.replace(
+        l.protocol +
+          "//" +
+          l.hostname +
+          (l.port ? ":" + l.port : "") +
+          l.pathname
+            .split("/")
+            .slice(0, 1 + pathSegmentsToKeep)
+            .join("/") +
+          "/?/" +
+          l.pathname
+            .slice(1)
+            .split("/")
+            .slice(pathSegmentsToKeep)
+            .join("/")
+            .replace(/&/g, "~and~") +
+          (l.search ? "&" + l.search.slice(1).replace(/&/g, "~and~") : "") +
+          l.hash
+      );
+    </script>
+  </head>
+  <body>
+    페이지로 이동 중입니다...
+  </body>
+</html>
