@@ -60,7 +60,7 @@
 }
 
 .certificate-pdf-data-index {
-  width: 120px;
+  width: 160px;
   text-align: justify;
   padding-right: 10px;
 }
@@ -271,7 +271,7 @@
   color: #dee1e6;
 }
 
-@media (max-width: 862px){
+@media (max-width: 862px) {
   .order-receipt-wrap {
     padding: 41px 0;
   }
@@ -282,28 +282,28 @@
   }
 }
 
-@media (max-width: 550px){
-  .order-title-wrap{
+@media (max-width: 550px) {
+  .order-title-wrap {
     flex-direction: column;
     gap: 20px;
   }
 
-  .order-buttons{
+  .order-buttons {
     justify-content: start;
     width: 100%;
   }
 
-  .order-receipt-info-table > tbody > tr > td:nth-child(2){
+  .order-receipt-info-table > tbody > tr > td:nth-child(2) {
     padding-left: 40px;
   }
 }
 
-@media (max-width: 400px){
-  .order-buttons{
+@media (max-width: 400px) {
+  .order-buttons {
     flex-direction: column;
   }
 
-  .order-receipt-info-table > tbody > tr > td:nth-child(2){
+  .order-receipt-info-table > tbody > tr > td:nth-child(2) {
     padding-left: 20px;
   }
 
