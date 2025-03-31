@@ -4,7 +4,7 @@ import "./style.css";
 import { Footer } from "../../components/Footer";
 import { Pagination } from "../../modules/Pagination";
 import { inquiry } from "../../store";
-import searchIcon from "../../icons/search.svg"
+import searchIcon from "../../icons/search.svg";
 
 export const QnA = () => {
   const isLoading = inquiry((state) => state.isLoading);
@@ -14,14 +14,14 @@ export const QnA = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
 
   useEffect(() => {
-    getInquiries();
+    getInquiries(0, 9999, "-created_at");
   }, []);
 
   useEffect(() => {
     if (searchKeyword) {
       searchInquiries(searchKeyword);
     } else {
-      getInquiries();
+      getInquiries(0, 9999, "-created_at");
     }
   }, [searchKeyword]);
 
@@ -47,7 +47,7 @@ export const QnA = () => {
               />
             </div>
           </div>
-          <Pagination inquiries={inquiries} isLoading={isLoading}/>
+          <Pagination inquiries={inquiries} isLoading={isLoading} />
         </section>
       </main>
       <Footer />
