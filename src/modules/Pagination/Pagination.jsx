@@ -1,22 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./Pagination.css";
 import { Link } from "../../components/Link";
 import { useLocation, useParams } from "react-router-dom";
-import leftArrowButton from "../../icons/chevron-left-large.svg"
-import rightArrowButton from "../../icons/chevron-right-large.svg"
+import leftArrowButton from "../../icons/chevron-left-large.svg";
+import rightArrowButton from "../../icons/chevron-right-large.svg";
 
 export const Pagination = ({ inquiries, isLoading }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 6;
-  const totalPosts = inquiries?.length;
   const location = useLocation();
   let { course_id, lecture_id } = useParams();
 
-  // console.log(inquiries);
+  // 한 번 더 정렬을 보장하기 위해 inquiries를 정렬합니다
+  const sortedInquiries = useMemo(() => {
+    if (!inquiries || inquiries.length === 0) return [];
+
+    return [...inquiries].sort((a, b) => {
+      return new Date(b.created_at) - new Date(a.created_at);
+    });
+  }, [inquiries]);
+
+  const totalPosts = sortedInquiries?.length;
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+
+  // 페이지 변경 시 스크롤을 맨 위로 이동
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentPage]);
 
   const renderPageButtons = () => {
     const pageButtons = [];
@@ -44,9 +57,10 @@ export const Pagination = ({ inquiries, isLoading }) => {
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = inquiries?.slice(indexOfFirstPost, indexOfLastPost);
-
-  console.log(currentPosts);
+  const currentPosts = sortedInquiries?.slice(
+    indexOfFirstPost,
+    indexOfLastPost
+  );
 
   return (
     <div className="pagination-container">
@@ -63,10 +77,10 @@ export const Pagination = ({ inquiries, isLoading }) => {
             <div></div>
             <div>Loading...</div>
           </div>
-        ) : currentPosts.length ? (
-          currentPosts?.map((post) => (
+        ) : currentPosts && currentPosts.length ? (
+          currentPosts.map((post) => (
             <div key={post?.id} className="post-item">
-              <div style={{paddingRight: "10px"}}>{post?.id}</div>
+              <div style={{ paddingRight: "10px" }}>{post?.id}</div>
               <Link
                 to={
                   location.pathname === "/QnA"
@@ -85,15 +99,14 @@ export const Pagination = ({ inquiries, isLoading }) => {
                   height: "fit-content",
                   textAlign: "left",
                   display: "block",
-                  paddingRight: "10px"
+                  paddingRight: "10px",
                 }}
-              >
-              </Link>
-              <div style={{paddingRight: "10px"}}>{post?.user_name}</div>
-              <div style={{paddingRight: "10px"}}>
+              ></Link>
+              <div style={{ paddingRight: "10px" }}>{post?.user_name}</div>
+              <div style={{ paddingRight: "10px" }}>
                 {new Date(post?.created_at).toLocaleDateString("ko-KR")}
               </div>
-              <div style={{paddingRight: "10px"}}>{post?.view_count}</div>
+              <div style={{ paddingRight: "10px" }}>{post?.view_count}</div>
             </div>
           ))
         ) : (
