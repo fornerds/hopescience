@@ -67,6 +67,8 @@ export const TabWithCourses = () => {
       setCompletedCourses(
         formattedCourses.filter((course) => course.status === "수강완료")
       );
+
+      console.log("enrollments", enrollments);
     }
   }, [enrollments]);
 
