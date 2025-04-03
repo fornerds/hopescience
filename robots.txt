@@ -1,0 +1,24 @@
+# 네이버 검색로봇
+User-agent: Yeti
+Allow: /
+Disallow: /admin/
+Disallow: /signin
+Disallow: /signup
+Disallow: /findpassword
+Disallow: /reset-password
+Disallow: /mypage/
+Disallow: /cart/
+
+# 구글 검색로봇
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /signin
+Disallow: /signup
+Disallow: /findpassword
+Disallow: /reset-password
+Disallow: /mypage/
+Disallow: /cart/
+
+# 사이트맵 위치 지정
+Sitemap: https://www.xn--vb0b67vepvv2b.com/sitemap.xml
