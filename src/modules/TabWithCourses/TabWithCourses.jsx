@@ -188,7 +188,7 @@ export const TabWithCourses = () => {
               </div>
               <div className="mypage-course-title">
                 <Link
-                  to={`/courses/${course.id}`}
+                  to={`/courses/${course.course_id}`}
                   style={linkStyle}
                   onMouseEnter={(e) =>
                     (e.currentTarget.style.textDecoration = "underline")
