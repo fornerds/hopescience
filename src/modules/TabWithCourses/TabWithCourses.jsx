@@ -2,7 +2,17 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Button } from "../../components/Button";
 import "./TabWithCourses.css";
 import { enrollment } from "../../store";
-import { Link } from "react-router-dom"; // Link 컴포넌트 추가
+import { Link } from "react-router-dom";
+
+// 링크 스타일 정의
+const linkStyle = {
+  color: "#dee1e6",
+  textDecoration: "none",
+};
+
+const hoverLinkStyle = {
+  textDecoration: "underline",
+}; // Link 컴포넌트 추가
 
 const tabButtons = [
   { key: "all", label: "전체" },
@@ -67,8 +77,6 @@ export const TabWithCourses = () => {
       setCompletedCourses(
         formattedCourses.filter((course) => course.status === "수강완료")
       );
-
-      console.log("enrollments", enrollments);
     }
   }, [enrollments]);
 
@@ -179,7 +187,16 @@ export const TabWithCourses = () => {
                 />
               </div>
               <div className="mypage-course-title">
-                <Link to={`/courses/${course.id}`}>
+                <Link
+                  to={`/courses/${course.id}`}
+                  style={linkStyle}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.textDecoration = "underline")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.textDecoration = "none")
+                  }
+                >
                   <h3>{course.title}</h3>
                 </Link>
               </div>
