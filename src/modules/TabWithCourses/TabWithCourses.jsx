@@ -63,6 +63,7 @@ export const TabWithCourses = () => {
       const formattedCourses = enrollments.map((course) => ({
         id: course.id,
         title: course.course_title,
+        course_id: course.course_id,
         progress: course.progress,
         status: course.is_completed ? "수강완료" : "수강중",
         paymentDate: new Date(course.enrolled_at).toISOString().split("T")[0],
