@@ -14,7 +14,8 @@ import { PolicyContent } from "../Policy/Policy";
 
 const schema = yup
   .object({
-    name: yup.string().required("입력하신 이름은 수료증에 그대로 사용되오니 정확한 이름을 입력해주세요.").matches(
+    name: yup.string().required("입력하신 이름은 수료증에 그대로 사용되오니 정확한 이름을 입력해주세요.")
+      .matches(
       /^[가-힣]{2,}$|^[a-zA-Z]{2,}$/,
       "유효한 이름형식으로 입력해주세요"
     )
@@ -150,7 +151,7 @@ export const SignUp = () => {
                       <Input
                         {...field}
                         type="text"
-                        placeholder="이름을 입력하세요"
+                        placeholder="입력하신 이름은 수료증에 그대로 사용되오니 정확한 이름을 입력해주세요"
                       />
                       {errors.name && (
                         <p className="input-error-message">
