@@ -151,7 +151,7 @@ export const SignUp = () => {
                       <Input
                         {...field}
                         type="text"
-                        placeholder="입력하신 이름은 수료증에 그대로 사용되오니 정확한 이름을 입력해주세요"
+                        placeholder="입력하신 이름은 수료증에 그대로 사용됩니다"
                       />
                       {errors.name && (
                         <p className="input-error-message">
