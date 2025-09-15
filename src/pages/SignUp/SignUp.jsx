@@ -144,7 +144,7 @@ export const SignUp = () => {
                   render={({ field }) => (
                     <div className="signup-input">
                       <label htmlFor="name" className="signup-input-label">
-                        이름
+                        이름 - 입력하신 이름은 수료증에 그대로 사용되오니 정확한 성함을 입력해주세요
                       </label>
                       <Input
                         {...field}
