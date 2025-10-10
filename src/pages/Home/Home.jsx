@@ -20,11 +20,11 @@ import { useState, useEffect } from "react";
 const reviews = [
   {
     name: "김○수",
-    rating: 4.5,
+    rating: 4.0,
     date: "2025-07-20",
     review: `  이 교육 프로그램은 빠르게 이수증을 받을 수 있어 너무 좋았습니다.
 
-  바쁜 일정 속에서도 단기간에 수료할 수 있어서 큰 도움이 되었어요.`,
+  바쁜 일정 속에서도 단기간에 수료할 수 있어서 큰 도움이 되었습니다 강추드려요.`,
   },
   {
     name: "박○연",
