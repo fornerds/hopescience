@@ -255,8 +255,8 @@ export const ReceiptPdfGenerator = () => {
             onClick={handleCancel}
           ></Button> 
           //영수증 저장하기 버튼 jsx 끝
-          */}
-        </div>
+          
+        </div>*/}
       </div>
       <div className="order-receipt-wrap">
         <div className="order-receipt" id={`order-receipt-${order_id}`}>
