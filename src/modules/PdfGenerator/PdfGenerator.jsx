@@ -231,8 +231,8 @@ export const ReceiptPdfGenerator = () => {
     <>
       <div className="order-title-wrap">
         <h2 className="order-title">결제상세</h2>
-        <div className="order-buttons">
-          {/*
+          {/* <div className="order-buttons">
+       
           //영수증 저장하기 버튼 jsx 시작
           <Button
             label="영수증 저장하기"
