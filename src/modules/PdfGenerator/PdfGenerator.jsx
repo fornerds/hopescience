@@ -413,7 +413,7 @@ export const AdminReceiptPdfGenerator = () => {
           </div>
         </div>
         <div className="admin-order-buttons">
-          <Button
+          {/* <Button
             label="영수증 보내기"
             onClick={() => receiptPDF(order_id)}
             style={{
@@ -421,7 +421,7 @@ export const AdminReceiptPdfGenerator = () => {
               padding: "auto 16px",
               fontSize: "14px",
             }}
-          ></Button>
+          ></Button>*/}
           <Button
             label="환불 하기"
             style={{ height: "36px", padding: "auto 16px", fontSize: "14px" }}
