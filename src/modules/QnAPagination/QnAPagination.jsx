@@ -38,9 +38,9 @@ export const QnAPagination = () => {
   useEffect(() => {
     if (activeTab === "메인게시판") {
       clearInquiries();
-      getInquiries(0, 100, 'desc');
+      getInquiries(0, 1000, '-created_at');
     } else{
-      getCourseInquiriesByCategory(activeTab, 0, 100, 'desc');
+      getCourseInquiriesByCategory(activeTab, 0, 1000, '-created_at');
     }
   }, [activeTab]);
 
@@ -49,7 +49,7 @@ export const QnAPagination = () => {
   }, []);
 
   useEffect(()=> {
-    getCounselings(0, 100, 'desc');
+    getCounselings(0, 1000, '-created_at');
   }, [])
 
   const fetchCategories = async () => {

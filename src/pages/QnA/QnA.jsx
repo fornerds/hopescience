@@ -15,14 +15,14 @@ export const QnA = () => {
 
   useEffect(() => {
     // 먼저 API로 데이터를 가져옵니다 (정렬 매개변수를 지정해도 됩니다)
-    getInquiries(0, 100, "-created_at");
+    getInquiries(0, 1000, "-created_at");
   }, []);
 
   useEffect(() => {
     if (searchKeyword) {
       searchInquiries(searchKeyword);
     } else {
-      getInquiries(0, 100, "-created_at");
+      getInquiries(0, 1000, "-created_at");
     }
   }, [searchKeyword]);
 
