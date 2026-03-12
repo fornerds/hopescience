@@ -151,8 +151,18 @@ export const PostEditor = () => {
               }
             });
         } else {
-          createInquiry(myUserId, data.title, data.category, data.content);
-          navigate("/QnA");
+          createInquiry(myUserId, data.title, data.category, data.content, accessToken)
+            .then(() => {
+              navigate("/QnA");
+            })
+            .catch(async (error) => {
+              if (error?.response?.status === 401 && !retryAttempted) {
+                await refreshAccessToken(refreshToken);
+                return onSubmit(data, true);
+              } else {
+                console.error("Error during inquiry creation:", error);
+              }
+            });
         }
       } else if (buttonLabel === "수정하기") {
         if (course_id && lecture_id && course_inquiry_id) {

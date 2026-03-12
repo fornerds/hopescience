@@ -1342,7 +1342,7 @@ const useInquiryStore = create((set) => ({
     }
   },
 
-  createInquiry: async (userId, title, category, content) => {
+  createInquiry: async (userId, title, category, content, accessToken) => {
     set({ isLoading: true });
     try {
       const response = await postApi({
@@ -1352,6 +1352,7 @@ const useInquiryStore = create((set) => ({
           category,
           content,
         },
+        access_token: accessToken,
       });
       if (response?.id) {
         set({ isLoading: false });
