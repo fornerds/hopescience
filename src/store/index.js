@@ -1252,6 +1252,7 @@ const useInquiryStore = create((set) => ({
   isLoading: false,
   error: null,
   inquiries: [],
+  totalCount: 0,
   QnA: null,
 
   getInquiries: async (skip = 0, limit = 100, sort = null) => {
@@ -1261,11 +1262,11 @@ const useInquiryStore = create((set) => ({
       if (sort) {
         path += `&sort=${sort}`;
       }
-      
+
       const response = await getApi({ path });
       if (response) {
         set({
-          inquiries: response.map((inquiry) => ({
+          inquiries: response.items.map((inquiry) => ({
             id: inquiry.id,
             title: inquiry.title,
             category: inquiry.category,
@@ -1277,6 +1278,7 @@ const useInquiryStore = create((set) => ({
             view_count: inquiry.view_count,
             comments: inquiry.comments,
           })),
+          totalCount: response.total_count,
           isLoading: false,
         });
         console.log("질문 리스트를 성공적으로 가져왔습니다.");
@@ -1295,20 +1297,19 @@ const useInquiryStore = create((set) => ({
       const response = await getApi({ path: `/inquiries/?skip=0&limit=100&keyword=${keyword}`});
       if (response) {
         set({
-          inquiries: response
-            .map((inquiry) => ({
-              id: inquiry.id,
-              title: inquiry.title,
-              category: inquiry.category,
-              created_at: inquiry.created_at,
-              updated_at: inquiry.updated_at,
-              content: inquiry.content,
-              user_id: inquiry.user_id,
-              user_name: inquiry.user_name,
-              view_count: inquiry.view_count,
-              comments: inquiry.comments,
-            }))
-            ,
+          inquiries: response.items.map((inquiry) => ({
+            id: inquiry.id,
+            title: inquiry.title,
+            category: inquiry.category,
+            created_at: inquiry.created_at,
+            updated_at: inquiry.updated_at,
+            content: inquiry.content,
+            user_id: inquiry.user_id,
+            user_name: inquiry.user_name,
+            view_count: inquiry.view_count,
+            comments: inquiry.comments,
+          })),
+          totalCount: response.total_count,
           isLoading: false,
         });
         console.log("질문 리스트를 성공적으로 가져왔습니다.");
@@ -1464,7 +1465,7 @@ const useInquiryStore = create((set) => ({
   },
 
   clearInquiries: () => {
-    set({ inquiries: [] });
+    set({ inquiries: [], totalCount: 0 });
   },
 }));
 

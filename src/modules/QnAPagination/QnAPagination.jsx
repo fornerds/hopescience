@@ -8,10 +8,11 @@ export const QnAPagination = () => {
   const [activeTab, setActiveTab] = useState("메인게시판");
   const [categories, setCategories] = useState([]);
 
-  const { isLoading: inquiriesLoading, getInquiries, inquiries, clearInquiries } = inquiry((state) => ({
+  const { isLoading: inquiriesLoading, getInquiries, inquiries, totalCount, clearInquiries } = inquiry((state) => ({
     isLoading: state.isLoading,
     getInquiries: state.getInquiries,
     inquiries: state.inquiries,
+    totalCount: state.totalCount,
     clearInquiries: state.clearInquiries,
   }));
 
@@ -31,14 +32,18 @@ export const QnAPagination = () => {
     getCategories: state.getCategories,
   }));
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 7;
+
   const handleTabClick = (tab) => {
     setActiveTab(tab);
+    setCurrentPage(1);
   };
 
   useEffect(() => {
     if (activeTab === "메인게시판") {
       clearInquiries();
-      getInquiries(0, 1000, '-created_at');
+      getInquiries(0, postsPerPage, '-created_at');
     } else{
       getCourseInquiriesByCategory(activeTab, 0, 1000, '-created_at');
     }
@@ -62,17 +67,24 @@ export const QnAPagination = () => {
     }
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 7;
-  const totalPosts = activeTab === "메인게시판" ? inquiries.length : activeTab === "문의하기" ? counselings.length : courseInquiries.length;
+  const totalPosts =
+    activeTab === "메인게시판"
+      ? totalCount
+      : activeTab === "문의하기"
+      ? counselings.length
+      : courseInquiries.length;
 
   const handlePageChange = (page) => {
+    if (activeTab === "메인게시판") {
+      const skip = (page - 1) * postsPerPage;
+      getInquiries(skip, postsPerPage, '-created_at');
+    }
     setCurrentPage(page);
   };
 
-  const renderPageButtons = (totalPosts) => {
+  const renderPageButtons = (total) => {
     const pageButtons = [];
-    const totalPages = Math.ceil(totalPosts / postsPerPage);
+    const totalPages = Math.ceil(total / postsPerPage);
     let startPage = Math.max(currentPage - 2, 1);
     let endPage = Math.min(startPage + 4, totalPages);
 
@@ -103,11 +115,10 @@ export const QnAPagination = () => {
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts =
     activeTab === "메인게시판"
-      ? inquiries.slice(indexOfFirstPost, indexOfLastPost): 
-      activeTab === "문의하기" 
-        ? 
-        counselings.slice(indexOfFirstPost, indexOfLastPost):
-        courseInquiries.slice(indexOfFirstPost, indexOfLastPost);
+      ? inquiries
+      : activeTab === "문의하기"
+        ? counselings.slice(indexOfFirstPost, indexOfLastPost)
+        : courseInquiries.slice(indexOfFirstPost, indexOfLastPost);
 
   return (
     <>
@@ -202,7 +213,7 @@ export const QnAPagination = () => {
               </div>
               <div className="user-qna-pagination-footer">
                 <div className="user-qna-pagination-count">
-                  {inquiries.length} results
+                  {totalCount} results
                 </div>
                 <div className="user-qna-pagination-buttons">
                   <button
@@ -219,7 +230,7 @@ export const QnAPagination = () => {
                     />
                   </button>
                   <div className="user-qna-pagination-button-wrap">
-                    {renderPageButtons(inquiries.length)}
+                    {renderPageButtons(totalCount)}
                   </div>
                   <button
                     className={`user-qna-pagination-button ${

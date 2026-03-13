@@ -5,36 +5,45 @@ import { useLocation, useParams } from "react-router-dom";
 import leftArrowButton from "../../icons/chevron-left-large.svg";
 import rightArrowButton from "../../icons/chevron-right-large.svg";
 
-export const Pagination = ({ inquiries, isLoading }) => {
+// totalCount, onPageChange 를 받으면 서버 사이드 페이지네이션 동작
+// 없으면 기존 클라이언트 사이드 페이지네이션 동작 (강의 문의 등)
+export const Pagination = ({ inquiries, isLoading, totalCount, onPageChange }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 6;
   const location = useLocation();
   let { course_id, lecture_id } = useParams();
 
-  // 한 번 더 정렬을 보장하기 위해 inquiries를 정렬합니다
+  const isServerSide = typeof totalCount === "number" && typeof onPageChange === "function";
+
   const sortedInquiries = useMemo(() => {
+    if (isServerSide) return inquiries || [];
     if (!inquiries || inquiries.length === 0) return [];
+    return [...inquiries].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  }, [inquiries, isServerSide]);
 
-    return [...inquiries].sort((a, b) => {
-      return new Date(b.created_at) - new Date(a.created_at);
-    });
-  }, [inquiries]);
-
-  const totalPosts = sortedInquiries?.length;
+  const totalPosts = isServerSide ? totalCount : sortedInquiries.length;
 
   const handlePageChange = (page) => {
+    if (isServerSide) {
+      const skip = (page - 1) * postsPerPage;
+      onPageChange(skip, postsPerPage);
+    }
     setCurrentPage(page);
   };
 
-  // 페이지 변경 시 스크롤을 맨 위로 이동
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [currentPage]);
 
   const renderPageButtons = () => {
     const pageButtons = [];
+    const totalPages = Math.ceil(totalPosts / postsPerPage);
     let startPage = Math.max(currentPage - 2, 1);
-    let endPage = Math.min(startPage + 4, Math.ceil(totalPosts / postsPerPage));
+    let endPage = Math.min(startPage + 4, totalPages);
+
+    if (endPage - startPage < 4) {
+      startPage = Math.max(endPage - 4, 1);
+    }
 
     for (let i = startPage; i <= endPage; i++) {
       pageButtons.push(
@@ -57,10 +66,9 @@ export const Pagination = ({ inquiries, isLoading }) => {
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = sortedInquiries?.slice(
-    indexOfFirstPost,
-    indexOfLastPost
-  );
+  const currentPosts = isServerSide
+    ? sortedInquiries
+    : sortedInquiries.slice(indexOfFirstPost, indexOfLastPost);
 
   return (
     <div className="pagination-container">
