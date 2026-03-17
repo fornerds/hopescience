@@ -43,9 +43,9 @@ export const QnAPagination = () => {
   useEffect(() => {
     if (activeTab === "메인게시판") {
       clearInquiries();
-      getInquiries(0, postsPerPage, '-created_at');
+      getInquiries(0, postsPerPage, 'desc');
     } else{
-      getCourseInquiriesByCategory(activeTab, 0, 1000, '-created_at');
+      getCourseInquiriesByCategory(activeTab, 0, 1000, 'desc');
     }
   }, [activeTab]);
 
@@ -54,7 +54,7 @@ export const QnAPagination = () => {
   }, []);
 
   useEffect(()=> {
-    getCounselings(0, 1000, '-created_at');
+    getCounselings(0, 1000, 'desc');
   }, [])
 
   const fetchCategories = async () => {
@@ -77,7 +77,7 @@ export const QnAPagination = () => {
   const handlePageChange = (page) => {
     if (activeTab === "메인게시판") {
       const skip = (page - 1) * postsPerPage;
-      getInquiries(skip, postsPerPage, '-created_at');
+      getInquiries(skip, postsPerPage, 'desc');
     }
     setCurrentPage(page);
   };

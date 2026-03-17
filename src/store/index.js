@@ -1294,7 +1294,7 @@ const useInquiryStore = create((set) => ({
   searchInquiries: async (keyword) => {
     set({ isLoading: true });
     try {
-      const response = await getApi({ path: `/inquiries/?skip=0&limit=100&keyword=${keyword}&sort=-created_at`});
+      const response = await getApi({ path: `/inquiries/?skip=0&limit=100&keyword=${keyword}&sort=desc`});
       if (response) {
         set({
           inquiries: response.items.map((inquiry) => ({

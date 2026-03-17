@@ -17,19 +17,19 @@ export const QnA = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
 
   useEffect(() => {
-    getInquiries(0, POSTS_PER_PAGE, "-created_at");
+    getInquiries(0, POSTS_PER_PAGE, "desc");
   }, []);
 
   useEffect(() => {
     if (searchKeyword) {
       searchInquiries(searchKeyword);
     } else {
-      getInquiries(0, POSTS_PER_PAGE, "-created_at");
+      getInquiries(0, POSTS_PER_PAGE, "desc");
     }
   }, [searchKeyword]);
 
   const handlePageChange = (skip, limit) => {
-    getInquiries(skip, limit, "-created_at");
+    getInquiries(skip, limit, "desc");
   };
 
   return (
